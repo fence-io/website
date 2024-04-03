@@ -1,0 +1,251 @@
+<!--
+  Copyright (c) 2016-2024 Martin Donath <martin.donath@squidfunk.com>
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to
+  deal in the Software without restriction, including without limitation the
+  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+  sell copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+  IN THE SOFTWARE.
+-->
+
+{% extends "main.html" %}
+
+<!-- Render hero under tabs -->
+{% block tabs %}
+{{ super() }}
+
+<!-- Additional styles for landing page -->
+<style>
+    /* Application header should be static for the landing page */
+    [data-md-color-primary] .md-header {
+        /* position: initial; */
+        background-color: hsl(from var(--md-primary-fg-color) h s l / calc(alpha / 2));
+    }
+
+    [data-md-color-primary] .md-tabs {
+        /* position: initial; */
+        background-color: hsl(from var(--md-primary-fg-color) h s l / 0);
+        color: var(--md-primary-bg-color);
+    }
+
+    [data-md-color-primary=indigo] .md-tabs {
+        /* position: initial; */
+        color: var(--md-primary-fg-color);
+    }
+
+    /* 
+    .mdx-parallax {
+        height: 100vh;
+        margin-top: -2.4rem;
+        overflow: hidden auto;
+        overscroll-behavior-y: none;
+        perspective: var(--md-parallax-perspective);
+        scroll-behavior: smooth;
+        width: 100vw
+    } */
+
+    /* Remove spacing, as we cannot hide it completely */
+    .md-main__inner {
+        margin: 0;
+    }
+
+    /* Hide main content for now */
+    /* .md-content {
+        display: none;
+    } */
+
+    .mdx-container {
+        background-color: var(--md-default-bg-color);
+        color: var(--md-typeset-color);
+    }
+
+    .mdx-users {
+        display: flex;
+        gap: 3.2rem;
+        margin: 2.4rem 0
+    }
+
+    @media screen and (max-width: 59.984375em) {
+        .mdx-users {
+            flex-direction: column
+        }
+    }
+
+    .mdx-users__testimonial {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: 1.2rem;
+        margin: 0;
+        text-align: center
+    }
+
+    .mdx-users__testimonial:first-child {
+        transition-delay: .2s
+    }
+
+    .mdx-users__testimonial:nth-child(2) {
+        transition-delay: 275ms
+    }
+
+    .mdx-users__testimonial:nth-child(3) {
+        transition-delay: .35s
+    }
+
+    .mdx-users__testimonial img {
+        border-radius: 5rem;
+        height: auto;
+        margin-left: auto;
+        margin-right: auto;
+        width: 10rem
+    }
+
+    .mdx-users__testimonial figcaption,
+    .mdx-users__testimonial img {
+        transition: transform .75s cubic-bezier(.075, .85, .175, 1), opacity .75s;
+        transition-delay: inherit
+    }
+
+    .mdx-users__testimonial figcaption {
+        display: block
+    }
+
+    .mdx-users__testimonial hr {
+        margin-left: auto;
+        margin-right: auto;
+        width: 5rem
+    }
+
+    .mdx-users__testimonial cite {
+        display: block;
+        -webkit-hyphens: auto;
+        hyphens: auto;
+        text-align: justify
+    }
+
+    /* Hide table of contents */
+    @media screen and (min-width: 60em) {
+        .md-sidebar--secondary {
+            display: none;
+        }
+    }
+
+    /* Hide navigation */
+    @media screen and (min-width: 76.25em) {
+        .md-sidebar--primary {
+            display: none;
+        }
+    }
+</style>
+
+<div class="mdx-parallax">
+    <!-- Hero for landing page -->
+    <section class="mdx-container">
+        <div class="md-grid md-typeset">
+            <div class="mdx-hero">
+                <!-- Hero image -->
+                <div class="mdx-hero__image">
+                    <img src="assets/images/illustration.png" alt="" width="1659" height="1200" draggable="false">
+                </div>
+
+                <!-- Hero content -->
+                <div class="mdx-hero__content">
+                    <h1>Technical documentation that just works</h1>
+                    <p>{{ config.site_description }}. Set up in 5 minutes.</p>
+                    <a href="{{ page.next_page.url | url }}" title="{{ page.next_page.title | e }}"
+                        class="md-button md-button--primary">
+                        Quick start
+                    </a>
+                    <a href="{{ 'insiders/' | url }}" title="Material for MkDocs Insiders" class="md-button">
+                        Get Insiders
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Who are we -->
+    <section class="mdx-container" data-md-color-scheme="default">
+        <div class="md-content md-grid" data-md-component="content">
+            <div class="md-content__inner">
+                <header class="md-typeset">
+                    <h1 id="who-are-we">
+                        Who are we ?
+                        <a href="#who-are-we" class="headerlink" title="Permanent link"> ¶ </a>
+                    </h1>
+                </header>
+                <div class="mdx-users">
+                    <figure class="mdx-users__testimonial">
+                        <img src="assets/images/user.png" alt="Sara Qasmi" loading="lazy" width="200" height="200">
+                        <figcaption class="md-typeset">
+                            <h2>Sara Qasmi</h2>
+                            <h3> TODO </h3>
+                            <hr>
+                            <cite>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+                                exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
+                                dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+                                mollit anim id est laborum.
+                            </cite>
+                        </figcaption>
+                    </figure>
+                    <figure class="mdx-users__testimonial">
+                        <img src="assets/images/user.png" alt="Charles-Edouard Brétéché" loading="lazy" width="200"
+                            height="200">
+                        <figcaption class="md-typeset">
+                            <h2>Charles-Edouard Brétéché</h2>
+                            <h3> TODO </h3>
+                            <hr>
+                            <cite>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+                                exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
+                                dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+                                mollit anim id est laborum.
+                            </cite>
+                        </figcaption>
+                    </figure>
+                    <!-- <figure class="mdx-users__testimonial">
+                        <img src="assets/images/user.png" alt="Frank Jogeleit" loading="lazy" width="200" height="200">
+                        <figcaption class="md-typeset">
+                            <h2>Frank Jogeleit</h2>
+                            <h3> TODO </h3>
+                            <hr>
+                            <cite>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+                                exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
+                                dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+                                mollit anim id est laborum.
+                            </cite>
+                        </figcaption>
+                    </figure> -->
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+{% endblock %}
+
+<!-- Content -->
+{% block content %}{% endblock %}
+
+<!-- Application footer -->
+{% block footer %}{% endblock %}
