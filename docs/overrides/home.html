@@ -163,9 +163,22 @@
     .subscribe-button:hover {
         background-color: rgb(4, 35, 128);
     }
+    .container {
+        display: flex;
+        height: 50vh; /* Full height of the viewport */
+    }
 
+    .section {
+        flex: 1; /* Each section takes up equal space */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+    }
+    .line {
+        margin-bottom: 60px; /* Adds space below each line */
+    }
 
-  
     /* Hide table of contents */
     @media screen and (min-width: 60em) {
         .md-sidebar--secondary {
@@ -193,20 +206,43 @@
 
                 <!-- Hero content -->
                 <div class="mdx-hero__content">
-                    <h1>Technical documentation that just works</h1>
-                    <p>{{ config.site_description }}. Set up in 5 minutes.</p>
-                    <a href="{{ page.next_page.url | url }}" title="{{ page.next_page.title | e }}"
-                        class="md-button md-button--primary">
-                        Quick start
-                    </a>
-                    <a href="{{ 'insiders/' | url }}" title="Material for MkDocs Insiders" class="md-button">
-                        Get Insiders
-                    </a>
+                    <section class="mdx-container">
+                        <h1>Technical documentation that just works</h1>
+                        <p>{{ config.site_description }}. Set up in 5 minutes.</p>
+                        <a href="{{ page.next_page.url | url }}" title="{{ page.next_page.title | e }}"
+                            class="md-button md-button--primary">
+                            Quick start
+                        </a>
+                        <a href="{{ 'insiders/' | url }}" title="Material for MkDocs Insiders" class="md-button">
+                            Get Insiders
+                        </a>
+                    </section>
                 </div>
             </div>
         </div>
     </section>
-
+    <section class="mdx-container">
+        <div class="md-content md-grid" data-md-component="content">
+            <div class="mdx-hero__content">
+                
+                <div class="line"></div>
+                <header class="md-typeset">
+                    <h1 id="services">
+                        Services
+                        <a href="#services" class="headerlink" title="Permanent link"> ¶ </a>
+                    </h1>
+                </header>
+                    
+                <div class="container">
+                    <div class="section">Section 1: TODO</div>
+                    <div class="section">Section 2: TODO</div>
+                    <div class="section">Section 3: TODO</div>
+                  </div>
+            </div>
+        </div>
+        <div class="line"></div>
+    </section>
+    
     <!-- Who are we -->
     <section class="mdx-container" data-md-color-scheme="default">
         <div class="md-content md-grid" data-md-component="content">
@@ -268,14 +304,15 @@
                         </figcaption>
                     </figure> -->
                 </div>
+                <div class="line"></div>
             </div>
         </div>
     </section>
 </div>
 <div id="subscription-component">
-<h5 class="font_5 wixui-rich-text__text" style="text-align:center; font-size:29px;">
-    <span style="font-size:29px;" class="wixui-rich-text__text">To stay updated</span>
-</h5>
+    <h5 class="font_5 wixui-rich-text__text" style="text-align:center; font-size:29px;">
+        <span style="font-size:29px;" class="wixui-rich-text__text">To stay updated</span>
+    </h5>
 </div>
 <div id="subscription-component">
     <section id="subscription-section" class="subscription-section">
