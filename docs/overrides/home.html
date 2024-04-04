@@ -135,6 +135,37 @@
         text-align: justify
     }
 
+    .subscription-section {
+        margin: auto;
+        width: 50%;
+    }
+
+    .subscription-form {
+        display: flex;
+        align-items: center;
+    }
+
+    .email-input {
+        flex: 1;
+        padding: 10px;
+        margin-right: 10px;
+    }
+
+    .subscribe-button {
+        padding: 10px 20px;
+        background-color: rgb(4, 35, 121);
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    .subscribe-button:hover {
+        background-color: rgb(4, 35, 128);
+    }
+
+
+  
     /* Hide table of contents */
     @media screen and (min-width: 60em) {
         .md-sidebar--secondary {
@@ -241,6 +272,19 @@
         </div>
     </section>
 </div>
+<div id="subscription-component">
+<h5 class="font_5 wixui-rich-text__text" style="text-align:center; font-size:29px;">
+    <span style="font-size:29px;" class="wixui-rich-text__text">To stay updated</span>
+</h5>
+</div>
+<div id="subscription-component">
+    <section id="subscription-section" class="subscription-section">
+      <form id="subscription-form" class="subscription-form" action="#" method="POST">
+        <input type="email" id="email-input" class="email-input" placeholder="Your Email" required>
+        <button type="submit" class="subscribe-button">Subscribe</button>
+      </form>
+    </section>
+  </div>
 
 {% endblock %}
 
