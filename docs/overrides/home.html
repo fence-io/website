@@ -1,34 +1,6 @@
-<!--
-  Copyright (c) 2016-2024 Martin Donath <martin.donath@squidfunk.com>
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to
-  deal in the Software without restriction, including without limitation the
-  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-  sell copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-  IN THE SOFTWARE.
--->
-
 {% extends "main.html" %}
-
-<!-- Render hero under tabs -->
 {% block tabs %}
-{{ super() }}
-
-<!-- Additional styles for landing page -->
 <style>
-    /* Application header should be static for the landing page */
     [data-md-color-primary] .md-header {
         /* position: initial; */
         background-color: hsl(from var(--md-primary-fg-color) h s l / calc(alpha / 2));
@@ -38,6 +10,8 @@
         /* position: initial; */
         background-color: hsl(from var(--md-primary-fg-color) h s l / 0);
         color: var(--md-primary-bg-color);
+        top: 2.4rem;
+        position: absolute;
     }
 
     [data-md-color-primary=indigo] .md-tabs {
@@ -45,45 +19,119 @@
         color: var(--md-primary-fg-color);
     }
 
-    /* 
-    .mdx-parallax {
+    .fio-parallax {
         height: 100vh;
         margin-top: -2.4rem;
         overflow: hidden auto;
         overscroll-behavior-y: none;
-        perspective: var(--md-parallax-perspective);
         scroll-behavior: smooth;
-        width: 100vw
-    } */
-
-    /* Remove spacing, as we cannot hide it completely */
-    .md-main__inner {
-        margin: 0;
+        width: 100vw;
     }
 
-    /* Hide main content for now */
-    /* .md-content {
-        display: none;
-    } */
-
-    .mdx-container {
-        background-color: var(--md-default-bg-color);
+    .fio-parallax__group {
+        /* background-color: var(--md-default-bg-color); */
         color: var(--md-typeset-color);
+        display: block;
+        position: relative;
     }
 
-    .mdx-users {
+    .fio-opaque {
+        background-color: var(--md-default-bg-color);
+    }
+
+    .fio-background {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
+
+    .fio-hero {
+        position: sticky;
+        top: 0;
+        width: 100%;
+        height: 100vh;
+        z-index: 2;
+        margin-bottom: -50vh;
+    }
+
+    .fio-hero__inner {
+        position: absolute;
+        bottom: 3.2rem;
+        width: 100%;
+    }
+
+    .fio-hero__teaser {
+        margin: 0 .8rem;
+        max-width: 24rem;
+    }
+
+    .fio-hero__teaser h1 {
+        color: inherit;
+        font-weight: 700;
+        margin-bottom: 0
+    }
+
+    .fio-hero__teaser :not(.md-button) {
+        text-shadow: 0 0 .2rem #211d2dcc
+    }
+
+    .fio-hero__more {
+        display: block;
+        margin-left: -.6rem;
+        bottom: 0;
+        left: 50%;
+        pointer-events: none;
+        position: absolute;
+        text-align: center
+    }
+
+    .fio-hero__more svg {
+        fill: #fff;
+        height: 1.2rem;
+        width: 1.2rem
+    }
+
+    .fio-fadein {
+        animation: fadein 2s;
+    }
+
+    .md-typeset .md-button {
+        background-color: #dd2e57;
+        border-width: 0;
+        color: var(--md-primary-bg-color);
+        margin-right: .5rem;
+        margin-top: .5rem
+    }
+
+    .md-typeset .md-button--secondary {
+        background-color: initial
+    }
+
+    @keyframes fadein {
+        from {
+            opacity: 0
+        }
+
+        to {
+            opacity: 1
+        }
+    }
+
+    .fio-users {
         display: flex;
         gap: 3.2rem;
         margin: 2.4rem 0
     }
 
     @media screen and (max-width: 59.984375em) {
-        .mdx-users {
+        .fio-users {
             flex-direction: column
         }
     }
 
-    .mdx-users__testimonial {
+    .fio-users__testimonial {
         display: flex;
         flex: 1;
         flex-direction: column;
@@ -92,19 +140,19 @@
         text-align: center
     }
 
-    .mdx-users__testimonial:first-child {
+    .fio-users__testimonial:first-child {
         transition-delay: .2s
     }
 
-    .mdx-users__testimonial:nth-child(2) {
+    .fio-users__testimonial:nth-child(2) {
         transition-delay: 275ms
     }
 
-    .mdx-users__testimonial:nth-child(3) {
+    .fio-users__testimonial:nth-child(3) {
         transition-delay: .35s
     }
 
-    .mdx-users__testimonial img {
+    .fio-users__testimonial img {
         border-radius: 5rem;
         height: auto;
         margin-left: auto;
@@ -112,139 +160,78 @@
         width: 10rem
     }
 
-    .mdx-users__testimonial figcaption,
-    .mdx-users__testimonial img {
+    .fio-users__testimonial figcaption,
+    .fio-users__testimonial img {
         transition: transform .75s cubic-bezier(.075, .85, .175, 1), opacity .75s;
         transition-delay: inherit
     }
 
-    .mdx-users__testimonial figcaption {
+    .fio-users__testimonial figcaption {
         display: block
     }
 
-    .mdx-users__testimonial hr {
+    .fio-users__testimonial hr {
         margin-left: auto;
         margin-right: auto;
         width: 5rem
     }
 
-    .mdx-users__testimonial cite {
+    .fio-users__testimonial cite {
         display: block;
         -webkit-hyphens: auto;
         hyphens: auto;
         text-align: justify
     }
 
-    .subscription-section {
-        margin: auto;
-        width: 50%;
+    .mdx-parallax__blur {
+        z-index: 1;
+        position: absolute;
+        backdrop-filter: blur(40px);
+        mask: linear-gradient(to bottom, #0000, #000F 75%);
+        bottom: 0;
+        width: 100%;
+        height: 100%;
     }
 
-    .subscription-form {
-        display: flex;
-        align-items: center;
-    }
-
-    .email-input {
-        flex: 1;
-        padding: 10px;
-        margin-right: 10px;
-    }
-
-    .subscribe-button {
-        padding: 10px 20px;
-        background-color: rgb(4, 35, 121);
-        color: white;
-        border: none;
-        cursor: pointer;
-        border-radius: 5px;
-    }
-
-    .subscribe-button:hover {
-        background-color: rgb(4, 35, 128);
-    }
-    .container {
-        display: flex;
-        height: 50vh; /* Full height of the viewport */
-    }
-
-    .section {
-        flex: 1; /* Each section takes up equal space */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 24px;
-    }
-    .line {
-        margin-bottom: 60px; /* Adds space below each line */
-    }
-
-    /* Hide table of contents */
-    @media screen and (min-width: 60em) {
-        .md-sidebar--secondary {
-            display: none;
-        }
-    }
-
-    /* Hide navigation */
-    @media screen and (min-width: 76.25em) {
-        .md-sidebar--primary {
-            display: none;
-        }
+    .mdx-parallax__blend {
+        z-index: 3;
+        position: absolute;
+        background-image: linear-gradient(to bottom, transparent, var(--md-default-bg-color));
+        bottom: 0;
+        width: 100%;
+        height: min(100vh, 100vw);
+        top: auto;
     }
 </style>
-
-<div class="mdx-parallax">
-    <!-- Hero for landing page -->
-    <section class="mdx-container">
-        <div class="md-grid md-typeset">
-            <div class="mdx-hero">
-                <!-- Hero image -->
-                <div class="mdx-hero__image">
-                    <img src="assets/images/illustration.png" alt="" width="1659" height="1200" draggable="false">
+<div class="fio-parallax">
+    <section class="fio-parallax__group" style="height: 200vh; z-index: 0;">
+        <picture class="fio-background fio-fadein">
+            <img src="assets/images/background.svg" style="object-fit: cover; width: 100%; height: 100%;">
+        </picture>
+        <div class="mdx-parallax__layer mdx-parallax__blur"> </div>
+        <div class="mdx-parallax__layer mdx-parallax__blend"> </div>
+        <div class="fio-hero md-grid">
+            {{ super() }}
+            <div class="fio-fadein fio-hero__inner">
+                <div class="fio-hero__teaser md-typeset">
+                    <h1>Documentation that simply works</h1>
+                    <p>Write your documentation in Markdown and create a professional static site in minutes –
+                        searchable, customizable, in 60+ languages, for all devices.
+                    </p>
+                    <a href="getting-started/" class="md-button"> Get started </a>
+                    <a href="#everything-you-would-expect" class="md-button md-button--secondary"> Learn more </a>
                 </div>
-
-                <!-- Hero content -->
-                <div class="mdx-hero__content">
-                    <section class="mdx-container">
-                        <h1>Technical documentation that just works</h1>
-                        <p>{{ config.site_description }}. Set up in 5 minutes.</p>
-                        <a href="{{ page.next_page.url | url }}" title="{{ page.next_page.title | e }}"
-                            class="md-button md-button--primary">
-                            Quick start
-                        </a>
-                        <a href="{{ 'insiders/' | url }}" title="Material for MkDocs Insiders" class="md-button">
-                            Get Insiders
-                        </a>
-                    </section>
+                <div class="fio-hero__more">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M11 4h2v12l5.5-5.5 1.42 1.42L12 19.84l-7.92-7.92L5.5 10.5 11 16V4Z"></path>
+                    </svg>
                 </div>
             </div>
         </div>
     </section>
-    <section class="mdx-container">
-        <div class="md-content md-grid" data-md-component="content">
-            <div class="mdx-hero__content">
-                
-                <div class="line"></div>
-                <header class="md-typeset">
-                    <h1 id="services">
-                        Services
-                        <a href="#services" class="headerlink" title="Permanent link"> ¶ </a>
-                    </h1>
-                </header>
-                    
-                <div class="container">
-                    <div class="section">Section 1: TODO</div>
-                    <div class="section">Section 2: TODO</div>
-                    <div class="section">Section 3: TODO</div>
-                  </div>
-            </div>
-        </div>
-        <div class="line"></div>
-    </section>
-    
+
     <!-- Who are we -->
-    <section class="mdx-container" data-md-color-scheme="default">
+    <section class="fio-parallax__group fio-opaque" data-md-color-scheme="stale">
         <div class="md-content md-grid" data-md-component="content">
             <div class="md-content__inner">
                 <header class="md-typeset">
@@ -253,8 +240,8 @@
                         <a href="#who-are-we" class="headerlink" title="Permanent link"> ¶ </a>
                     </h1>
                 </header>
-                <div class="mdx-users">
-                    <figure class="mdx-users__testimonial">
+                <div class="fio-users">
+                    <figure class="fio-users__testimonial">
                         <img src="assets/images/user.png" alt="Sara Qasmi" loading="lazy" width="200" height="200">
                         <figcaption class="md-typeset">
                             <h2>Sara Qasmi</h2>
@@ -263,14 +250,16 @@
                             <cite>
                                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
                                 incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                                exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
-                                dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                                exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+                                irure
+                                dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+                                pariatur.
                                 Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
                                 mollit anim id est laborum.
                             </cite>
                         </figcaption>
                     </figure>
-                    <figure class="mdx-users__testimonial">
+                    <figure class="fio-users__testimonial">
                         <img src="assets/images/user.png" alt="Charles-Edouard Brétéché" loading="lazy" width="200"
                             height="200">
                         <figcaption class="md-typeset">
@@ -280,14 +269,16 @@
                             <cite>
                                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
                                 incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                                exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
-                                dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                                exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+                                irure
+                                dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+                                pariatur.
                                 Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
                                 mollit anim id est laborum.
                             </cite>
                         </figcaption>
                     </figure>
-                    <!-- <figure class="mdx-users__testimonial">
+                    <!-- <figure class="fio-users__testimonial">
                         <img src="assets/images/user.png" alt="Frank Jogeleit" loading="lazy" width="200" height="200">
                         <figcaption class="md-typeset">
                             <h2>Frank Jogeleit</h2>
@@ -309,24 +300,8 @@
         </div>
     </section>
 </div>
-<div id="subscription-component">
-    <h5 class="font_5 wixui-rich-text__text" style="text-align:center; font-size:29px;">
-        <span style="font-size:29px;" class="wixui-rich-text__text">To stay updated</span>
-    </h5>
-</div>
-<div id="subscription-component">
-    <section id="subscription-section" class="subscription-section">
-      <form id="subscription-form" class="subscription-form" action="#" method="POST">
-        <input type="email" id="email-input" class="email-input" placeholder="Your Email" required>
-        <button type="submit" class="subscribe-button">Subscribe</button>
-      </form>
-    </section>
-  </div>
 
 {% endblock %}
 
 <!-- Content -->
 {% block content %}{% endblock %}
-
-<!-- Application footer -->
-{% block footer %}{% endblock %}
