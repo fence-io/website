@@ -4,6 +4,27 @@
 
 PIP         ?= "pip"
 
+###########
+# CODEGEN #
+###########
+
+.PHONY: codegen-mkdocs
+codegen-mkdocs: ## Generate mkdocs website
+	@echo Generate mkdocs website... >&2
+	@$(PIP) install --upgrade pip
+	@$(PIP) install -U mkdocs \
+		mkdocs-material \
+		mkdocs-material[imaging] \
+		mkdocs-material-extensions \
+		pymdown-extensions \
+		mkdocs-redirects \
+		mkdocs-minify-plugin \
+		mkdocs-include-markdown-plugin \
+		lunr \
+		mkdocs-rss-plugin \
+		mkdocs-git-revision-date-localized-plugin
+	@mkdocs build
+
 ##########
 # MKDOCS #
 ##########
