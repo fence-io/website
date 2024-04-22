@@ -63,7 +63,8 @@
     }
 
     .fio-hero__teaser {
-        margin: 0 .8rem;
+        margin-left: auto;
+        margin-right: .8rem;
         max-width: 24rem;
     }
 
@@ -117,25 +118,6 @@
         to {
             opacity: 1
         }
-    }
-
-    @keyframes heart {
-
-        0%,
-        40%,
-        80%,
-        100% {
-            transform: scale(1);
-        }
-
-        20%,
-        60% {
-            transform: scale(1.15);
-        }
-    }
-
-    .mdx-heart {
-        animation: heart 1000ms infinite;
     }
 
     .fio-users {
@@ -202,7 +184,7 @@
         text-align: justify
     }
 
-    .mdx-parallax__blur {
+    .fio-parallax__blur {
         z-index: 1;
         position: absolute;
         backdrop-filter: blur(40px);
@@ -212,7 +194,7 @@
         height: 100%;
     }
 
-    .mdx-parallax__blend {
+    .fio-parallax__blend {
         z-index: 3;
         position: absolute;
         /* background-image: linear-gradient(to bottom, #0000, var(--md-default-bg-color)); */
@@ -237,8 +219,8 @@
         <picture class="fio-background fio-fadein">
             <img src="assets/images/background.svg" style="object-fit: cover; width: 100%; height: 100%;">
         </picture>
-        <div class="mdx-parallax__layer mdx-parallax__blur"> </div>
-        <div class="mdx-parallax__layer mdx-parallax__blend"> </div>
+        <div class="fio-parallax__layer fio-parallax__blur"> </div>
+        <div class="fio-parallax__layer fio-parallax__blend"> </div>
         <div class="fio-hero md-grid">
             {{ super() }}
             <div class="fio-fadein fio-hero__inner">
