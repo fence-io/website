@@ -235,20 +235,6 @@
         top: calc(100vh - 3rem - 24px);
     }
 
-    .circle {
-        display: inline-block;
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        background: whiteSmoke;
-        box-shadow: 4px -40px 60px 5px rgb(26, 117, 206) inset;
-    }
-
-    .loader {
-        background: linear-gradient(to right, rgb(22, 113, 202) 50%, transparent 50%);
-        animation: spin 1s infinite linear;
-    }
-
     .loader:before {
         display: block;
         content: '';
@@ -261,7 +247,31 @@
         background: #222;
         border-radius: 50%;
     }
-</style> <div class=fio-parallax> <div id=the-top style="position: relative;"> <div class=fio-top-rail data-md-color-scheme=default> <a href=#the-top class=fio-top-button>↑</a> </div> <section class=fio-parallax__group style="height: 150vh; z-index: 0;"> <picture class="fio-background fio-fadein"> <img src=assets/images/background.svg style="object-fit: cover; width: 100%; height: 100%;"> </picture> <div class="fio-parallax__layer fio-parallax__blur"> </div> <div class="fio-parallax__layer fio-parallax__blend"> </div> <div class="fio-hero md-grid"> <nav class=md-tabs aria-label=Tabs data-md-component=tabs> <div class=md-grid> <ul class=md-tabs__list> <li class="md-tabs__item md-tabs__item--active"> <a href=. class=md-tabs__link> Home </a> </li> <li class=md-tabs__item> <a href=blog/ class=md-tabs__link> Blog </a> </li> </ul> </div> </nav> <div class="fio-fadein fio-hero__inner"> <div style="position: absolute; left: 0; width: 50%;text-align: center; align-content: center; height: 100%;"> <img width=200 height=200 src=assets/images/blowfish_logo_transparent.png> </div> <div class="fio-hero__teaser md-typeset"> <h1>Policy management made simple</h1> <p>Navigate the complexities of policy management with precision and ease.<br> Welcome to your new hub for streamlined policy solutions.</p> <a href=getting-started/ class=md-button> Get started </a> <a href=#everything-you-would-expect class="md-button md-button--secondary"> Learn more </a> </div> <!-- <div class="fio-hero__more">
+
+    .gelatine:hover {
+        animation: gelatine 0.5s infinite;
+    }
+
+    @keyframes gelatine {
+
+        from,
+        to {
+            transform: scale(1, 1);
+        }
+
+        25% {
+            transform: scale(0.9, 1.1);
+        }
+
+        50% {
+            transform: scale(1.1, 0.9);
+        }
+
+        75% {
+            transform: scale(0.95, 1.05);
+        }
+    }
+</style> <div class=fio-parallax> <div id=the-top style="position: relative;"> <div class=fio-top-rail data-md-color-scheme=default> <a href=#the-top class=fio-top-button>↑</a> </div> <section class=fio-parallax__group style="height: 150vh; z-index: 0;"> <picture class="fio-background fio-fadein"> <img src=assets/images/background.svg style="object-fit: cover; width: 100%; height: 100%;"> </picture> <div class="fio-parallax__layer fio-parallax__blur"> </div> <div class="fio-parallax__layer fio-parallax__blend"> </div> <div class="fio-hero md-grid"> <nav class=md-tabs aria-label=Tabs data-md-component=tabs> <div class=md-grid> <ul class=md-tabs__list> <li class="md-tabs__item md-tabs__item--active"> <a href=. class=md-tabs__link> Home </a> </li> <li class=md-tabs__item> <a href=blog/ class=md-tabs__link> Blog </a> </li> </ul> </div> </nav> <div class="fio-fadein fio-hero__inner"> <div style="position: absolute; left: 0; width: 50%;text-align: center; align-content: center; height: 100%;"> <img class=gelatine width=200 height=200 src=assets/images/blowfish_logo_transparent.png> </div> <div class="fio-hero__teaser md-typeset"> <h1>Policy management made simple</h1> <p>Navigate the complexities of policy management with precision and ease.<br> Welcome to your new hub for streamlined policy solutions.</p> <a href=getting-started/ class=md-button> Get started </a> <a href=#everything-you-would-expect class="md-button md-button--secondary"> Learn more </a> </div> <!-- <div class="fio-hero__more">
                         <a href="#who-are-we" class="md-button md-button--secondary">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                 <path d="M11 4h2v12l5.5-5.5 1.42 1.42L12 19.84l-7.92-7.92L5.5 10.5 11 16V4Z"></path>

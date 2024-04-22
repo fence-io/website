@@ -237,20 +237,6 @@
         top: calc(100vh - 3rem - 24px);
     }
 
-    .circle {
-        display: inline-block;
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        background: whiteSmoke;
-        box-shadow: 4px -40px 60px 5px rgb(26, 117, 206) inset;
-    }
-
-    .loader {
-        background: linear-gradient(to right, rgb(22, 113, 202) 50%, transparent 50%);
-        animation: spin 1s infinite linear;
-    }
-
     .loader:before {
         display: block;
         content: '';
@@ -262,6 +248,30 @@
         height: 90px;
         background: #222;
         border-radius: 50%;
+    }
+
+    .gelatine:hover {
+        animation: gelatine 0.5s infinite;
+    }
+
+    @keyframes gelatine {
+
+        from,
+        to {
+            transform: scale(1, 1);
+        }
+
+        25% {
+            transform: scale(0.9, 1.1);
+        }
+
+        50% {
+            transform: scale(1.1, 0.9);
+        }
+
+        75% {
+            transform: scale(0.95, 1.05);
+        }
     }
 </style>
 <div class="fio-parallax">
@@ -280,7 +290,8 @@
                 <div class="fio-fadein fio-hero__inner">
                     <div
                         style="position: absolute; left: 0; width: 50%;text-align: center; align-content: center; height: 100%;">
-                        <img width="200" height="200" src="assets/images/blowfish_logo_transparent.png">
+                        <img class="gelatine" width="200" height="200"
+                            src="assets/images/blowfish_logo_transparent.png">
                     </div>
                     <div class="fio-hero__teaser md-typeset">
                         <h1>Policy management made simple</h1>
