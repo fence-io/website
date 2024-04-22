@@ -273,6 +273,88 @@
             transform: scale(0.95, 1.05);
         }
     }
+
+    .mdx-expect__list {
+        display: flex;
+        flex-flow: row wrap;
+        gap: 1.6rem;
+        padding: 0
+    }
+
+    .mdx-expect__item {
+        display: flex;
+        flex: 1 0 48%;
+        gap: .6rem;
+        margin: 0;
+        transition: transform .75s cubic-bezier(.075, .85, .175, 1), opacity .75s
+    }
+
+    .mdx-expect__item:first-child {
+        transition-delay: .2s
+    }
+
+    .mdx-expect__item:nth-child(2) {
+        transition-delay: 275ms
+    }
+
+    .mdx-expect__item:nth-child(3) {
+        transition-delay: .35s
+    }
+
+    .mdx-expect__item:nth-child(4) {
+        transition-delay: 425ms
+    }
+
+    .mdx-expect__item:nth-child(5) {
+        transition-delay: .5s
+    }
+
+    .mdx-expect__item:nth-child(6) {
+        transition-delay: 575ms
+    }
+
+    .js .mdx-expect__item[hidden] {
+        opacity: 0;
+        transform: translate(-.8rem, .4rem)
+    }
+
+    .js .mdx-expect__item[hidden]:nth-child(2n) {
+        transform: translate(.8rem, .4rem)
+    }
+
+    .mdx-expect__icon {
+        fill: currentcolor;
+        background-color: var(--md-default-fg-color--lightest);
+        border-radius: 100%;
+        flex-shrink: 0;
+        height: 2.2rem;
+        padding: .4rem;
+        width: 2.2rem
+    }
+
+    .mdx-expect__description>:last-child {
+        margin-bottom: 0
+    }
+
+    @media screen and (max-width: 76.234375em) {
+        .mdx-expect__description>:last-child {
+            margin-left: -2.8rem
+        }
+    }
+
+    .md-typeset h2 {
+        font-weight: 700;
+        margin-top: .175em
+    }
+
+    .md-typeset h2+h3 {
+        font-size: 1em;
+        margin-top: -.8em
+    }
+
+    .md-typeset :target {
+        --md-scroll-margin: 5.2rem
+    }
 </style>
 <div class="fio-parallax">
     <div id="the-top" style="position: relative;">
@@ -295,8 +377,10 @@
                     </div>
                     <div class="fio-hero__teaser md-typeset">
                         <h1>Policy management made simple</h1>
-                        <p>Navigate the complexities of policy management with precision and ease.<br>
-                            Welcome to your new hub for streamlined policy solutions.</p>
+                        <p>
+                            Welcome to your new hub for streamlined policy solutions.<br>
+                            Navigate the complexities of policy management with precision and ease.
+                        </p>
                         <a href="getting-started/" class="md-button"> Get started </a>
                         <a href="#everything-you-would-expect" class="md-button md-button--secondary"> Learn more </a>
                     </div>
@@ -309,6 +393,77 @@
                     </div> -->
                 </div>
             </div>
+        </section>
+        <section class="fio-parallax__group fio-opaque" data-md-color-scheme="slate">
+            <div class="md-content md-grid" data-md-component="content">
+                <div class="md-content__inner">
+                    <header class="md-typeset">
+                        <h1 id="what-do-we-do">
+                            What do we do ?
+                            <a href="#what-do-we-do" class="headerlink" title="Permanent link"> ¶ </a>
+                        </h1>
+                    </header>
+                    <div class="mdx-expect">
+                        <ul class="mdx-expect__list">
+                            <li class="mdx-expect__item md-typeset">
+                                <div class="mdx-expect__icon">
+                                    {% include ".icons/fontawesome/solid/blog.svg" %}
+                                </div>
+                                <div class="mdx-expect__description">
+                                    <h2>Test and review policy engines</h2>
+                                    <p> TODO. </p>
+                                </div>
+                            </li>
+                            <li class="mdx-expect__item md-typeset">
+                                <div class="mdx-expect__icon">
+                                    {% include ".icons/fontawesome/solid/blog.svg" %}
+                                </div>
+                                <div class="mdx-expect__description">
+                                    <h2>Compare and publish analysis</h2>
+                                    <p> TODO. </p>
+                                </div>
+                            </li>
+                            <li class="mdx-expect__item md-typeset">
+                                <div class="mdx-expect__icon">
+                                    {% include ".icons/fontawesome/solid/blog.svg" %}
+                                </div>
+                                <div class="mdx-expect__description">
+                                    <h2>Record podcasts regularly</h2>
+                                    <p> TODO. </p>
+                                </div>
+                            </li>
+                            <li class="mdx-expect__item md-typeset">
+                                <div class="mdx-expect__icon">
+                                    {% include ".icons/fontawesome/solid/blog.svg" %}
+                                </div>
+                                <div class="mdx-expect__description">
+                                    <h2>Provide hands-on tutorials</h2>
+                                    <p> TODO. </p>
+                                </div>
+                            </li>
+                            <li class="mdx-expect__item md-typeset">
+                                <div class="mdx-expect__icon">
+                                    {% include ".icons/fontawesome/solid/blog.svg" %}
+                                </div>
+                                <div class="mdx-expect__description">
+                                    <h2>Build a community</h2>
+                                    <p> TODO. </p>
+                                </div>
+                            </li>
+                            <li class="mdx-expect__item md-typeset">
+                                <div class="mdx-expect__icon">
+                                    {% include ".icons/fontawesome/solid/blog.svg" %}
+                                </div>
+                                <div class="mdx-expect__description">
+                                    <h2>Work collaboratively and in the open</h2>
+                                    <p> TODO. </p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="line"></div>
         </section>
         <section class="fio-parallax__group fio-opaque" data-md-color-scheme="slate">
             <div class="md-content md-grid" data-md-component="content">
