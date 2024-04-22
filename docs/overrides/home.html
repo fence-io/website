@@ -355,6 +355,58 @@
     .md-typeset :target {
         --md-scroll-margin: 5.2rem
     }
+
+    .mdx-content__column:last-child {
+        margin-top: 2.4rem
+    }
+
+    .mdx-content__column p:last-child {
+        margin-bottom: 0
+    }
+
+    @media screen and (min-width: 60em) {
+        .mdx-content__inner {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 6.4rem
+        }
+
+        .mdx-content__column {
+            margin-top: 0
+        }
+
+        .mdx-content__column:first-child {
+            flex: 2 0
+        }
+
+        .mdx-content__column:last-child {
+            flex: 1 0;
+            margin-top: 0
+        }
+    }
+
+    .mdx-connect {
+        display: block;
+        transition: transform .75s cubic-bezier(.075, .85, .175, 1) 125ms, opacity .75s 125ms
+    }
+
+    .js .mdx-connect[hidden] {
+        opacity: 0;
+        transform: translateY(1.6rem)
+    }
+
+    .mdx-connect .mdx-connect__link {
+        color: var(--md-default-fg-color);
+        display: block
+    }
+
+    .md-content__inner:before {
+        display: none
+    }
+
+    .mdx-connect .mdx-connect__link span {
+        margin-right: .2rem
+    }
 </style>
 <div class="fio-parallax">
     <div id="the-top" style="position: relative;">
@@ -482,9 +534,13 @@
                                 <h3> Freelance Platform Engineer </h3>
                                 <hr>
                                 <cite>
-                                    Sara Qasmi, a freelance platform engineer, is driven by her passion for constructing secure and reliable Kubernetes platforms. 
-                                    With a varied background spanning software engineering and DevOps, 
-                                    she is deeply engaged in advancing modern platforms that empower businesses to innovate and scale seamlessly.
+                                    Sara Qasmi, a freelance platform engineer, is driven by her passion for constructing
+                                    secure and reliable Kubernetes platforms.
+                                    <br />
+                                    <br />
+                                    With a varied background spanning software engineering and DevOps,
+                                    she is deeply engaged in advancing modern platforms that empower businesses to
+                                    innovate and scale seamlessly.
                                 </cite>
                             </figcaption>
                         </figure>
@@ -533,31 +589,35 @@
                 <div class="md-content__inner mdx-content__inner">
                     <div class="mdx-content__column">
                         <header class="md-typeset">
-                            <h1 id="become-a-sponsor"> Become a sponsor <a href="#become-a-sponsor" class="headerlink"
-                                    title="Permanent link"> ¶ </a> </h1>
+                            <h1 id="become-a-sponsor">Would you like to join ?</h1>
                         </header>
                         <div class="mdx-connect md-typeset">
                             <div class="mdx-connect__column">
-                                <p> By joining the <a href="insiders/">Insiders</a> program, you'll get immediate access
-                                    to
-                                    the latest features while also helping support the ongoing development of Material
-                                    for
-                                    MkDocs. Thanks to our <a href="insiders/#how-to-become-a-sponsor">awesome
-                                        sponsors</a>,
-                                    this project is actively maintained and kept in good shape. </p>
-                                <p> <strong> Together, we can build documentation that simply works! </strong> </p>
-                                <p> <a href="insiders/" class="md-button" aria-label="Insiders"> Learn more </a> </p>
+                                <p>
+                                    Fence is a community driven initiative.
+                                    <br />
+                                    Every one is welcome to engage in the community to share and help each other.
+                                    <br />
+                                    <br />
+                                    Let's get in touch if you want to participate in a podcast or write a blog post.
+                                    <br />
+                                    In any case, if there's anything you would like to contribute to the community we
+                                    definitely want to hear from you!
+                                    <br />
+                                    <br />
+                                    See you soon ❤️ !
+                                </p>
                             </div>
                         </div>
                     </div>
                     <div class="mdx-content__column">
                         <header class="md-typeset">
-                            <h1 id="keep-in-touch"> Let's keep in touch <a href="#keep-in-touch" class="headerlink"
-                                    title="Permanent link"> ¶ </a> </h1>
+                            <h1 id="keep-in-touch"> Let's keep in touch </h1>
                         </header>
                         <div class="mdx-connect md-typeset">
                             <div class="mdx-connect__inner">
-                                <p> <a href="https://twitter.com/@squidfunk" class="mdx-connect__link"> <span
+                                <!-- <p>
+                                    <a href="https://twitter.com/@squidfunk" class="mdx-connect__link"> <span
                                             class="twemoji"> <svg xmlns="http://www.w3.org/2000/svg"
                                                 viewBox="0 0 512 512">
                                                 <path
@@ -573,15 +633,20 @@
                                                 </path>
                                             </svg> </span> Follow <strong>@squidfunk</strong> on
                                         <strong>Fosstodon</strong>
-                                    </a> </p>
-                                <p> <a href="https://github.com/squidfunk/mkdocs-material" class="mdx-connect__link">
-                                        <span class="twemoji"> <svg xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 496 512">
+                                    </a>
+                                </p> -->
+                                <p>
+                                    <a href="https://github.com/squidfunk/mkdocs-material" class="mdx-connect__link">
+                                        <span class="twemoji">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512">
                                                 <path
                                                     d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z">
                                                 </path>
-                                            </svg> </span> Material for MkDocs on <strong>GitHub</strong> </a> <a
-                                        href="https://hub.docker.com/r/squidfunk/mkdocs-material"
+                                            </svg>
+                                        </span>
+                                        Fence website on <strong>GitHub</strong>
+                                    </a>
+                                    <!-- <a href="https://hub.docker.com/r/squidfunk/mkdocs-material"
                                         class="mdx-connect__link">
                                         <span class="twemoji"> <svg xmlns="http://www.w3.org/2000/svg"
                                                 viewBox="0 0 640 512">
@@ -595,7 +660,8 @@
                                                 <path
                                                     d="M439.8 200.5c-7.7-30.9-22.3-54.2-53.4-54.2h-40.1v47.4c0 36.8-31.2 67.8-66.8 67.8H172.7c-29.2 0-53.4 25-53.4 54.3v101.8c0 29 25.2 46 53.4 54.3 33.8 9.9 66.3 11.7 106.8 0 26.9-7.8 53.4-23.5 53.4-54.3v-40.7H226.2v-13.6h160.2c31.1 0 42.6-21.7 53.4-54.2 11.2-33.5 10.7-65.7 0-108.6zM286.2 404c11.1 0 20.1 9.1 20.1 20.3 0 11.3-9 20.4-20.1 20.4-11 0-20.1-9.2-20.1-20.4.1-11.3 9.1-20.3 20.1-20.3zM167.8 248.1h106.8c29.7 0 53.4-24.5 53.4-54.3V91.9c0-29-24.4-50.7-53.4-55.6-35.8-5.9-74.7-5.6-106.8.1-45.2 8-53.4 24.7-53.4 55.6v40.7h106.9v13.6h-147c-31.1 0-58.3 18.7-66.8 54.2-9.8 40.7-10.2 66.1 0 108.6 7.6 31.6 25.7 54.2 56.8 54.2H101v-48.8c0-35.3 30.5-66.4 66.8-66.4zm-6.7-142.6c-11.1 0-20.1-9.1-20.1-20.3.1-11.3 9-20.4 20.1-20.4 11 0 20.1 9.2 20.1 20.4s-9 20.3-20.1 20.3z">
                                                 </path>
-                                            </svg> </span> Material for MkDocs on <strong>PyPI</strong> </a> </p>
+                                            </svg> </span> Material for MkDocs on <strong>PyPI</strong> </a> -->
+                                </p>
                             </div>
                         </div>
                     </div>
