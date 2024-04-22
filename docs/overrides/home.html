@@ -1,0 +1,307 @@
+{% extends "main.html" %}
+{% block tabs %}
+<style>
+    [data-md-color-primary] .md-header {
+        /* position: initial; */
+        background-color: hsl(from var(--md-primary-fg-color) h s l / calc(alpha / 2));
+    }
+
+    [data-md-color-primary] .md-tabs {
+        /* position: initial; */
+        background-color: hsl(from var(--md-primary-fg-color) h s l / 0);
+        color: var(--md-primary-bg-color);
+        top: 2.4rem;
+        position: absolute;
+    }
+
+    [data-md-color-primary=indigo] .md-tabs {
+        /* position: initial; */
+        color: var(--md-primary-fg-color);
+    }
+
+    .fio-parallax {
+        height: 100vh;
+        margin-top: -2.4rem;
+        overflow: hidden auto;
+        overscroll-behavior-y: none;
+        scroll-behavior: smooth;
+        width: 100vw;
+    }
+
+    .fio-parallax__group {
+        /* background-color: var(--md-default-bg-color); */
+        color: var(--md-typeset-color);
+        display: block;
+        position: relative;
+    }
+
+    .fio-opaque {
+        background-color: var(--md-default-bg-color);
+    }
+
+    .fio-background {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
+
+    .fio-hero {
+        position: sticky;
+        top: 0;
+        width: 100%;
+        height: 100vh;
+        z-index: 2;
+        margin-bottom: -50vh;
+    }
+
+    .fio-hero__inner {
+        position: absolute;
+        bottom: 3.2rem;
+        width: 100%;
+    }
+
+    .fio-hero__teaser {
+        margin: 0 .8rem;
+        max-width: 24rem;
+    }
+
+    .fio-hero__teaser h1 {
+        color: inherit;
+        font-weight: 700;
+        margin-bottom: 0
+    }
+
+    .fio-hero__teaser :not(.md-button) {
+        text-shadow: 0 0 .2rem #211d2dcc
+    }
+
+    .fio-hero__more {
+        display: block;
+        margin-left: -.6rem;
+        bottom: 0;
+        left: 50%;
+        pointer-events: none;
+        position: absolute;
+        text-align: center
+    }
+
+    .fio-hero__more svg {
+        fill: #fff;
+        height: 1.2rem;
+        width: 1.2rem
+    }
+
+    .fio-fadein {
+        animation: fadein 2s;
+    }
+
+    .md-typeset .md-button {
+        background-color: #dd2e57;
+        border-width: 0;
+        color: var(--md-primary-bg-color);
+        margin-right: .5rem;
+        margin-top: .5rem
+    }
+
+    .md-typeset .md-button--secondary {
+        background-color: initial
+    }
+
+    @keyframes fadein {
+        from {
+            opacity: 0
+        }
+
+        to {
+            opacity: 1
+        }
+    }
+
+    .fio-users {
+        display: flex;
+        gap: 3.2rem;
+        margin: 2.4rem 0
+    }
+
+    @media screen and (max-width: 59.984375em) {
+        .fio-users {
+            flex-direction: column
+        }
+    }
+
+    .fio-users__testimonial {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: 1.2rem;
+        margin: 0;
+        text-align: center
+    }
+
+    .fio-users__testimonial:first-child {
+        transition-delay: .2s
+    }
+
+    .fio-users__testimonial:nth-child(2) {
+        transition-delay: 275ms
+    }
+
+    .fio-users__testimonial:nth-child(3) {
+        transition-delay: .35s
+    }
+
+    .fio-users__testimonial img {
+        border-radius: 5rem;
+        height: auto;
+        margin-left: auto;
+        margin-right: auto;
+        width: 10rem
+    }
+
+    .fio-users__testimonial figcaption,
+    .fio-users__testimonial img {
+        transition: transform .75s cubic-bezier(.075, .85, .175, 1), opacity .75s;
+        transition-delay: inherit
+    }
+
+    .fio-users__testimonial figcaption {
+        display: block
+    }
+
+    .fio-users__testimonial hr {
+        margin-left: auto;
+        margin-right: auto;
+        width: 5rem
+    }
+
+    .fio-users__testimonial cite {
+        display: block;
+        -webkit-hyphens: auto;
+        hyphens: auto;
+        text-align: justify
+    }
+
+    .mdx-parallax__blur {
+        z-index: 1;
+        position: absolute;
+        backdrop-filter: blur(40px);
+        mask: linear-gradient(to bottom, #0000, #000F 75%);
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .mdx-parallax__blend {
+        z-index: 3;
+        position: absolute;
+        background-image: linear-gradient(to bottom, transparent, var(--md-default-bg-color));
+        bottom: 0;
+        width: 100%;
+        height: min(100vh, 100vw);
+        top: auto;
+    }
+</style>
+<div class="fio-parallax">
+    <section class="fio-parallax__group" style="height: 200vh; z-index: 0;">
+        <picture class="fio-background fio-fadein">
+            <img src="assets/images/background.svg" style="object-fit: cover; width: 100%; height: 100%;">
+        </picture>
+        <div class="mdx-parallax__layer mdx-parallax__blur"> </div>
+        <div class="mdx-parallax__layer mdx-parallax__blend"> </div>
+        <div class="fio-hero md-grid">
+            {{ super() }}
+            <div class="fio-fadein fio-hero__inner">
+                <div class="fio-hero__teaser md-typeset">
+                    <h1>Documentation that simply works</h1>
+                    <p>Write your documentation in Markdown and create a professional static site in minutes –
+                        searchable, customizable, in 60+ languages, for all devices.
+                    </p>
+                    <a href="getting-started/" class="md-button"> Get started </a>
+                    <a href="#everything-you-would-expect" class="md-button md-button--secondary"> Learn more </a>
+                </div>
+                <div class="fio-hero__more">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M11 4h2v12l5.5-5.5 1.42 1.42L12 19.84l-7.92-7.92L5.5 10.5 11 16V4Z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Who are we -->
+    <section class="fio-parallax__group fio-opaque" data-md-color-scheme="stale">
+        <div class="md-content md-grid" data-md-component="content">
+            <div class="md-content__inner">
+                <header class="md-typeset">
+                    <h1 id="who-are-we">
+                        Who are we ?
+                        <a href="#who-are-we" class="headerlink" title="Permanent link"> ¶ </a>
+                    </h1>
+                </header>
+                <div class="fio-users">
+                    <figure class="fio-users__testimonial">
+                        <img src="assets/images/user.png" alt="Sara Qasmi" loading="lazy" width="200" height="200">
+                        <figcaption class="md-typeset">
+                            <h2>Sara Qasmi</h2>
+                            <h3> TODO </h3>
+                            <hr>
+                            <cite>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+                                exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+                                irure
+                                dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+                                pariatur.
+                                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+                                mollit anim id est laborum.
+                            </cite>
+                        </figcaption>
+                    </figure>
+                    <figure class="fio-users__testimonial">
+                        <img src="assets/images/user.png" alt="Charles-Edouard Brétéché" loading="lazy" width="200"
+                            height="200">
+                        <figcaption class="md-typeset">
+                            <h2>Charles-Edouard Brétéché</h2>
+                            <h3> TODO </h3>
+                            <hr>
+                            <cite>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+                                exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+                                irure
+                                dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+                                pariatur.
+                                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+                                mollit anim id est laborum.
+                            </cite>
+                        </figcaption>
+                    </figure>
+                    <!-- <figure class="fio-users__testimonial">
+                        <img src="assets/images/user.png" alt="Frank Jogeleit" loading="lazy" width="200" height="200">
+                        <figcaption class="md-typeset">
+                            <h2>Frank Jogeleit</h2>
+                            <h3> TODO </h3>
+                            <hr>
+                            <cite>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+                                exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
+                                dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+                                mollit anim id est laborum.
+                            </cite>
+                        </figcaption>
+                    </figure> -->
+                </div>
+                <div class="line"></div>
+            </div>
+        </div>
+    </section>
+</div>
+
+{% endblock %}
+
+<!-- Content -->
+{% block content %}{% endblock %}
