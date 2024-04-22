@@ -58,7 +58,7 @@
 
     .fio-hero__inner {
         position: absolute;
-        bottom: 25%;
+        bottom: 35%;
         width: 100%;
     }
 
@@ -236,6 +236,33 @@
         position: sticky;
         top: calc(100vh - 3rem - 24px);
     }
+
+    .circle {
+        display: inline-block;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: whiteSmoke;
+        box-shadow: 4px -40px 60px 5px rgb(26, 117, 206) inset;
+    }
+
+    .loader {
+        background: linear-gradient(to right, rgb(22, 113, 202) 50%, transparent 50%);
+        animation: spin 1s infinite linear;
+    }
+
+    .loader:before {
+        display: block;
+        content: '';
+        position: relative;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90px;
+        height: 90px;
+        background: #222;
+        border-radius: 50%;
+    }
 </style>
 <div class="fio-parallax">
     <div id="the-top" style="position: relative;">
@@ -251,6 +278,10 @@
             <div class="fio-hero md-grid">
                 {{ super() }}
                 <div class="fio-fadein fio-hero__inner">
+                    <div
+                        style="position: absolute; left: 0; width: 50%;text-align: center; align-content: center; height: 100%;">
+                        <img width="200" height="200" src="assets/images/blowfish_logo_transparent.png">
+                    </div>
                     <div class="fio-hero__teaser md-typeset">
                         <h1>Policy management made simple</h1>
                         <p>Navigate the complexities of policy management with precision and ease.<br>
@@ -258,13 +289,13 @@
                         <a href="getting-started/" class="md-button"> Get started </a>
                         <a href="#everything-you-would-expect" class="md-button md-button--secondary"> Learn more </a>
                     </div>
-                    <div class="fio-hero__more">
+                    <!-- <div class="fio-hero__more">
                         <a href="#who-are-we" class="md-button md-button--secondary">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                 <path d="M11 4h2v12l5.5-5.5 1.42 1.42L12 19.84l-7.92-7.92L5.5 10.5 11 16V4Z"></path>
                             </svg>
                         </a>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </section>
