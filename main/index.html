@@ -56,7 +56,7 @@
 
     .fio-hero__inner {
         position: absolute;
-        bottom: 25%;
+        bottom: 35%;
         width: 100%;
     }
 
@@ -234,7 +234,40 @@
         position: sticky;
         top: calc(100vh - 3rem - 24px);
     }
-</style> <div class=fio-parallax> <div id=the-top style="position: relative;"> <div class=fio-top-rail data-md-color-scheme=default> <a href=#the-top class=fio-top-button>↑</a> </div> <section class=fio-parallax__group style="height: 150vh; z-index: 0;"> <picture class="fio-background fio-fadein"> <img src=assets/images/background.svg style="object-fit: cover; width: 100%; height: 100%;"> </picture> <div class="fio-parallax__layer fio-parallax__blur"> </div> <div class="fio-parallax__layer fio-parallax__blend"> </div> <div class="fio-hero md-grid"> <nav class=md-tabs aria-label=Tabs data-md-component=tabs> <div class=md-grid> <ul class=md-tabs__list> <li class="md-tabs__item md-tabs__item--active"> <a href=. class=md-tabs__link> Home </a> </li> <li class=md-tabs__item> <a href=blog/ class=md-tabs__link> Blog </a> </li> </ul> </div> </nav> <div class="fio-fadein fio-hero__inner"> <div class="fio-hero__teaser md-typeset"> <h1>Policy management made simple</h1> <p>Navigate the complexities of policy management with precision and ease.<br> Welcome to your new hub for streamlined policy solutions.</p> <a href=getting-started/ class=md-button> Get started </a> <a href=#everything-you-would-expect class="md-button md-button--secondary"> Learn more </a> </div> <div class=fio-hero__more> <a href=#who-are-we class="md-button md-button--secondary"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"> <path d="M11 4h2v12l5.5-5.5 1.42 1.42L12 19.84l-7.92-7.92L5.5 10.5 11 16V4Z"></path> </svg> </a> </div> </div> </div> </section> <section class="fio-parallax__group fio-opaque" data-md-color-scheme=slate> <div class="md-content md-grid" data-md-component=content> <div class=md-content__inner> <header class=md-typeset> <h1 id=who-are-we> Who are we ? <a href=#who-are-we class=headerlink title="Permanent link"> ¶ </a> </h1> </header> <div class=fio-users> <figure class=fio-users__testimonial> <img src=assets/images/user.png alt="Sara Qasmi" loading=lazy width=200 height=200> <figcaption class=md-typeset> <h2>Sara Qasmi</h2> <h3> TODO </h3> <hr> <cite> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </cite> </figcaption> </figure> <figure class=fio-users__testimonial> <img src=assets/images/eddycharly.jpeg alt="Charles-Edouard Brétéché" loading=lazy width=200 height=200> <figcaption class=md-typeset> <h2>Charles-Edouard Brétéché</h2> <h3>Staff Engineer at Nirmata</h3> <hr> <cite> Charles-Edouard Brétéché is a Staff Engineer at Nirmata, a maintainer for Kyverno, and has created and contributed to various open source projects. including a Terraform provider for kOps. <br> <br> He has been building and delivering software for more than 20 years, as a software engineer, SRE, platform engineer, devops engineer and software architect. </cite> </figcaption> </figure> <!-- <figure class="fio-users__testimonial">
+
+    .circle {
+        display: inline-block;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: whiteSmoke;
+        box-shadow: 4px -40px 60px 5px rgb(26, 117, 206) inset;
+    }
+
+    .loader {
+        background: linear-gradient(to right, rgb(22, 113, 202) 50%, transparent 50%);
+        animation: spin 1s infinite linear;
+    }
+
+    .loader:before {
+        display: block;
+        content: '';
+        position: relative;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90px;
+        height: 90px;
+        background: #222;
+        border-radius: 50%;
+    }
+</style> <div class=fio-parallax> <div id=the-top style="position: relative;"> <div class=fio-top-rail data-md-color-scheme=default> <a href=#the-top class=fio-top-button>↑</a> </div> <section class=fio-parallax__group style="height: 150vh; z-index: 0;"> <picture class="fio-background fio-fadein"> <img src=assets/images/background.svg style="object-fit: cover; width: 100%; height: 100%;"> </picture> <div class="fio-parallax__layer fio-parallax__blur"> </div> <div class="fio-parallax__layer fio-parallax__blend"> </div> <div class="fio-hero md-grid"> <nav class=md-tabs aria-label=Tabs data-md-component=tabs> <div class=md-grid> <ul class=md-tabs__list> <li class="md-tabs__item md-tabs__item--active"> <a href=. class=md-tabs__link> Home </a> </li> <li class=md-tabs__item> <a href=blog/ class=md-tabs__link> Blog </a> </li> </ul> </div> </nav> <div class="fio-fadein fio-hero__inner"> <div style="position: absolute; left: 0; width: 50%;text-align: center; align-content: center; height: 100%;"> <img width=200 height=200 src=assets/images/blowfish_logo_transparent.png> </div> <div class="fio-hero__teaser md-typeset"> <h1>Policy management made simple</h1> <p>Navigate the complexities of policy management with precision and ease.<br> Welcome to your new hub for streamlined policy solutions.</p> <a href=getting-started/ class=md-button> Get started </a> <a href=#everything-you-would-expect class="md-button md-button--secondary"> Learn more </a> </div> <!-- <div class="fio-hero__more">
+                        <a href="#who-are-we" class="md-button md-button--secondary">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M11 4h2v12l5.5-5.5 1.42 1.42L12 19.84l-7.92-7.92L5.5 10.5 11 16V4Z"></path>
+                            </svg>
+                        </a>
+                    </div> --> </div> </div> </section> <section class="fio-parallax__group fio-opaque" data-md-color-scheme=slate> <div class="md-content md-grid" data-md-component=content> <div class=md-content__inner> <header class=md-typeset> <h1 id=who-are-we> Who are we ? <a href=#who-are-we class=headerlink title="Permanent link"> ¶ </a> </h1> </header> <div class=fio-users> <figure class=fio-users__testimonial> <img src=assets/images/user.png alt="Sara Qasmi" loading=lazy width=200 height=200> <figcaption class=md-typeset> <h2>Sara Qasmi</h2> <h3> TODO </h3> <hr> <cite> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </cite> </figcaption> </figure> <figure class=fio-users__testimonial> <img src=assets/images/eddycharly.jpeg alt="Charles-Edouard Brétéché" loading=lazy width=200 height=200> <figcaption class=md-typeset> <h2>Charles-Edouard Brétéché</h2> <h3>Staff Engineer at Nirmata</h3> <hr> <cite> Charles-Edouard Brétéché is a Staff Engineer at Nirmata, a maintainer for Kyverno, and has created and contributed to various open source projects. including a Terraform provider for kOps. <br> <br> He has been building and delivering software for more than 20 years, as a software engineer, SRE, platform engineer, devops engineer and software architect. </cite> </figcaption> </figure> <!-- <figure class="fio-users__testimonial">
                         <img src="assets/images/user.png" alt="Frank Jogeleit" loading="lazy" width="200" height="200">
                         <figcaption class="md-typeset">
                             <h2>Frank Jogeleit</h2>
