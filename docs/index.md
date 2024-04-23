@@ -2,4 +2,4 @@
 template: home.html
 ---
 
-# Fence - The community about everything policy
+# Fence - Welcome to your new hub for streamlined policy solutions
