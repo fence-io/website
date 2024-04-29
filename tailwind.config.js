@@ -80,7 +80,7 @@ module.exports = {
       },
       animation: {
         fade: 'fadeIn .5s ease-in-out',
-        typing: 'typing 3s steps(30), blink .7s infinite',
+        typing: 'typing 2s steps(30), blink .7s infinite',
       },
       typography: ({ theme }) => ({
         DEFAULT: {
