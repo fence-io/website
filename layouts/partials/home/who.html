@@ -1,16 +1,8 @@
 <div id="who" class="flex items-center bg-neutral-200 text-neutral-900 min-h-screen">
-<style>hr {
-  border-bottom: .05rem solid rgba(var(--color-neutral-800));
-  display: flow-root;
-  margin: 1.5em 0;
-  margin-left: auto;
-  margin-right: auto;
-  width: 5rem;
-}
-</style>
   <div class="flex flex-col container mx-auto py-32">
     <div class="flex justify-between py-5">
-      {{- partial "title/section.html" "Who are we ? :wave:" }}
+      <p class="text-5xl pb-11  font-light text-neutral-400 dark:text-neutral-600">{{ "Who are we ? :camera_flash:" |
+        markdownify | emojify }}</p>
       {{- partial "home/button/scroll-down.html" "#join" }}
     </div>
     <div class="flex justify-between gap-32 px-12">
