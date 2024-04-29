@@ -1,0 +1,25 @@
+<div class="text-neutral-900 dark:text-neutral flex mx-auto items-center justify-between">
+    <!-- copyright -->
+    <div class="text">
+        <p class="text-base font-medium">
+            Made with ❤️ by and for policy lovers
+        </p>
+        <p class="text-xs text-neutral-500 dark:text-neutral-400">
+            Powered by
+            <a class="hover:underline hover:decoration-primary-400 hover:text-primary-500" href="https://gohugo.io/"
+                target="_blank" rel="noopener noreferrer">Hugo</a>
+            &amp;
+            Inspired by
+            <a class="hover:underline hover:decoration-primary-400 hover:text-primary-500" href="https://blowfish.page/"
+                target="_blank" rel="noopener noreferrer">Blowfish</a>
+        </p>
+    </div>
+    <!-- social menu -->
+    <nav class="flex items-center space-x-5">
+        {{- with .Site.Menus.social }}
+        {{- range . }}
+        {{- partial "header/header-option.html" . }}
+        {{- end }}
+        {{- end }}
+    </nav>
+</div>

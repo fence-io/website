@@ -1,0 +1,62 @@
+baseURL: https://example.org/
+languageCode: en-us
+title: Fence
+params:
+  header: basic
+  background: background
+  defaultAppearance: dark
+  autoSwitchAppearance: true
+  disableTextInHeader: false
+  showAppearanceSwitcher: true
+  logo: icons/finger-print.svg
+  enableSearch: true
+  highlightCurrentMenuArea: true
+menus:
+  nav:
+  - identifier: articles
+    name: Articles
+    pageRef: /articles
+    weight: 20
+  - identifier: podcasts
+    name: Podcasts
+    pageRef: /podcasts
+    weight: 30
+  - name: Videos
+    pageRef: /videos
+    weight: 40
+  - name: Blog
+    pageRef: /blog
+    weight: 50
+  - identifier: home
+    pre: home
+    pageRef: /
+    weight: 60
+  social:
+  - identifier: github
+    pre: github
+    url: https://github.com/fence-io/website
+    weight: 40
+  - identifier: twitter
+    pre: x-twitter
+    url: https://todo
+    weight: 50
+  - identifier: google
+    pre: google
+    url: https://groups.google.com/g/fence-community
+    weight: 60
+  - identifier: slack
+    pre: slack
+    url: https://todo
+    weight: 70
+  - identifier: linkedin
+    pre: linkedin
+    url: https://todo
+    weight: 80
+  - identifier: youtube
+    pre: youtube
+    url: https://todo
+    weight: 90
+  - identifier: mastodon
+    pre: mastodon
+    url: https://todo
+    weight: 100

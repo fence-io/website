@@ -1,0 +1,57 @@
+<div id="who" class="flex items-center bg-neutral-200 text-neutral-900 min-h-screen">
+<style>hr {
+  border-bottom: .05rem solid rgba(var(--color-neutral-800));
+  display: flow-root;
+  margin: 1.5em 0;
+  margin-left: auto;
+  margin-right: auto;
+  width: 5rem;
+}
+</style>
+  <div class="flex flex-col container mx-auto py-32">
+    <div class="flex justify-between py-5">
+      {{- partial "title/section.html" "Who are we ? :wave:" }}
+      {{- partial "home/button/scroll-down.html" "#join" }}
+    </div>
+    <div class="flex justify-between gap-32 px-12">
+      <figure class="flex flex-col text-center items-center">
+        <img src="img/sara.png" alt="Sara Qasmi" loading="lazy" width="200" height="200" class="rounded-full">
+        <figcaption>
+          <p class="text-4xl pt-6">Sara Qasmi</p>
+          <p class="text-xl pt-2">Freelance Platform Engineer</p>
+          <hr>
+          <cite class="text-md block hyphens-auto text-justify m-4">
+            Sara Qasmi, a freelance platform engineer, is driven by her passion for constructing secure and
+            reliable
+            Kubernetes platforms.
+            <br>
+            <br>
+            With a varied background spanning software engineering and DevOps, she is deeply engaged in
+            advancing
+            modern
+            platforms that empower businesses to innovate and scale seamlessly.
+          </cite>
+        </figcaption>
+      </figure>
+      <figure class="flex flex-col text-center items-center">
+        <img src="img/eddycharly.jpeg" alt="Charles-Edouard Brétéché" loading="lazy" width="200" height="200"
+          class="rounded-full">
+        <figcaption>
+          <p class="text-4xl pt-6">Charles-Edouard Brétéché</p>
+          <p class="text-xl pt-2">Staff Engineer at Nirmata</p>
+          <hr>
+          <cite class="block hyphens-auto text-justify m-4">
+            Charles-Edouard Brétéché is a Staff Engineer at Nirmata, a maintainer for Kyverno, and has
+            created and
+            contributed to various open source projects. including a Terraform provider for kOps.
+            <br>
+            <br>
+            He has been building and delivering software for more than 20 years, as a software engineer,
+            SRE, platform
+            engineer, devops engineer and software architect.
+          </cite>
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</div>

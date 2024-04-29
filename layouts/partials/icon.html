@@ -1,0 +1,5 @@
+{{ with resources.Get (print "icons/" . ".svg") }}
+<span class="relative block icon">
+  {{ .Content | safeHTML }}
+</span>
+{{ end }}

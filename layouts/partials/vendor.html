@@ -1,0 +1,4 @@
+<!-- jQuery -->
+{{- with resources.Get "lib/jquery/jquery.slim.min.js" -}}
+<script src="{{- .RelPermalink -}}" integrity="{{- .Data.Integrity -}}"></script>
+{{- end -}}

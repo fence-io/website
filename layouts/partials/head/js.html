@@ -1,0 +1,16 @@
+{{- with resources.Get "js/main.js" -}}
+  {{- if eq hugo.Environment "development" -}}
+    {{- with . | js.Build -}}
+      <script src="{{- .RelPermalink -}}"></script>
+    {{- end -}}
+  {{- else -}}
+    {{- $opts := dict "minify" true -}}
+    {{- with . | js.Build $opts | fingerprint -}}
+      <script src="{{- .RelPermalink -}}" integrity="{{- .Data.Integrity -}}" crossorigin="anonymous"></script>
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $jsAppearance := resources.Get "js/appearance.js" }}
+{{- $jsAppearance = $jsAppearance | resources.ExecuteAsTemplate "js/appearance.js" . | resources.Minify | resources.Fingerprint "sha512" }}
+<script type="text/javascript" src="{{ $jsAppearance.RelPermalink }}"
+integrity="{{ $jsAppearance.Data.Integrity }}"></script>
