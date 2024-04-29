@@ -1,0 +1,16 @@
+<a href="{{ . }}" class="
+    p-2 w-12
+    h-12
+    ring-1
+    ring-slate-900/5
+    dark:ring-slate-200/20
+    shadow-lg
+    rounded-full
+    text-base
+    hover:text-primary-600
+    dark:hover:text-primary-400
+    ">
+    {{ with resources.Get (print "icons/" "arrow-down" ".svg") }}
+    {{ .Content | safeHTML }}
+    {{ end }}
+</a>
