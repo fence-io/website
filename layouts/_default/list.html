@@ -1,8 +1,14 @@
 {{ define "main" }}
-  <h1>{{ .Title }}</h1>
-  {{ .Content }}
-  {{ range .Pages }}
+<div class="flex items-center bg-neutral-900 text-neutral-200 min-h-screen">
+  <div class="flex flex-col container mx-auto py-20">
+    <div class="flex justify-between py-5">
+      <p class="text-5xl pb-11  font-light text-neutral-400">{{ .Title | markdownify | emojify }}</p>
+    </div>
+    {{ .Content }}
+    {{ range .Pages }}
     <h2><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></h2>
     {{ .Summary }}
-  {{ end }}
+  </div>
+</div>
+{{ end }}
 {{ end }}
