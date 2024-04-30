@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  overscroll-behavior-y: none;
+  @apply overscroll-y-none;
 }
 
 .icon svg {
