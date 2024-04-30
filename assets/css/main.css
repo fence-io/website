@@ -10,6 +10,13 @@ body {
   @apply h-[1em] w-[1em];
 }
 
+.thumbnail_card {
+  @apply h-[200px];
+  background-repeat: no-repeat;
+  background-position: center;
+  filter: drop-shadow(0 0 0.75rem crimson);
+}
+
 .active {
   text-decoration-line: underline;
   text-decoration-thickness: 1px;
