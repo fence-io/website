@@ -26,7 +26,11 @@ verify-codegen: codegen
 # HUGO #
 ########
 
-# TODO: hugo-serve
+.PHONY: hugo-serve
+hugo-serve: ## Build and serve website
+	@echo Build and serve website... >&2
+	@npm install
+	@npm start
 
 ########
 # HELP #
