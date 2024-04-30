@@ -40,23 +40,23 @@ menus:
     pre: x-twitter
     url: https://todo
     weight: 50
-  - identifier: google
-    pre: google
-    url: https://groups.google.com/g/fence-community
-    weight: 60
   - identifier: slack
     pre: slack
     url: https://todo
-    weight: 70
+    weight: 60
   - identifier: linkedin
     pre: linkedin
     url: https://todo
-    weight: 80
+    weight: 70
   - identifier: youtube
     pre: youtube
     url: https://todo
+    weight: 80
+  - identifier: google
+    pre: google
+    url: https://groups.google.com/g/fence-community
     weight: 90
-  - identifier: mastodon
-    pre: mastodon
-    url: https://todo
-    weight: 100
+  # - identifier: mastodon
+  #   pre: mastodon
+  #   url: https://todo
+  #   weight: 100
