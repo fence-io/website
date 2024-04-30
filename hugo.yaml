@@ -11,6 +11,8 @@ params:
   logo: icons/finger-print.svg
   enableSearch: true
   highlightCurrentMenuArea: true
+  defaultFeaturedImage: icons/finger-print.svg
+  images: true
 menus:
   nav:
   - identifier: articles

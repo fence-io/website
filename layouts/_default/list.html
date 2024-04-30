@@ -1,14 +1,15 @@
 {{ define "main" }}
-<div class="flex items-center bg-neutral-900 text-neutral-200 min-h-screen">
+<div class="flex min-h-screen">
   <div class="flex flex-col container mx-auto py-20">
-    <div class="flex justify-between py-5">
-      <p class="text-5xl pb-11  font-light text-neutral-400">{{ .Title | markdownify | emojify }}</p>
+    <div class="flex justify-center py-5">
+      <p class="text-5xl font-bold pb-11">{{ .Title | markdownify | emojify }}</p>
     </div>
     {{ .Content }}
-    {{ range .Pages }}
-    <h2><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></h2>
-    {{ .Summary }}
+    <section class="w-full grid gap-4 sm:grid-cols-2 md:grid-cols-3 leading-8 px-12">
+      {{ range .Pages }}
+      {{ partial "article-link/card.html" . }}
+      {{ end }}
+    </section>
   </div>
 </div>
-{{ end }}
 {{ end }}
