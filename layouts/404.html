@@ -1,11 +1,11 @@
 {{ define "main" }}
-<div class="container mx-auto p-4">
-    <h1 class="mb-3 text-4xl font-extrabold">{{ i18n "error.404_title" | emojify }}</h1>
-    <p class="mt-8 mb-12 text-neutral-400 dark:text-neutral-500">
-        {{ i18n "error.404_error" | emojify }}
+<div id="join" class="flex items-center min-h-screen">
+  <div class="flex flex-col items-center container mx-auto">
+    <p class="mb-3 text-4xl font-extrabold">{{ i18n "error.404_title" | emojify }}</p>
+    <p>{{ i18n "error.404_description" | emojify }}</p>
+    <p class="mt-8 mb-12 prose dark:prose-invert">
+      {{ i18n "error.404_error" | emojify }}
     </p>
-    <div class="prose dark:prose-invert">
-        <p>{{ i18n "error.404_description" | emojify }}</p>
-    </div>
+  </div>
 </div>
 {{ end }}
