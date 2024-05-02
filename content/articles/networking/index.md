@@ -8,6 +8,7 @@ tags:
 - KinD
 - Cilium
 - Load Balancer
+- MacOS
 ---
 
 Kubernetes in Docker (KinD) offers a lightweight and efficient way to run Kubernetes clusters for development and testing purposes. However, setting up KinD with load balancing option requires specific networking configurations. In this article, we'll explore the networking configuration of KinD on both Linux and MacOS, deep dive into load balancing options and discuss troubleshooting tactics.
@@ -108,7 +109,7 @@ Cilium represents a modern solution for networking and security in Kubernetes, s
 
 Cilium offers two network configurations: encapsulation and direct routing (native `routingMode="native"`), each suited to different environments and requirements. Encapsulation works well in cloud environments or situations with overlapping networks, while native routing is the best option in on-premises setups or dedicated cloud environments where performance optimization is crucial. For further details on this topic, refer to the Cilium documentation: [Cilium Routing Concepts](https://docs.cilium.io/en/stable/network/concepts/routing).
 
-# Network Configuration in KinD Cluster
+# Network Configuration of KinD Cluster
 
 The architecture of the KinD cluster leverages Docker's networking features alongside standard Kubernetes components. Within a Kind cluster, every Kubernetes node is a Docker container. These containers operate within the same network namespace, facilitating communication via the Docker bridge network. KinD establishes a unique bridge network for each cluster for communication between Kubernetes nodes. Let's explore docker networks.
 
@@ -198,7 +199,7 @@ Request timeout for icmp_seq 2
 
 The ping is timing out!
 
-# Troubleshooting Container Networking on MacOS
+# Container's Networking on MacOS
 
 In macOS, Docker-for-Mac doesn't directly expose container networks on the host system. Instead, it operates by running a Linux VM in the background and launches containers within that VM. It enables connections to containers via port binding (L4) and doesn't support connections by IP address (L3).
 
@@ -244,7 +245,7 @@ default via 192.168.64.1 dev enp0s1 proto dhcp src 192.168.64.3 metric 100
 
 Here, we can see a route to the container's subnet via the network interface `br-38055463db3c`. The `172.18.0.0/16 dev br-38055463db3c proto kernel scope link src 172.18.0.1` line in the routing table indicates that the IP address range `172.18.0.0/16` is associated with the network device `br-38055463db3c`, which is the bridge interface.
 
-Now let’s list the network interfaces in the host:
+Now let’s list the network interfaces in the Linux host:
 
 ```
 root@ubuntu # ip link 
@@ -263,9 +264,7 @@ root@ubuntu # ip link
 Let’s break down the configuration:
 
 **br-38055463db3c**: The bridge interface.
-
 **vethf413b4a@if5**: This is a virtual Ethernet interface (veth) named "vethf413b4a" It is paired with another veth interface in a network namespace (container). It is connected to the bridge interface "br-38055463db3c", this represents the link between the container and bridge  discussed previously.
-
 **vethb9242a9@if7**: Similar to the second interface, this is another veth interface named "vethb9242a9". It is paired with another veth interface in a network namespace (container). Also connected to the same bridge interface "br-38055463db3c".
 
 This means the docker containers are linked to the host via the bridge network. You can observe the traffic going in/out of the containers by running `tcpdump -i vethf413b4a` and `tcpdump -i vethb9242a9` from your local host.
@@ -330,7 +329,7 @@ Request timeout for icmp_seq 20
 64 bytes from 172.18.0.2: icmp_seq=23 ttl=63 time=1.016 ms
 ```
 
-# Implementing Load Balancer In Home Lab
+# Implementing Load Balancer service in KinD cluster with Cilium
 
 To enable north/south traffic in your home lab, deploying a load balancer is a straightforward option. Cilium provides a load balancer feature that allows for load balancing in bare-metal Kubernetes setups. Announcing the load balancer IP to the network is crucial for proper traffic routing, which can be achieved through BGP or L2 routing.
 
