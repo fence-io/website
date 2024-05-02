@@ -1,7 +1,7 @@
 ---
 title: Setup Load Balancer Service with Cilium in KinD Cluster
 
-date: May 2, 2024
+date: 2024-05-02
 
 tags:
 - Networking
@@ -263,7 +263,9 @@ root@ubuntu # ip link
 Let’s break down the configuration:
 
 **br-38055463db3c**: The bridge interface.
+
 **vethf413b4a@if5**: This is a virtual Ethernet interface (veth) named "vethf413b4a" It is paired with another veth interface in a network namespace (container). It is connected to the bridge interface "br-38055463db3c", this represents the link between the container and bridge  discussed previously.
+
 **vethb9242a9@if7**: Similar to the second interface, this is another veth interface named "vethb9242a9". It is paired with another veth interface in a network namespace (container). Also connected to the same bridge interface "br-38055463db3c".
 
 This means the docker containers are linked to the host via the bridge network. You can observe the traffic going in/out of the containers by running `tcpdump -i vethf413b4a` and `tcpdump -i vethb9242a9` from your local host.
@@ -402,7 +404,7 @@ kubernetes      ClusterIP      10.96.0.1     <none>         443/TCP        5h32m
 sampleservice   LoadBalancer   10.96.28.96   172.18.250.1   80:31508/TCP   4h56m
 ```
 
-You'll notice that the external IP has now been allocated to the service from the IP address pool defined in the LB-IPAM pool. To implement advanced filtering on the pool, such as service selectors, please consult the documentation here (https://docs.cilium.io/en/stable/network/lb-ipam/#service-selectors).
+You'll notice that the external IP has now been allocated to the service from the IP address pool defined in the LB-IPAM pool. To implement advanced filtering on the pool, such as service selectors, please consult the documentation [here](https://docs.cilium.io/en/stable/network/lb-ipam/#service-selectors).
 
 Once the IP has been assigned, we should be able to broadcast it locally (to all other devices sharing the same physical network L2). To achieve this, we need to create a cilium announcement policy.
 
@@ -475,7 +477,7 @@ TERM=xterm-256color termshark -r arp.pcap
 
 ![alt](arp-request.png)
 
-![alt](arp-reply.png_)
+![alt](arp-reply.png)
 
 In both screenshots we can see the ARP request and reply details provide insights into how network devices communicate and resolve MAC addresses to IP addresses. Here's an explanation of each component:
 ARP Request (1st screenshot):
