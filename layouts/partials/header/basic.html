@@ -15,7 +15,7 @@
         </a>
         {{- end -}}
     </nav>
-    <nav class="flex items-center space-x-5">
+    <nav class="hidden md:flex items-center space-x-5">
         <!-- nav menu -->
         {{- with .Site.Menus.nav }}
         {{- range . }}
@@ -54,6 +54,37 @@
         {{- end }}
     </nav>
 </div>
+<nav class="main-menu flex md:hidden items-center justify-between space-x-2">
+    <!-- nav menu -->
+    {{- with .Site.Menus.nav }}
+    {{- range . }}
+    {{- partial "header/header-option.html" . }}
+    {{- end }}
+    {{- partial "icon.html" "ellipsis-vertical" }}
+    {{- end }}
+    <!-- search -->
+    {{- if .Site.Params.enableSearch | default false }}
+    <button id="search-button" aria-label="Search"
+        class="text-base hover:text-primary-600 dark:hover:text-primary-400"
+        title="{{- i18n `search.open_button_title` }}">
+        {{- partial "icon.html" "search" }}
+    </button>
+    {{- end }}
+    <!-- dark/light switcher -->
+    {{- if .Site.Params.showAppearanceSwitcher | default false }}
+    <div class="flex items-center">
+        <button id="appearance-switcher-mobile" aria-label="Dark mode switcher" type="button"
+            class="text-base hover:text-primary-600 dark:hover:text-primary-400">
+            <div class="flex items-center justify-center dark:hidden">
+                {{- partial "icon.html" "moon" }}
+            </div>
+            <div class="items-center justify-center hidden dark:flex">
+                {{- partial "icon.html" "sun" }}
+            </div>
+        </button>
+    </div>
+    {{- end }}
+</nav>
 
 {{- if .Site.Params.highlightCurrentMenuArea -}}
 <script>

@@ -11,12 +11,12 @@
   </style>
   <div class="flex flex-col container mx-auto py-20">
     <div class="flex justify-between py-5">
-      <p class="text-5xl pb-11  font-light text-neutral-400 dark:text-neutral-600">{{ "Who are we ? :camera_flash:" |
+      <p class="text-3xl md:text-5xl pb-11 font-light text-neutral-600">{{ "Who are we ? :camera_flash:" |
         markdownify | emojify }}</p>
       {{- partial "home/button/scroll-down.html" "#join" }}
     </div>
-    <div class="flex justify-between gap-32 px-12">
-      <figure class="flex flex-col text-center items-center">
+    <div class="flex flex-wrap items-center justify-between gap-32 px-12">
+      <figure class="flex grow basis-3/12 flex-col text-center items-center">
         <img src="img/sara.png" alt="Sara Qasmi" loading="lazy" width="200" height="200" class="rounded-full">
         <figcaption>
           <p class="text-4xl pt-6">Sara Qasmi</p>
@@ -35,7 +35,7 @@
           </cite>
         </figcaption>
       </figure>
-      <figure class="flex flex-col text-center items-center">
+      <figure class="flex grow basis-3/12 flex-col text-center items-center">
         <img src="img/eddycharly.jpeg" alt="Charles-Edouard Brétéché" loading="lazy" width="200" height="200"
           class="rounded-full">
         <figcaption>
