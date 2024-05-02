@@ -1,3 +1,10 @@
+<nav class="flex md:hidden items-center justify-between space-x-2 mb-2">
+    {{- with .Site.Menus.social }}
+    {{- range . }}
+    {{- partial "header/header-option.html" . }}
+    {{- end }}
+    {{- end }}
+</nav>
 <div class="text-neutral-900 dark:text-neutral flex mx-auto items-center justify-between">
     <!-- copyright -->
     <div class="text">
@@ -15,7 +22,7 @@
         </p>
     </div>
     <!-- social menu -->
-    <nav class="flex items-center space-x-5">
+    <nav class="hidden md:flex items-center space-x-5">
         {{- with .Site.Menus.social }}
         {{- range . }}
         {{- partial "header/header-option.html" . }}
