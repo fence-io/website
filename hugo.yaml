@@ -5,8 +5,18 @@ markup:
   # goldmark:
   #   renderer:
   #     unsafe: true
-  # highlight:
-  #   noClasses: false
+  highlight:
+    anchorLineNos: false
+    codeFences: true
+    guessSyntax: true
+    lineAnchors: ""
+    lineNoStart: 1
+    lineNos: false
+    lineNumbersInTable: true
+    noClasses: true
+    noHl: false
+    style: github-dark
+    tabWidth: 2
   tableOfContents:
     startLevel: 1
     endLevel: 3
