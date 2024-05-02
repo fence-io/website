@@ -23,6 +23,24 @@ body {
   text-underline-offset: 4px;
 }
 
+/* Table of Contents */
+.toc ul,
+.toc li {
+  @apply px-0 leading-snug list-none;
+}
+
+.toc ul ul {
+  @apply ltr:pl-4 rtl:pr-4;
+}
+
+.toc a {
+  @apply font-normal text-neutral-700 dark:text-neutral-400;
+}
+
+.toc ul>li {
+  @apply rtl:mr-0;
+}
+
 .roboto-thin {
   font-family: "Roboto", sans-serif;
   font-weight: 100;
