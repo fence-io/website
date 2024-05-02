@@ -34,7 +34,7 @@ body {
 }
 
 .toc a {
-  @apply font-normal text-neutral-700 dark:text-neutral-400;
+  @apply font-normal text-neutral-400;
 }
 
 .toc ul>li {

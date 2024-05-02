@@ -3,14 +3,12 @@
   <div class="grid grid-cols-2 md:grid-cols-4">
     <div class="md:col-start-2 col-span-2 prose prose-invert container mx-auto py-20">
       <h1>{{ .Title }}</h1>
-      {{ $dateMachine := .Date | time.Format "2006-01-02T15:04:05-07:00" }}
-      {{ $dateHuman := .Date | time.Format ":date_long" }}
-      <time datetime="{{ $dateMachine }}">{{ $dateHuman }}</time>
+      <div class="text-sm mb-6">
+        {{ partial "article-meta/basic.html" . }}
+      </div>
       {{ .Content }}
-      <hr>
-      {{ partial "terms.html" (dict "taxonomy" "tags" "page" .) }}
     </div>
-    <div class="hidden md:inline-block pl-8">
+    <div class="hidden md:block pl-8">
       <div class="toc print:hidden sticky top-20">
         {{ partial "toc.html" . }}
       </div>
