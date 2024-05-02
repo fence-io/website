@@ -15,10 +15,10 @@ Kubernetes in Docker (KinD) offers a lightweight and efficient way to run Kubern
 
 # Requirements
 
-- Docker
-- KinD
-- Kubectl
-- Ciliumctl
+- [Docker](https://docs.docker.com/engine/install/)
+- [KinD](https://kind.sigs.k8s.io/docs/user/quick-start/#installation)
+- [Kubectl](https://kubernetes.io/docs/tasks/tools/)
+- [Ciliumctl](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-default/)
 
 # Setting Up Kubernetes in Docker
 
@@ -250,7 +250,6 @@ Now let’s list the network interfaces in the Linux host:
 ```
 root@ubuntu # ip link 
 …
-
 4: br-38055463db3c: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default 
     link/ether 02:42:c4:e4:5f:7e brd ff:ff:ff:ff:ff:ff
 6: vethf413b4a@if5: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master br-38055463db3c state UP mode DEFAULT group default 
@@ -258,7 +257,6 @@ root@ubuntu # ip link
 8: vethb9242a9@if7: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master br-38055463db3c state UP mode DEFAULT group default 
     link/ether a2:11:09:57:4f:26 brd ff:ff:ff:ff:ff:ff link-netnsid 0
 …
-
 ```
 
 Let’s break down the configuration:
