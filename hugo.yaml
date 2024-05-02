@@ -1,6 +1,11 @@
 baseURL: https://example.org/
 languageCode: en-us
 title: Fence
+markup:
+  tableOfContents:
+    startLevel: 1
+    endLevel: 3
+    ordered: false
 params:
   header: basic
   background: background
