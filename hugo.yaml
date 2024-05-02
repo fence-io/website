@@ -2,11 +2,11 @@ baseURL: https://example.org/
 languageCode: en-us
 title: Fence
 markup:
-  goldmark:
-    renderer:
-      unsafe: true
-  highlight:
-    noClasses: false
+  # goldmark:
+  #   renderer:
+  #     unsafe: true
+  # highlight:
+  #   noClasses: false
   tableOfContents:
     startLevel: 1
     endLevel: 3
