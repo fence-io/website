@@ -36,7 +36,7 @@ nodes:
 
 Verify the node status
 
-```bash
+```
 kubectl get nodes
 NAME                 STATUS     ROLES           AGE   VERSION
 kind-control-plane   NotReady   control-plane   31s   v1.29.2
@@ -70,7 +70,7 @@ Once the configuration is applied, you can verify the status of the Cilium deplo
 
 Now let's explore network configuration inside the kubernetes cluster:
 
-```bash
+```
 kubectl cluster-info dump | grep -m 1 cluster-cidr
   "--cluster-cidr=10.244.0.0/16",
 ```
@@ -79,7 +79,7 @@ As you can see, the Kubernetes cluster is configured with a cluster CIDR range o
 
 The subnets assigned to each node are:
 
-```bash
+```
 kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.spec.podCIDR}{"\n"}'
 kind-control-plane      10.244.0.0/24
 kind-worker             10.244.1.0/24
@@ -87,7 +87,7 @@ kind-worker             10.244.1.0/24
 
 Every node is informed about the IP addresses of all pods on every other node, and corresponding routes are added to the Linux kernel routing table of each node. This config is clearly visible when accessing a node within the cluster. You can do this by running `docker exec -it kind-worker bash` then display the routing table of the node.
 
-```bash
+```
 root@kind-worker:/# ip route
 default via 172.18.0.1 dev eth0
 10.244.0.0/24 via 10.244.1.174 dev cilium_host proto kernel src 10.244.1.174 mtu 1450
@@ -112,7 +112,7 @@ Cilium offers two network configurations: encapsulation and direct routing (nati
 
 The architecture of the KinD cluster leverages Docker's networking features alongside standard Kubernetes components. Within a Kind cluster, every Kubernetes node is a Docker container. These containers operate within the same network namespace, facilitating communication via the Docker bridge network. KinD establishes a unique bridge network for each cluster for communication between Kubernetes nodes. Let's explore docker networks.
 
-```bash
+```
 macbook-pro % docker network list
 NETWORK ID     NAME      DRIVER    SCOPE
 8fd3d395c77e   bridge    bridge    local
@@ -124,7 +124,7 @@ c96ad8e9a9bb   none      null      local
 When examining the network setup, you'll likely identify two bridge networks: `bridge` and `kind`. `bridge` is a system-wide bridge network managed by Docker, used for all Docker containers on the host machine. In contrast, `kind` is specific to each Kind cluster and used exclusively by Kubernetes nodes within that cluster.
 
 
-```bash
+```
 macbook-pro % docker inspect kind
 [
    {
@@ -188,7 +188,7 @@ Linux Namespaces play a pivotal role in containerization by providing isolated e
 Now, let's attempt to ping one of the node IPs. Remember, in a KinD cluster, nodes are Docker containers. 
 If you're using a Linux-based OS, the ping will be successful. However, if you're on macOS, you'll observe:
 
-```bash
+```
 macbook-pro % ping 172.18.0.2
 PING 172.18.0.2 (172.18.0.2): 56 data bytes
 Request timeout for icmp_seq 0
@@ -196,7 +196,7 @@ Request timeout for icmp_seq 1
 Request timeout for icmp_seq 2
 ```
 
-The ping is timing out !
+The ping is timing out!
 
 # Troubleshooting Container Networking on MacOS
 
@@ -204,7 +204,7 @@ In macOS, Docker-for-Mac doesn't directly expose container networks on the host 
 
 Let's explore the routing table in the MacOS host:
 
-```bash
+```
 macbook-pro % netstat -rn
 Routing tables
 
@@ -233,7 +233,7 @@ default            link#17            UCSIg       bridge100      !
 
 As evident, there's no network configuration to access the Docker network within the Docker Desktop VM. By contrast, comparing this with the Linux host's `ip route` output reveals significant configuration differences.
 
-```bash
+```
 root@ubuntu # ip route
 default via 192.168.64.1 dev enp0s1 proto dhcp src 192.168.64.3 metric 100
 172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1 linkdown
@@ -246,7 +246,7 @@ Here, we can see a route to the container's subnet via the network interface `br
 
 Now let’s list the network interfaces in the host:
 
-```bash
+```
 root@ubuntu # ip link 
 …
 
@@ -281,7 +281,7 @@ sudo brew services start chipmk/tap/docker-mac-net-connect
 
 Check the routing table again
 
-```bash
+```
 macbook-pro % netstat -rn
 Routing tables
 
@@ -317,7 +317,7 @@ The other end of the tunnel (docker VM) is configured by a one-time container wi
 
 With these configurations in place, the ping command will function once again, indicating that we now have direct access to the Docker network from macOS.
 
-```bash
+```
 macbook-pro % ping 172.18.0.2
 PING 172.18.0.2 (172.18.0.2): 56 data bytes
 Request timeout for icmp_seq 0
@@ -340,7 +340,7 @@ To enable north/south traffic in your home lab, deploying a load balancer is a s
 
 Within our home lab setup, we'll use Cilium's advanced networking features; LB-IPAM alongside L2 announcements. LB-IPAM handles the assignment of IP addresses to services of type LoadBalancer, while L2 announcements ensure services become visible and accessible across the local area network (L2 network).
 
-Now lets deploy a simple kubernetes service of type load balancer:
+Now let's deploy a simple Kubernetes service of type load balancer:
 
 ```yaml
 apiVersion: v1
@@ -376,7 +376,7 @@ template:
 
 Check the status of our services
 
-```bash
+```
 macbook-pro % kubectl get svc
 NAME            TYPE           CLUSTER-IP    EXTERNAL-IP   PORT(S)        AGE
 kubernetes      ClusterIP      10.96.0.1     <none>        443/TCP        5h30m
@@ -397,7 +397,7 @@ cidrs:
 
 Now let's check the service again
 
-```bash
+```
 macbook-pro % kubectl get svc
 NAME            TYPE           CLUSTER-IP    EXTERNAL-IP    PORT(S)        AGE
 kubernetes      ClusterIP      10.96.0.1     <none>         443/TCP        5h32m
@@ -442,7 +442,7 @@ L2 announcement functions are based on the Address Resolution Protocol (ARP). AR
 
 The ARP table contains only the most recent MAC address associated with an IP. As a result, only one node in the cluster can reply to requests for a specific IP address. To ensure this, each Cilium agent selects services for its node and participates in leader election using [Kubernetes leases](https://kubernetes.io/docs/concepts/architecture/leases/). Every service corresponds to a lease, and the lease holder is responsible for responding to requests on designated interfaces.
 
-```bash
+```
 kubectl get leases -n kube-system
 NAME                                       HOLDER                       AGE
 …
