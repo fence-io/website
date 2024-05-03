@@ -1,0 +1,10 @@
+{{- with . }}
+<span class="" style="cursor: pointer;">
+  By &nbsp;
+  {{ range .}}
+  <span style="margin-top:0.5rem" class="mr-2 border-cyan-300" onclick="window.open({{ .RelPermalink }},'_self');">
+    {{ .LinkTitle }}
+  </span>
+  {{- end }}
+</span>
+{{- end }}
