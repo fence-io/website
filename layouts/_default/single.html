@@ -2,15 +2,28 @@
 <div class="bg-neutral-900 text-neutral-200">
   <div class="grid grid-cols-2 md:grid-cols-4">
     <div class="md:col-start-2 col-span-2 prose prose-invert py-20 max-w-fit">
+      <!-- title -->
       <h1 class="font-normal">{{ .Title }}</h1>
+      <!-- meta -->
       <div class="text-sm mb-6">
         {{ partial "article-meta/basic.html" . }}
       </div>
+      <!-- content -->
       {{ .Content }}
     </div>
     <div class="hidden md:block mx-8">
+      <!-- toc -->
       <div class="toc print:hidden sticky top-0 flex items-center h-screen">
         {{ partial "toc.html" . }}
+      </div>
+      <!-- scroll to top -->
+      <div class="sticky top-[calc(100vh-5rem)] pb-8 flex items-center justify-center space-x-7">
+        <a href="#top"
+          class="animate-bounce p-2 w-12 h-12 ring-1 ring-slate-900/5 dark:ring-slate-200/20 shadow-lg rounded-full text-base hover:text-primary-600 dark:hover:text-primary-400">
+          {{ with resources.Get (print "icons/" "arrow-up" ".svg") }}
+          {{ .Content | safeHTML }}
+          {{ end }}
+        </a>
       </div>
     </div>
   </div>
