@@ -1,0 +1,20 @@
+{{- define "main" -}}
+<div class="flex">
+  <div class="flex flex-col container mx-auto py-5 prose dark:prose-invert min-w-fit">
+    <div class="flex justify-center">
+      <h1>{{- .Title | markdownify | emojify }}</h1>
+    </div>
+    {{- .Content }}
+    {{- range (.Paginate (.Pages.GroupByDate "2006")).PageGroups }}
+    <h2>
+      {{- .Key }}
+    </h2>
+    <section class="w-full grid gap-4 sm:grid-cols-2 md:grid-cols-3 leading-8 px-12">
+      {{- range .Pages }}
+      {{- partial "article-link/card.html" . }}
+      {{- end }}
+    </section>
+    {{- end }}
+  </div>
+</div>
+{{- end }}
