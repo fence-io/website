@@ -1,5 +1,5 @@
 ---
-title: Setup Load Balancer Service with Cilium in KinD Cluster
+title: Setting up Load Balancer Service with Cilium in KinD Cluster
 
 date: 2024-05-02
 
@@ -44,9 +44,9 @@ kind-control-plane   NotReady   control-plane   31s   v1.29.2
 kind-worker          NotReady   <none>          10s   v1.29.2
 ```
 
-The nodes are in a "NotReady" state because the CNI installation is disabled in the KinD config file (`disableDefaultCNI: true`). This means that the essential networking layer required for pod communication and cluster operation is not configured. Consequently, the kubelet reports a "NotReady" state as it cannot establish network connectivity. Without CNI, pods cannot be assigned IP addresses.
+The nodes are in a 'NotReady' state because the CNI installation is disabled in the KinD config file, where 'disableDefaultCNI' is set to true. This means that the essential networking layer required for pod communication and cluster operation is not configured. Consequently, the kubelet reports a "NotReady" state as it cannot establish network connectivity. Without CNI, pods cannot be assigned IP addresses.
 
-In this article, We are going to use Cilium CNI. Cilium offers advanced networking features, enhanced security, service mesh integration, scalability, and comprehensive observability features. In this article, we’re going to explore some of Cilium advanced networking capabilities.
+In this article, we are going to use Cilium CNI. Cilium offers advanced networking features, enhanced security, service mesh integration, scalability, and comprehensive observability features. In this article, we’re going to explore some of Cilium advanced networking capabilities.
 
 Deploying Cilium is straightforward, let's simplify things by applying the following configuration:
 
@@ -105,9 +105,13 @@ Similar to the previous rule, this specifies routing for the 10.244.1.0/24 (kind
 
 # Cilium's Networking options
 
-Cilium represents a modern solution for networking and security in Kubernetes, surpassing the capabilities of traditional components like kube-proxy (disabled in cilium installation  `kubeProxyReplacement="strict"`). While kube-proxy focuses on basic networking tasks such as service discovery and load balancing, Cilium extends its functionality with advanced networking, security, and observability features. In terms of load balancing, kube-proxy operates at the network layer (L3/L4) and provides basic load balancing using iptables or IPVS. In contrast, Cilium can handle L3/L4 load balancing and offers more sophisticated techniques. We'll delve into these techniques later in this article.
+Cilium represents a modern solution for networking and security in Kubernetes, surpassing the capabilities of traditional components like kube-proxy (disabled in cilium installation  `kubeProxyReplacement="strict"`). While kube-proxy focuses on basic networking tasks such as service discovery and load balancing, Cilium extends its functionality with advanced networking, security, and observability features. 
 
-Cilium offers two network configurations: encapsulation and direct routing (native `routingMode="native"`), each suited to different environments and requirements. Encapsulation works well in cloud environments or situations with overlapping networks, while native routing is the best option in on-premises setups or dedicated cloud environments where performance optimization is crucial. For further details on this topic, refer to the Cilium documentation: [Cilium Routing Concepts](https://docs.cilium.io/en/stable/network/concepts/routing).
+In terms of load balancing, kube-proxy operates at the network layer (L3/L4) and provides basic load balancing using iptables or IPVS. In contrast, Cilium can handle L3/L4 load balancing and offers more sophisticated techniques. We'll delve into these techniques later in this article.
+
+Cilium offers two network configurations: encapsulation and direct routing (native `routingMode="native"`), each suited to different environments and requirements. Encapsulation works well in cloud environments or situations with overlapping networks while native routing is the best option in on-premises setups or dedicated cloud environments where performance optimization is crucial. 
+
+For further details on this topic, refer to the Cilium documentation: [Cilium Routing Concepts](https://docs.cilium.io/en/stable/network/concepts/routing).
 
 # Network Configuration of KinD Cluster
 
@@ -264,11 +268,12 @@ Let’s break down the configuration:
 **br-38055463db3c**: The bridge interface.
 
 **vethf413b4a@if5**: This is a virtual Ethernet interface (veth) named "vethf413b4a" It is paired with another veth interface in a network namespace (container). It is connected to the bridge interface "br-38055463db3c", this represents the link between the container and bridge  discussed previously.
+
 **vethb9242a9@if7**: Similar to the second interface, this is another veth interface named "vethb9242a9". It is paired with another veth interface in a network namespace (container). Also connected to the same bridge interface "br-38055463db3c".
 
 This means the docker containers are linked to the host via the bridge network. You can observe the traffic going in/out of the containers by running `tcpdump -i vethf413b4a` and `tcpdump -i vethb9242a9` from your local host.
 
-To achieve similar connectivity on macOS host, we are going to use `[docker mac net connect](https://github.com/chipmk/docker-mac-net-connect?tab=readme-ov-file#installation)`. This tool establishes a basic network tunnel between macOS and the Docker Desktop Linux VM. `docker-mac-net-connect` creates a virtual network interface (`utun`), acting as the bridge between your Mac and the Docker Desktop Linux VM.
+To achieve similar connectivity on macOS host, we are going to use [docker mac net connect](https://github.com/chipmk/docker-mac-net-connect?tab=readme-ov-file#installation). This tool establishes a basic network tunnel between macOS and the Docker Desktop Linux VM. `docker-mac-net-connect` creates a virtual network interface (`utun`), acting as the bridge between your Mac and the Docker Desktop Linux VM.
 
 ![alt](docker-mac-net-connect.png)
 
@@ -372,7 +377,7 @@ template:
       imagePullPolicy: IfNotPresent
 ```
 
-Check the status of our services
+Check the status of the service:
 
 ```
 macbook-pro % kubectl get svc
@@ -393,7 +398,7 @@ cidrs:
   - cidr: "172.18.250.0/24"
   ```
 
-Now let's check the service again
+Now let's check the service again:
 
 ```
 macbook-pro % kubectl get svc
@@ -402,7 +407,7 @@ kubernetes      ClusterIP      10.96.0.1     <none>         443/TCP        5h32m
 sampleservice   LoadBalancer   10.96.28.96   172.18.250.1   80:31508/TCP   4h56m
 ```
 
-You'll notice that the external IP has now been allocated to the service from the IP address pool defined in the LB-IPAM pool. To implement advanced filtering on the pool, such as service selectors, please consult the documentation [here](https://docs.cilium.io/en/stable/network/lb-ipam/#service-selectors).
+The external IP has now been allocated to the service from the LB-IPAM pool. To implement advanced filtering on the pool, such as service selectors, please consult the documentation [here](https://docs.cilium.io/en/stable/network/lb-ipam/#service-selectors).
 
 Once the IP has been assigned, we should be able to broadcast it locally (to all other devices sharing the same physical network L2). To achieve this, we need to create a cilium announcement policy.
 
@@ -422,7 +427,7 @@ nodeSelector:
       operator: DoesNotExist
 ```
 
-The "interfaces" field specifies the network interfaces over which the chosen services will be broadcast. This field is optional, if left unspecified, all interfaces will be utilized. It's essential to note that L2 announcements will function only if the selected devices are also included in the devices set specified in the field devices="{eth0,net0}".
+The "interfaces" field specifies the network interfaces over which the chosen services will be broadcast. This field is optional, if left unspecified, all interfaces will be utilized. It's essential to note that L2 announcements will function only if the selected devices are included in the 'devices' set specified in the field 'devices="{eth0,net0}"'.
 
 L2 announcement functions are based on the Address Resolution Protocol (ARP). ARP is a fundamental protocol in computer networks used to map IP addresses to MAC addresses. Here's a breakdown of ARP's operation when trying to access Kubernetes load balancer service “curl 172.18.250.1/” from the local computer:
 
@@ -448,7 +453,7 @@ cilium-l2announce-default-sampleservice     kind-worker                 4m2s
 …
 ```
 
-Now notice that the lease cilium-l2announce-default-sampleservice has elected kind-worker as a leader, in this case the cilium agent in this node will help in the arp resolution process. Let's capture the ARP traffic arriving at the kind-worker node using tcpdump.
+Now notice that the lease cilium-l2announce-default-sampleservice has elected kind-worker as a leader, in this case the cilium agent in this node will help in the ARP resolution process. Let's capture the ARP traffic arriving at the kind-worker node using tcpdump.
 
 ```bash
 CILIUM_POD=$(kubectl -n kube-system get pod -l k8s-app=cilium --field-selector spec.nodeName=kind-worker  -o name)
@@ -478,11 +483,13 @@ TERM=xterm-256color termshark -r arp.pcap
 ![alt](arp-reply.png)
 
 In both screenshots we can see the ARP request and reply details provide insights into how network devices communicate and resolve MAC addresses to IP addresses. Here's an explanation of each component:
+
 ARP Request (1st screenshot):
 Sender's IP Address: The IP address of the device sending the ARP request.
 Sender's MAC Address: The MAC address of the device sending the ARP request.
 Target IP Address: The IP address for which the MAC address is being requested.
 Target MAC Address: This field is typically set to all zeros in ARP requests since the sender is asking for the MAC address associated with a specific IP address. It's often referred to as the "broadcast MAC address" (FF:FF:FF:FF:FF:FF).
+
 ARP Reply (2nd screenshot):
 Sender's IP Address: The IP address of the device sending the ARP reply.
 Sender's MAC Address: The MAC address of the device sending the ARP reply.
@@ -491,4 +498,4 @@ Target MAC Address: The MAC address associated with the target IP address, as re
 
 # Conclusion
 
-Setting up networking and load balancing in a KinD cluster with Cilium involves careful configuration and troubleshooting. By understanding the underlying principles and employing the right tools and techniques, you can ensure smooth operation and optimal performance of your home lab environment.
+Setting up the networking and load balancing in a KinD cluster with Cilium involves careful configuration and troubleshooting. By understanding the underlying principles and employing the right tools and techniques, you can ensure smooth operation and optimal performance of your home lab environment.
