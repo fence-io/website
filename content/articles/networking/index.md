@@ -262,12 +262,13 @@ root@ubuntu # ip link
 Let’s break down the configuration:
 
 **br-38055463db3c**: The bridge interface.
+
 **vethf413b4a@if5**: This is a virtual Ethernet interface (veth) named "vethf413b4a" It is paired with another veth interface in a network namespace (container). It is connected to the bridge interface "br-38055463db3c", this represents the link between the container and bridge  discussed previously.
 **vethb9242a9@if7**: Similar to the second interface, this is another veth interface named "vethb9242a9". It is paired with another veth interface in a network namespace (container). Also connected to the same bridge interface "br-38055463db3c".
 
 This means the docker containers are linked to the host via the bridge network. You can observe the traffic going in/out of the containers by running `tcpdump -i vethf413b4a` and `tcpdump -i vethb9242a9` from your local host.
 
-To achieve similar connectivity on macOS host, we are going to use `docker mac net connect`. This tool establishes a basic network tunnel between macOS and the Docker Desktop Linux VM. `[docker-mac-net-connect](https://github.com/chipmk/docker-mac-net-connect?tab=readme-ov-file#installation)` creates a virtual network interface (`utun`), acting as the bridge between your Mac and the Docker Desktop Linux VM.
+To achieve similar connectivity on macOS host, we are going to use `[docker mac net connect](https://github.com/chipmk/docker-mac-net-connect?tab=readme-ov-file#installation)`. This tool establishes a basic network tunnel between macOS and the Docker Desktop Linux VM. `docker-mac-net-connect` creates a virtual network interface (`utun`), acting as the bridge between your Mac and the Docker Desktop Linux VM.
 
 ![alt](docker-mac-net-connect.png)
 
