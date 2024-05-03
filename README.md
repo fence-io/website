@@ -4,8 +4,8 @@
 
 1. Syntax highlighting
 
-    Chroma Style Gallery: https://xyproto.github.io/splash/docs/all.html
-    Hugo Config: https://gohugo.io/getting-started/configuration-markup/#highlight
+    - Chroma Style Gallery: https://xyproto.github.io/splash/docs/all.html
+    - Hugo Config: https://gohugo.io/getting-started/configuration-markup/#highlight
 
 ## Tips for writing an article
 
