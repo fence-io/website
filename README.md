@@ -16,6 +16,7 @@
     ```md
     ---
     featureImage: ...
+    ---
     ```
 
 1. Code fences with console output
