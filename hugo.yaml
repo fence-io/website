@@ -2,12 +2,9 @@
 baseURL: https://example.org/
 languageCode: en-us
 title: Fence
-enableEmoji: false
+enableEmoji: true
 # Renderer
 markup:
-  goldmark:
-    extensions:
-      emoji: true
   highlight:
     anchorLineNos: false
     codeFences: true
