@@ -277,7 +277,7 @@ brew install chipmk/tap/docker-mac-net-connect
 sudo brew services start chipmk/tap/docker-mac-net-connect
 ```
 
-Check the routing table again
+Check the routing table again.
 
 ```
 macbook-pro % netstat -rn
@@ -311,9 +311,9 @@ default            link#17            UCSIg       bridge100      !
 
 Now, multiple routes have been added to the routing table. `172.18             utun0              USc             utun0` indicates that to access the subnet 172.18/16 (the docker network), the traffic should go through the network interface `utun0`. This network interface is connected on the other side of the tunnel to the Docker VM.
 
-The other end of the tunnel (docker VM) is configured by a one-time container with sufficient privileges to configure the Linux host’s network interfaces. The container creates the interface, then exits. Despite the container's termination, the VM interface continues to function because it was created within the Linux host’s network namespace, not within the container’s.
+The other end of the tunnel (docker VM) is configured by a one-time container with sufficient privileges to configure the Linux host’s network interfaces. The container creates the interface, then exits. Despite the container's termination, the VM interface continues to function because it was created within the Linux host’s network namespace.
 
-With these configurations in place, the ping command will function once again, indicating that we now have direct access to the Docker network from macOS.
+With these configurations in place, the ping command will function once again, indicating that we now have access to the Docker's network from the macOS host.
 
 ```
 macbook-pro % ping 172.18.0.2
