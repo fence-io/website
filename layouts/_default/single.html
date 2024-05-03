@@ -1,5 +1,5 @@
 {{ define "main" }}
-<div class="bg-neutral-900 text-neutral-200">
+<div class="bg-neutral-900 text-neutral-200 min-h-[inherit]">
   <div class="grid grid-cols-2 md:grid-cols-4">
     <div class="md:col-start-2 col-span-2 prose prose-invert py-20 max-w-fit">
       <!-- title -->
@@ -13,17 +13,21 @@
     </div>
     <div class="hidden md:block mx-8">
       <!-- toc -->
-      <div class="toc print:hidden sticky top-0 flex items-center h-screen">
+      {{- if not (default false .Params.hideToc) }}
+      <div class="toc print:hidden sticky top-0 flex items-center h-[min(100%,100vh)]">
         {{ partial "toc.html" . }}
       </div>
+      {{- end }}
       <!-- scroll to top -->
-      <div class="sticky top-[calc(100vh-5rem)] pb-8 flex items-center justify-center space-x-7">
-        <a href="#top"
-          class="animate-bounce p-2 w-12 h-12 ring-1 ring-slate-900/5 dark:ring-slate-200/20 shadow-lg rounded-full text-base hover:text-primary-600 dark:hover:text-primary-400">
-          {{ with resources.Get (print "icons/" "arrow-up" ".svg") }}
-          {{ .Content | safeHTML }}
-          {{ end }}
-        </a>
+      <div class="absolute top-[110vh] bottom-[4rem] w-12 mx-auto overflow-y-clip">
+        <div class="sticky top-[calc(100vh-5rem)] pb-1 flex items-center justify-center space-x-7">
+          <a href="#top"
+            class="p-2 w-12 h-12 ring-1 ring-slate-900/5 dark:ring-slate-200/20 shadow-lg rounded-full text-base hover:text-primary-600 dark:hover:text-primary-400">
+            {{ with resources.Get (print "icons/" "arrow-up" ".svg") }}
+            {{ .Content | safeHTML }}
+            {{ end }}
+          </a>
+        </div>
       </div>
     </div>
   </div>
