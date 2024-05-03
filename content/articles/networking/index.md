@@ -1,8 +1,8 @@
 ---
+authors:
+- Sara Qasmi
 title: Setup Load Balancer Service with Cilium in KinD Cluster
-
 date: 2024-05-02
-
 tags:
 - Networking
 - KinD

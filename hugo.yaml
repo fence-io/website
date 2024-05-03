@@ -1,10 +1,10 @@
+# Settings
 baseURL: https://example.org/
 languageCode: en-us
 title: Fence
+
+# Renderer
 markup:
-  # goldmark:
-  #   renderer:
-  #     unsafe: true
   highlight:
     anchorLineNos: false
     codeFences: true
@@ -21,6 +21,15 @@ markup:
     startLevel: 1
     endLevel: 3
     ordered: false
+
+# Indexing
+taxonomies:
+  category: categories
+  series: series
+  tag: tags
+  author: authors
+
+# Visuals
 params:
   header: basic
   background: background
@@ -33,6 +42,19 @@ params:
   highlightCurrentMenuArea: true
   defaultFeaturedImage: icons/finger-print.svg
   images: true
+  article:
+    showDate: true
+    showDateUpdated: true
+    showWordCount: true
+    showReadingTime: true
+    # showViews: true
+    # showLikes: true
+    showEdit: true
+    showZenMode: true
+    showTaxonomies: true
+    showAuthorsBadges: true
+
+# Navigation
 menus:
   nav:
   - identifier: articles
