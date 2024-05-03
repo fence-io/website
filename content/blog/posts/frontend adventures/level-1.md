@@ -1,5 +1,5 @@
 ---
-date: 2024-05-03
+date: 2024-04-26
 title: Frontend adventures - Level 1
 categories:
 - frontend
