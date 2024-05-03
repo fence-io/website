@@ -40,3 +40,25 @@
     ```
     
     In the example above `# ip route` is considered a comment when the language is `bash` and this is not correct.
+
+2. Taxonomies
+
+    We support the following taxonomies: `tags`, `categories`, `authors` and `series`.
+
+    You can specify them using front matter like this:
+
+    ```md
+    ---
+    authors:
+    - Sara Qasmi
+    categories:
+    - Networking
+    tags:
+    - KinD
+    - Cilium
+    - Load Balancer
+    - MacOS
+    series:
+    - Networking
+    ---
+    ```
