@@ -1,5 +1,4 @@
 ---
-
 authors:
 - Sara Qasmi
 title: Setting up Load Balancer Service with Cilium in KinD Cluster

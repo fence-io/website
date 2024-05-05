@@ -1,53 +1,59 @@
-Dans cet article nous allons parler de validation de définitions de resources kubernetes a l'aide de l'outil kubeval.
+---
+authors:
+- Charles-Edouard Brétéché
+title: Validating Kubernetes resources offline - kubeval review
+date: 2024-05-05
+tags:
+- Validation
+- Kubernetes
+- CI
+featureImage: image.png
+---
 
-Avant de commencer, quelque remarques sur l'outil testé:
-- il n'est plus maintenu et l'auteur conseille de migrer vers kubeconform
-- nous étudierons kubeconform dans un prochain article
+In this article, we will discuss validating Kubernetes resource definitions using the tool [kubeval](https://www.kubeval.com/).
+
+Before we begin, it's important to note that kubeval is no longer maintained, and the author advises migrating to [kubeconform](https://github.com/yannh/kubeconform). We will explore kubeconform in a future article.
 
 # Introduction
 
-La validation des resources Kubernetes est utile pour détecter les resources non conformes avant de les appliquer a un cluster.
-Le cas d'utilisation le plus courant est d'effectuer la validation lors de la CI pour valider (ou invalider) la qualité d'une pull request.
+Validating Kubernetes resources is very useful for detecting non-compliant resources before applying them to a cluster. The most common use case is to perform validation during CI to validate (or invalidate) the quality of a pull request.
 
-Dans ce cas précis on ne dispose généralement pas d'un cluster disponible et validation doit donc s'effectuer hors ligne.
+In this specific case, a cluster is generally not available, and validation must therefore be performed offline. The tool must be able to function autonomously and validate (or invalidate) the supplied manifests.
 
-L'outil doit donc pouvoir fonctionner de manière autonome et valider (ou invalider) les manifests fournis en entrée.
+# Kubernetes-side Validation
 
-# La validation coté Kubernetes
+Validation within a Kubernetes cluster is performed differently depending on the types of resources used.
 
-La validation au sein d'un cluster Kubernetes s'effectue de différente manière en fonction des types de resources utilisées.
+For **native Kubernetes resources** (`ConfigMap`, `Deployment`, `Pod`, etc.), validation is done by dedicated code. The validation logic is therefore hard to leverage as it is not expressed in a declarative manner.
 
-Dans le cas d'une resource native Kubernetes (`ConfigMap`, `Deployment`, `Pod`, etc...) la validation est faite par un code dédié. La logique de validation est donc difficilement exploitable, elle n'est pas exprimée de manière déclarative.
+Next comes the case of **custom resources** (described using CRDs). These types of resources are not native and must adhere to a more or less precise schema. This schema is used by Kubernetes to validate a resource submitted to it.
 
-Vient ensuite le cas des resources customs décrites a l'aide de CRDs. Ce type de resources ne sont pas natives et doivent respecter un schéma plus ou moins précis. Ce schéma est utilisé par Kubernetes pour valider une resource qui lui est soumise.
+Finally, it is also possible to enrich the validation logic by adding webhooks invoked by the Kubernetes API server at the time of resource admission.
 
-Enfin, il est aussi possible de venir enrichir la logique de validation en ajoutant des webhooks invoqués par le serveur d'api Kubenetes au moment de l'admission des resources.
+## Resource Schemas
 
-## Les schemas de resources
+The schemas for native or custom resources are expressed using OpenAPI v2 (or v3 for more recent versions of Kubernetes). These schemas are more or less precise in the case of native resources, with the validation logic being implemented in dedicated code.
 
-Les schémas des resources natives ou customs sont exprimés a l'aide d'OpenAPI v2 (ou v3 pour les versions plus récentes de Kubernetes). Ces schémas sont plus ou moins précis dans le cas des resources natives, la logique de validation étant implémentée dans du code dédié.
+These schemas are used by most resource validation tools to validate (or not) the proposed resources.
 
-Ce sont ces schémas qui sont utilisés par la plupart des outils de validation de resources pour valider (ou non) les resources proposées.
+## Validation Webhooks
 
-## Les webhooks de validation
+Until recently, validation webhooks were standard services, internal or external to the cluster, invoked by the API server during the admission of a resource.
 
-Jusqu'a récemment les webhooks de validation étaient des services classiques, internes ou externes au cluster, invoqués par le serveur d'api lors de l'admission d'une resource.
+These webhooks could implement a completely customized logic, and it is generally excluded that a validation tool could reproduce the logic embedded in these different services.
 
-Ces webhooks pouvant implémenter une logique totalement personnalisée il est généralement exclut qu'un outil de validation puisse reproduire la logique embarquée dans ces différents services.
+Recently, the introduction of CEL and validation policies have allowed programming the behavior of the API server in a declarative manner. Validation tools are theoretically able to apply the same validation policies as the API server.
 
-Récemment l'introdution de CEL et des politiques de validation ont permis de programmer le comportement du serveur d'api de manière déclarative. Les outils de validation sont théoriquement en mesure d'appliquer les mêmes politiques de validation que le serveur d'api.
+# Installing kubeval
 
-# Installation de kubeval
+The kubeval project documentation suggests installing the binary directly or using a package manager, or using it through a Docker image.
 
-La documentation du projet kubeval propose d'installer le binaire directement ou a l'aide d'un gestionnaire de paquets, ou de l'utiliser au travers une image Docker.
+For this article, we will use the Docker image, as installation with brew failed since the project is no longer maintained :shrug:
 
-Pour cet article nous utiliserons l'image docker.
-
-# Validation avec kubeval
+# Validation with kubeval
 
 First, let's note that kubeval [does not support validation of CRDs](https://www.kubeval.com/#crds).
 The recommended workaround is to exclude custom (unknown) resources.
-
 
 Let's try to validate the simple (yet invalid) manifest below:
 
@@ -57,7 +63,7 @@ kind: DaemonSet
 metadata:
   name: nginx-ds
 spec:
-  # no replicas field exist on DaemonSet
+  # no replicas field exist in DaemonSet resource
   replicas: 2
   template:
     spec:
@@ -82,14 +88,18 @@ docker run -it -v ${PWD}:/work garethr/kubeval work/manifests.yaml --strict
 WARN - work/manifests.yaml contains an invalid DaemonSet (nginx-ds) - replicas: Additional property replicas is not allowed
 ```
 
-## Version de Kubernetes cible
+## Target Kubernetes Version
 
-Dans le cas de resources natives, la version cible du cluster est importante, les reosurces natives évoluent régulièrement avec l'apparition de nouvelles propriétés, de nouvelles version d'api, certaines versions d'api sont dépréciées puis supprimées, etc...
+In the case of native resources, the target version of the cluster is important, as native resources evolve regularly with the appearance of new properties, new API versions, some API versions are deprecated and then removed, etc.
 
-Il est possible de cibler une version précise de Kubernetes a l'aide de l'argument `-v`. Malheureusement l'outil s'appuie sur les schémas publiés sur le site https://kubernetesjsonschema.dev qui s'est arrété a la version 1.18 de Kubernetes.
+Therefore, a resource considered valid given one version of Kubernetes may be considered invalid with an older version of Kubernetes.
+
+It is possible to target a specific version of Kubernetes using the `-v` argument. Unfortunately, the tool relies on schemas published on the website https://kubernetesjsonschema.dev which stopped at version 1.18 of Kubernetes.
 
 # Conclusion
 
-Il semble assez peu pertinent de pousser l'étude de kubeval très loin. Il est évident que l'outil est ancien, il n'est plus maintenu, a au moins 10 versions de Kubernetes de retard et est donc devenu obsolète.
+It seems somewhat irrelevant to push the study of kubeval much further. It is clear that the tool is outdated, it is no longer maintained, is at least 10 versions of Kubernetes behind, and has therefore clearly become obsolete.
 
-Il reste tout de même le premier outil ayant popularisé la validation hors ligne des resources Kubernetes et il méritait d'être cité. Nous verrons d'autres outils plus modernes dans les prochains articles.
+It remains, however, the first tool to have popularized offline validation of Kubernetes resources and it deserved to be mentioned.
+
+We will see other more modern tools in future articles. Stay tuned for the next episode!
