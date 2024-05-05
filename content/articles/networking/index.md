@@ -11,6 +11,8 @@ tags:
 - MacOS
 featureImage: networking.png
 codespace: https://codespaces.new/fence-io/playground
+series:
+- Networking
 ---
 
 Kubernetes in Docker (KinD) offers a lightweight and efficient way to run Kubernetes clusters for development and testing purposes. However, setting up KinD with load balancing option requires specific networking configurations. In this article, we'll explore the networking configuration of KinD on both Linux and MacOS, deep dive into load balancing options and discuss troubleshooting tactics.
