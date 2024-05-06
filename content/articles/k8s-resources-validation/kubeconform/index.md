@@ -10,37 +10,37 @@ tags:
 draft: true
 ---
 
-Dans cet article nous allons étudier [kubeconform](https://github.com/yannh/kubeconform), le successeur de [kubeval](https://www.kubeval.com/).
+In this article, we will explore [kubeconform](https://github.com/yannh/kubeconform), the successor to [kubeval](https://www.kubeval.com/).
 
-Kubeconform se base sur les mêmes principes que kubeval, il est cependant maintenu et possède certaines fonctionnalités qui lui sont propres.
+Kubeconform is based on the same principles as kubeval, but it is actively maintained and has some unique features.
 
 # Introduction
 
-Les deux outils étant très similaires je vous invite a consulter l'article sur kubeval qui s'applique également a kubeconform.
+As the two tools are very similar, I invite you to consult [the article on kubeval](../kubeval/#introduction) which also applies to kubeconform.
 
 # Resource Schemas
 
-Kubeconform utilise les JSON schemas pour valider (ou invalider) les resources proposées. Les JSON schemas sont créés a partir de schémas OpenAPI publiés au sein du repository GitHub de Kubernetes.
+Kubeconform uses JSON schemas to validate (or invalidate) the proposed resources. These JSON schemas are created from the OpenAPI schemas published within the Kubernetes GitHub repository.
 
-A l'inverse de kubeval qui n'est plus maintenu, kubeconform maintient un repository a jour des JSON schémas convertis a partir des schémas natifs publiés par Kubernetes ([Kubeconform fork of kubernetes-json-schema](https://github.com/yannh/kubernetes-json-schema/)). La version la plus récente supportée a ce jour est `v1.30.0`.
+Unlike kubeval, which is no longer maintained, kubeconform maintains an up-to-date repository of JSON schemas converted from the native schemas published by Kubernetes ([kubeconform fork of kubernetes-json-schema](https://github.com/yannh/kubernetes-json-schema/)). The most recent version supported as of today is `v1.30.0`.
 
 # Installing kubeconform
 
 The kubeconform project documentation suggests installing the binary directly or using a package manager, or using it through a Docker image.
 
-For this article, we will use the brew to install it locally:
+For this article, we will use brew to install it locally:
 
 ```bash
 brew install kubeconform
 ```
 
-The docker image can be found at ghcr.io/yannh/kubeconform
+The docker image can be found at https://ghcr.io/yannh/kubeconform.
 
 # Validation with kubeconform
 
-Contrairement a kubeval, kubeconform supporte la validation des resources customs, a la condition que vous founissiez les JSON schemas correspondants. Nous verrons cela par la suite.
+Unlike kubeval, kubeconform supports the validation of custom resources, provided that you supply the corresponding JSON schemas. We will see more about this later.
 
-Commencons par la validation des resources natives.
+Let’s start by validating native resources.
 
 ## Validating native resources
 
@@ -92,7 +92,9 @@ spec:
         name: nginx
 ```
 
-This time, running `kubeconform manifests.yaml` passes. To make kubeconform detect additional fields, we need to specify `--strict`:
+This time, running `kubeconform manifests.yaml` passes. Still, the unexpected `replicas` field is not detected.
+
+To make kubeconform detect unexpected fields, we need to specify `--strict`:
 
 ```
 kubeconform --strict manifests.yaml       
@@ -102,9 +104,11 @@ manifests.yaml - DaemonSet nginx-ds is invalid: problem validating schema. Check
 
 ## Corner cases
 
-Comme expliqué dans l'article sur kubeval, la validation basée sur les schémas est souvent approximative. La vérification des types des propriétés fonctionne plutot bien mais la validation des valeurs associées sont moins fiables. Cela vient du fait que la logique de validation est implémentée dans du code spécifique et ne fait pas toujours partie de la définition du schéma.
+As explained in the article on kubeval, schema-based validation is often approximate.
 
-Prenons l'exemple d'un label invalide:
+Property type checks work quite well, but the validation of associated values is less reliable. This is because the validation logic is implemented in specific code and does not always form part of the schema definition.
+
+Let's take the example of an invalid label:
 
 ```yaml
 apiVersion: v1
@@ -118,15 +122,15 @@ data:
   foo: bar
 ```
 
-Essayons de valider la resource ci dessus avec:
+Let's try to validate the resource above with:
 
 ```bash
 kubeconform --strict manifests.yaml
 ```
 
-Cette fois ci kubeconform ne détecte pas le label invalide.
+This time kubeconform does not detect the invalid label.
 
-Un autre exemple simple est le suivant, qui définit un `Deployment` avec un nombre de replicas négatif:
+Another simple example is the following, which defines a `Deployment` with a negative number of replicas:
 
 ```yaml
 apiVersion: apps/v1
@@ -148,7 +152,7 @@ spec:
         name: nginx
 ```
 
-Ici aussi, `kubeconform --strict manifests.yaml` ne détecte pas le problème alors que la resource sera rejetée par un cluster:
+Here too, `kubeconform --strict manifests.yaml` does not detect the problem even though the resource will be rejected by a cluster:
 
 ```
 kubectl apply -f manifests.yaml
@@ -158,13 +162,13 @@ The Deployment "deploy" is invalid: spec.replicas: Invalid value: -1: must be gr
 
 ## Target Kubernetes Version
 
-In the case of native resources, the target version of the cluster is important, as native resources evolve regularly with the appearance of new properties, new API versions, some API versions are deprecated and then removed, etc.
+In the case of native resources, the target version of the cluster is important, as native resources evolve regularly with the appearance of new properties, new API versions, and some API versions are deprecated and then removed, etc.
 
 Therefore, a resource considered valid given one version of Kubernetes may be considered invalid with an older version of Kubernetes.
 
 It is possible to target a specific version of Kubernetes using the `--kubernetes-version` argument.
 
-Prenons par exemple l'api `extensions/v1beta1` qui a été retirée de Kubernetes en v1.22:
+Let's take, for example, the API `extensions/v1beta1` which was removed from Kubernetes in v1.22:
 
 ```yaml
 apiVersion: extensions/v1beta1
@@ -182,13 +186,13 @@ spec:
           servicePort: 80
 ```
 
-La resource `Ingress` ci dessus est considérée comme valide avec Kubernetes `v1.20`:
+The `Ingress` resource above is considered valid with Kubernetes `v1.20`:
 
 ```
 kubeconform --kubernetes-version 1.20.0 --strict manifests.yaml
 ```
 
-Alors que le schéma n'est plus disponible en `v1.22`:
+While the schema is no longer available in `v1.22`:
 
 ```
 kubeconform --kubernetes-version 1.22.0 --strict manifests.yaml
@@ -198,14 +202,13 @@ manifests.yaml - Ingress frontend failed validation: could not find schema for I
 
 ## CRDs validation
 
-Finissons par la validation des resources customs (CRDs).
+Let's finish with the validation of custom resources (CRDs).
 
-Kubeconform supporte les resources customs a condition que vous puissiez lui fournir le JSON schema correspondant.
+Kubeconform supports custom resources provided that you can supply it with the corresponding JSON schema.
 
-Pour reprendre l'exemple sur le [GitHub de kubeconform](https://github.com/yannh/kubeconform?tab=readme-ov-file#customresourcedefinition-crd-support), on peut utiliser [Datree's CRDs-catalog](https://github.com/datreeio/CRDs-catalog) qui recense les CRDs les plus utilisés et fournit les JSON schemas associés.
+For instance, using an example from [kubeconform's GitHub](https://github.com/yannh/kubeconform?tab=readme-ov-file#customresourcedefinition-crd-support), we can utilize [Datree's CRDs-catalog](https://github.com/datreeio/CRDs-catalog) which lists the most used CRDs and provides the associated JSON schemas.
 
-
-Prenons par exemple une resource `Issuer` de cert manager:
+Let's take for example an `Issuer` resource of cert manager:
 
 ```yaml
 apiVersion: cert-manager.io/v1
@@ -217,7 +220,7 @@ spec:
   selfSigned: {}
 ```
 
-Sans préciser la localisation du schéma associé au type de resource `Issuer`, kubeconform est incapable de valider la resource:
+Without specifying the location of the schema associated with the `Issuer` resource type, kubeconform is unable to validate the resource:
 
 ```
 kubeconform --strict manifests.yaml
@@ -225,25 +228,26 @@ kubeconform --strict manifests.yaml
 manifests.yaml - Issuer test-selfsigned failed validation: could not find schema for Issuer
 ```
 
-Afin de permettre a kubeconform de télécharger le JSON schema associé, on peut utiliser l'argument `--schema-location`:
+In order to enable kubeconform to download the corresponding JSON schema, one can use the `--schema-location` argument:
 
 ```
 kubeconform --schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' --strict manifests.yaml
 ```
 
-Cette fois-ci kubeconform est en mesure de valider la resource `Issuer` grace au schéma téléchargé depuis le repository GitHub de Datree.
+This time, kubeconform can validate the `Issuer` resource using the schema downloaded from Datree's GitHub repository.
 
-Notez que l'on peut préciser l'argument `--schema-location` autant de fois que nécessaire.
-Il est aussi possible de convertir une défintion de CRD soit même, tout est expliqué [ici](https://github.com/yannh/kubeconform?tab=readme-ov-file#customresourcedefinition-crd-support).
+Note that the `--schema-location` argument can be specified as many times as necessary. It is also possible to convert a CRD definition yourself, which is all explained [here](https://github.com/yannh/kubeconform?tab=readme-ov-file#customresourcedefinition-crd-support).
 
 # Conclusion
 
-En conclusion, kubeconform s'est très fortement inspiré de kubeval et a repris le flambeau pour devenir son digne successeur.
+In conclusion, kubeconform is heavily inspired by kubeval and has taken up the mantle to become its worthy successor.
 
-Les deux outils fonctionnent exactement de la même manière en se basant sur les JSON schema. kubeconform maintient une version a jour des schemas pour les resources natives.
+Both tools operate in exactly the same way based on JSON schema, and kubeconform maintains an up-to-date version of the schemas for native resources.
 
-Enfin kubeconform ajoute le support des resources customs, ce qui élargit grandement la portée de l'outil. Leur utilisation reste cependant assez complèxe, surtout dans le cas d'une resource custom dont le schéma n'est pas disponible publiquement sur internet.
+Finally, kubeconform adds support for custom resources, which significantly broadens the tool's scope. Their use, however, remains quite complex, especially in the case of a custom resource whose schema is not publicly available on the internet.
 
-En résumé, kubeconform est un grand pas en avant pour les utilisateurs de kubeval, un outil satisfaisant pour une utilisation sans resources customs. Il reste cependant limité dans le cas d'une utilisation intensive des CRDs.
+In summary, kubeconform is a significant step forward for users of kubeval, providing a satisfactory tool for use without custom resources. However, it remains limited in the case of intensive use of CRDs.
 
-Le prochain article étudiera un outil plus adapté a une utilisation moderne de Kubernetes avec un support plus poussé des resources customs. Stay tuned for the next episode!
+# Stay tuned!
+
+The next article will explore a tool more suited to modern Kubernetes usage with enhanced support for custom resources. Stay tuned for the next episode!
