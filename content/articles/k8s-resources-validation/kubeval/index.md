@@ -8,6 +8,7 @@ tags:
 - Kubernetes
 - CI
 featureImage: image.png
+draft: true
 ---
 
 In this article, we will discuss validating Kubernetes resource definitions using the tool [kubeval](https://www.kubeval.com/).
