@@ -13,7 +13,7 @@ draft: true
 
 In this article, we will discuss validating Kubernetes resource definitions using the tool [kubeval](https://www.kubeval.com/).
 
-Before we begin, it's important to note that kubeval is no longer maintained, and the author advises migrating to [kubeconform](https://github.com/yannh/kubeconform). We will explore kubeconform in a future article.
+Before we begin, it's important to note that kubeval is no longer maintained, and the author advises migrating to [kubeconform](https://github.com/yannh/kubeconform). We will explore kubeconform in the [next article](../kubeconform/).
 
 # Introduction
 
@@ -99,8 +99,8 @@ It is possible to target a specific version of Kubernetes using the `-v` argumen
 
 # Conclusion
 
-It seems somewhat irrelevant to push the study of kubeval much further. It is clear that the tool is outdated, it is no longer maintained, is at least 10 versions of Kubernetes behind, and has therefore clearly become obsolete.
+It seems somewhat irrelevant to push the study of kubeval much further. It is clear that the tool is outdated, is no longer maintained, is at least 10 versions of Kubernetes behind, and has therefore clearly become obsolete.
 
 It remains, however, the first tool to have popularized offline validation of Kubernetes resources and it deserved to be mentioned.
 
-We will see other more modern tools in future articles. Stay tuned for the next episode!
+We will see other more modern tools in future articles. Stay tuned for the [next episode](../kubeconform/)!
