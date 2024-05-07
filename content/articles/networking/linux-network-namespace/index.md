@@ -12,5 +12,7 @@ tags:
 featureImage: bridge.png
 series:
 - Networking
+
+draft: true
 ---
 
