@@ -1,0 +1,5 @@
+{{ if .Params.series }}
+<details {{ if .Params.series_opened | default (.Site.Params.article.series_opened | default false) }} open {{ end }}>
+  {{ partial "series/series_base.html" . }}
+</details>
+{{end}}
