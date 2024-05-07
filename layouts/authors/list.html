@@ -2,7 +2,7 @@
 <div class="bg-neutral-900 text-neutral-200 min-h-[inherit]">
   <div class="container mx-auto flex flex-col items-center prose prose-invert py-20">
     <h1>{{ .Params.firstname }} {{ .Params.name }}</h1>
-    <img src="{{ .Params.image | absUrl }}" width="200" height="200" class="rounded-full" />
+    <img src="{{ .Params.image | absURL }}" width="200" height="200" class="rounded-full" />
     <h2>Bio</h2>
     {{ .Content }}
     <h2>Articles</h2>
