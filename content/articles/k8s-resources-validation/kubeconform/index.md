@@ -7,7 +7,6 @@ tags:
 - Validation
 - Kubernetes
 - CI
-draft: true
 featureImage: https://user-images.githubusercontent.com/19731161/142411871-f695e40c-bfa8-43ca-97c0-94c256749732.png
 ---
 
