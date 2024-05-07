@@ -19,6 +19,7 @@
   {{- end }}
   {{- with $featured }}
   <meta property="og:image" content="{{ .RelPermalink }}" />
+  <img class="hidden" src="{{ .RelPermalink }}" />
   {{- end }}
   <div class="grid grid-cols-2 md:grid-cols-4">
     <div class="hidden md:block mx-8">
