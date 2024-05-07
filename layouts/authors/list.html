@@ -1,0 +1,16 @@
+{{- define "main" -}}
+<div class="bg-neutral-900 text-neutral-200 min-h-[inherit]">
+  <div class="container mx-auto flex flex-col items-center prose prose-invert py-20">
+    <h1>{{ .Params.firstname }} {{ .Params.name }}</h1>
+    <img src="{{ .Params.image }}" width="200" height="200" class="rounded-full" />
+    <h2>Bio</h2>
+    {{ .Content }}
+    <h2>Articles</h2>
+  </div>
+  <section class="container mx-auto grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 leading-8 px-12 pb-12">
+    {{ range .Pages }}
+    {{- partial "article-link/card.html" . }}
+    {{ end }}
+  </section>
+</div>
+{{- end }}

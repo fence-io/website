@@ -1,6 +1,6 @@
 ---
 authors:
-- Charles-Edouard Brétéché
+- eddycharly
 title: Validating Kubernetes resources offline - kubeconform review
 date: 2024-05-06
 tags:

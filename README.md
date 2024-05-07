@@ -54,7 +54,7 @@
     ```md
     ---
     authors:
-    - Sara Qasmi
+    - sara
     categories:
     - Networking
     tags:
