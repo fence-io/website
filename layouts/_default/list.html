@@ -5,7 +5,7 @@
       <p class="text-5xl font-bold pb-11">{{ .Title | markdownify | emojify }}</p>
     </div>
     {{ .Content }}
-    <section class="w-full grid gap-4 sm:grid-cols-2 md:grid-cols-3 leading-8 px-12">
+    <section class="w-full grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 leading-8 px-12">
       {{ range .Pages }}
       {{ partial "article-link/card.html" . }}
       {{ end }}

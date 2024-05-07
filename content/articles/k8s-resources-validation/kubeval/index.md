@@ -7,8 +7,7 @@ tags:
 - Validation
 - Kubernetes
 - CI
-featureImage: image.png
-draft: true
+featureImage: https://opengraph.githubassets.com/0fb34fac5b9bbfc8c22fe2e8d5025cf835fff5451d942903464a45131e8b85df/instrumenta/kubeval
 ---
 
 In this article, we will discuss validating Kubernetes resource definitions using the tool [kubeval](https://www.kubeval.com/).
