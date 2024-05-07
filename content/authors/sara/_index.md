@@ -2,7 +2,7 @@
 title: Sara Qasmi
 name: Qasmi
 firstname: Sara
-image: /img/sara.png
+image: img/sara.png
 ---
 
 Sara Qasmi, a freelance platform engineer, is driven by her passion for constructing secure and reliable Kubernetes platforms.

@@ -2,7 +2,7 @@
 title: Charles-Edouard Brétéché
 name: Brétéché
 firstname: Charles-Edouard
-image: /img/eddycharly.jpeg
+image: img/eddycharly.jpeg
 ---
 
 Charles-Edouard Brétéché is a Staff Engineer at Nirmata, a maintainer for Kyverno, and has created and contributed to various open source projects. including a Terraform provider for kOps.
