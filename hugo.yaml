@@ -90,7 +90,7 @@ menus:
     weight: 60
   - identifier: linkedin
     pre: linkedin
-    url: https://todo
+    url: https://www.linkedin.com/groups/13033088/
     weight: 70
   - identifier: youtube
     pre: youtube
