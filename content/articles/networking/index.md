@@ -502,3 +502,5 @@ Target MAC Address: The MAC address associated with the target IP address, as re
 # Conclusion
 
 Setting up the networking and load balancing in a KinD cluster with Cilium involves careful configuration and troubleshooting. By understanding the underlying principles and employing the right tools and techniques, you can ensure smooth operation and optimal performance of your home lab environment.
+
+Check our labs here https://github.com/fence-io/playground?tab=readme-ov-file#available-labs
