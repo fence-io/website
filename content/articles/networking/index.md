@@ -52,21 +52,21 @@ In this article, we are going to use Cilium CNI. Cilium offers advanced networki
 
 Deploying Cilium is straightforward, let's simplify things by applying the following configuration:
 
-```bash
-helm install cilium cilium/cilium --version 1.15.4 \
- --namespace kube-system \
- --reuse-values \
- --set kubeProxyReplacement=true \
- --set k8sServiceHost=kind-control-plan \
- --set k8sServicePort=6443 \
- --set kubeProxyReplacement="strict" \
- --set l2announcements.enabled=true \
- --set l2announcements.leaseDuration="3s" \
- --set l2announcements.leaseRenewDeadline="1s" \
- --set l2announcements.leaseRetryPeriod="500ms" \
- --set devices="{eth0,net0}" \
- --set externalIPs.enabled=true \
- --set operator.replicas=2
+```
+  cilium install \
+  --set kubeProxyReplacement="strict" \
+  --set routingMode="native" \
+  --set ipv4NativeRoutingCIDR="10.244.0.0/16" 
+  --set k8sServiceHost="kind-control-plane" \
+  --set k8sServicePort=6443 \
+  --set l2announcements.enabled=true \
+  --set l2announcements.leaseDuration="3s" \
+  --set l2announcements.leaseRenewDeadline="1s" \
+  --set l2announcements.leaseRetryPeriod="500ms" \
+  --set devices="{eth0,net0}" \
+  --set externalIPs.enabled=true \
+  --set autoDirectNodeRoutes=true \
+  --set operator.replicas=2
 ```
 
 Once the configuration is applied, you can verify the status of the Cilium deployment by executing the command `cilium status --wait`. This command will display the live deployment status of various Cilium components. Afterwards, running `kubectl get nodes` will display the nodes in a ready state, confirming the successful setup of networking with Cilium.
