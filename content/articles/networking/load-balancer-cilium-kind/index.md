@@ -190,7 +190,7 @@ macbook-pro % docker inspect kind
 ]
 ```
 
-A Linux bridge behaves like a network switch. It forwards packets between interfaces that are connected to it. In the container world, The bridge network functions as a virtual networking interface, interconnecting containers (Linux network namespaces) via virtual Ethernet pairs (veth pairs). Each container is configured with its own veth pair, with one end connected to the bridge network. This arrangement enables communication between containers internally and with the host system.
+A Linux bridge behaves like a network switch. It forwards packets between interfaces that are connected to it. In the container world, The bridge functions as a virtual networking interface, interconnecting containers (Linux network namespaces) via virtual Ethernet pairs (veth pairs). Each container is configured with its own veth pair, with one end connected to the bridge network. This arrangement enables communication between containers internally and with the host system.
 
 Linux Namespaces play a pivotal role in containerization by providing isolated environments for individual containers. Each Docker container is encapsulated within its own namespace, ensuring it has its distinct IP address, routing table, and network configuration. This isolation mechanism prevents interference between containers and ensures the host system's integrity. (check our next article for more details about linux network namespace technologie in container's world)
 
