@@ -1,0 +1,19 @@
+{{- if .Params.series -}}
+<summary class="block py-1 text-lg font-semibold cursor-pointer text-neutral-100">
+  {{- index .Params.series 0 -}}
+</summary>
+{{- $seriesName := strings.ToLower (index .Params.series 0) -}}
+{{- range $post := sort (index .Site.Taxonomies.series $seriesName) "Params.series_order" -}}
+{{- if eq $post.Permalink $.Page.Permalink -}}
+<div class="border-dotted border-l pl-5 border-neutral-600">
+  {{ i18n "article.part" }} {{ $post.Params.series_order }}: {{ i18n "article.this_article" }}
+</div>
+{{ else }}
+<div class="border-dotted border-l pl-5 border-neutral-600">
+  <a href="{{- $post.Permalink -}}">
+    {{ i18n "article.part" }} {{ $post.Params.series_order }}: {{ default $post.Params.title $post.Params.series_title}}
+  </a>
+</div>
+{{- end -}}
+{{- end -}}
+{{- end -}}

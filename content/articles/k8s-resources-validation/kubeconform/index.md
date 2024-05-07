@@ -8,6 +8,10 @@ tags:
 - Kubernetes
 - CI
 featureImage: https://user-images.githubusercontent.com/19731161/142411871-f695e40c-bfa8-43ca-97c0-94c256749732.png
+series: ["Offline Kubernetes Validation"]
+series_order: 2
+series_opened: true
+series_title: Kubeconform review
 ---
 
 In this article, we will explore [kubeconform](https://github.com/yannh/kubeconform), the successor to [kubeval](https://www.kubeval.com/).
