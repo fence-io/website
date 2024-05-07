@@ -51,21 +51,21 @@ In this article, we are going to use Cilium CNI. Cilium offers advanced networki
 
 Deploying Cilium is straightforward, let's simplify things by applying the following configuration:
 
-```bash
-helm install cilium cilium/cilium --version 1.15.4 \
- --namespace kube-system \
- --reuse-values \
- --set kubeProxyReplacement=true \
- --set k8sServiceHost=kind-control-plan \
- --set k8sServicePort=6443 \
- --set kubeProxyReplacement="strict" \
- --set l2announcements.enabled=true \
- --set l2announcements.leaseDuration="3s" \
- --set l2announcements.leaseRenewDeadline="1s" \
- --set l2announcements.leaseRetryPeriod="500ms" \
- --set devices="{eth0,net0}" \
- --set externalIPs.enabled=true \
- --set operator.replicas=2
+```
+cilium install \
+  --set kubeProxyReplacement="strict" \
+  --set routingMode="native" \
+  --set ipv4NativeRoutingCIDR="10.244.0.0/16" \
+  --set k8sServiceHost="kind-control-plane" \
+  --set k8sServicePort=6443 \
+  --set l2announcements.enabled=true \
+  --set l2announcements.leaseDuration="3s" \
+  --set l2announcements.leaseRenewDeadline="1s" \
+  --set l2announcements.leaseRetryPeriod="500ms" \
+  --set devices="{eth0,net0}" \
+  --set externalIPs.enabled=true \
+  --set autoDirectNodeRoutes=true \
+  --set operator.replicas=2
 ```
 
 Once the configuration is applied, you can verify the status of the Cilium deployment by executing the command `cilium status --wait`. This command will display the live deployment status of various Cilium components. Afterwards, running `kubectl get nodes` will display the nodes in a ready state, confirming the successful setup of networking with Cilium.
@@ -83,8 +83,8 @@ The subnets assigned to each node are:
 
 ```
 kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.spec.podCIDR}{"\n"}'
-kind-control-plane      10.244.0.0/24
-kind-worker             10.244.1.0/24
+kind-control-plane	10.244.0.0/24
+kind-worker	        10.244.1.0/24
 ```
 
 Every node is informed about the IP addresses of all pods on every other node, and corresponding routes are added to the Linux kernel routing table of each node. This config is clearly visible when accessing a node within the cluster. You can do this by running `docker exec -it kind-worker bash` then display the routing table of the node.
@@ -92,17 +92,19 @@ Every node is informed about the IP addresses of all pods on every other node, a
 ```
 root@kind-worker:/# ip route
 default via 172.18.0.1 dev eth0
-10.244.0.0/24 via 10.244.1.174 dev cilium_host proto kernel src 10.244.1.174 mtu 1450
-10.244.1.0/24 via 10.244.1.174 dev cilium_host proto kernel src 10.244.1.174
-10.244.1.174 dev cilium_host proto kernel scope link
+10.244.0.0/24 via 172.18.0.3 dev eth0 proto kernel
+10.244.1.0/24 via 10.244.1.228 dev cilium_host proto kernel src 10.244.1.228
+10.244.1.228 dev cilium_host proto kernel scope link
 172.18.0.0/16 dev eth0 proto kernel scope link src 172.18.0.2
 ```
 
-`10.244.0.0/24 via 10.244.1.174 dev cilium_host proto kernel src 10.244.1.174 mtu 1450`
-This rule specifies that traffic destined for the 10.244.0.0/24 (kind-control-plane) network should be routed through the next-hop IP address 10.244.1.174 via the cilium_host interface. The source IP address for outgoing packets is 10.244.1.174
+1. `default via 172.18.0.1 dev eth0`: Any traffic that doesn't match a more specific route in the table will be sent through the gateway with the IP address 172.18.0.1 and the outgoing interface eth0.
 
-`10.244.1.0/24 via 10.244.1.174 dev cilium_host proto kernel src 10.244.1.174`
-Similar to the previous rule, this specifies routing for the 10.244.1.0/24 (kind-worker) network through the next-hop IP address 10.244.1.174 via the cilium_host interface, with the source IP address for outgoing packets set to 10.244.1.174.
+2. `10.244.0.0/24 via 172.18.0.3 dev eth0 proto kernel`: Route for the subnet 10.244.0.0/24 (kind-control-plan) should be routed via the gateway with the IP address 172.18.0.3 and the outgoing interface eth0.
+
+3. `10.244.1.0/24 via 10.244.1.228 dev cilium_host proto kernel src 10.244.1.228`: Route for the subnet 10.244.1.0/24 (kind-worker) should be sent via the gateway with the IP address 10.244.1.228 via the interface cilium_host. Additionally, it specifies that the source IP address for this traffic should be 10.244.1.228.
+
+4. `10.244.1.228 dev cilium_host proto kernel scope link`: Network device `cilium_host` with the IP address 10.244.1.228 is directly connected the local network in the container.
 
 # Cilium's Networking options
 
