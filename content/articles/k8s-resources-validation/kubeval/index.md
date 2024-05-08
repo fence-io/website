@@ -13,6 +13,7 @@ series: ["Offline Kubernetes Validation"]
 series_order: 1
 series_opened: true
 series_title: Kubeval review
+slug: "kubeval-review"
 ---
 
 In this article, we will discuss validating Kubernetes resource definitions using the tool [kubeval](https://www.kubeval.com/).

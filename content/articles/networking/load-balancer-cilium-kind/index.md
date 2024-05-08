@@ -11,6 +11,7 @@ tags:
 - MacOS
 featureImage: networking.png
 codespace: https://codespaces.new/fence-io/playground
+slug: "Setting-up-Load-Balancer-Service-with-Cilium-in-KinD-Cluster"
 series:
 - Networking
 ---
@@ -192,7 +193,7 @@ macbook-pro % docker inspect kind
 
 A Linux bridge behaves like a network switch. It forwards packets between interfaces that are connected to it. In the container world, The bridge functions as a virtual networking interface, interconnecting containers (Linux network namespaces) via virtual Ethernet pairs (veth pairs). Each container is configured with its own veth pair, with one end connected to the bridge network. This arrangement enables communication between containers internally and with the host system.
 
-Linux Namespaces play a pivotal role in containerization by providing isolated environments for individual containers. Each Docker container is encapsulated within its own namespace, ensuring it has its distinct IP address, routing table, and network configuration. This isolation mechanism prevents interference between containers and ensures the host system's integrity. (check our next article for more details about linux network namespace technologie in container's world)
+Linux Namespaces play a pivotal role in containerization by providing isolated environments for individual containers. Each Docker container is encapsulated within its own namespace, ensuring it has its distinct IP address, routing table, and network configuration. This isolation mechanism prevents interference between containers and ensures the host system's integrity. (please check [Diving deep into Container Networking: An Exploration of Linux Network Namespace](https://fence-io.github.io/website/articles/networking/linux-network-namespace) for more details)
 
 ![alt](bridge-network.png)
 
@@ -505,5 +506,3 @@ Target MAC Address: The MAC address associated with the target IP address, as re
 # Conclusion
 
 Setting up the networking and load balancing in a KinD cluster with Cilium involves careful configuration and troubleshooting. By understanding the underlying principles and employing the right tools and techniques, you can ensure smooth operation and optimal performance of your home lab environment.
-
-Check our labs here https://github.com/fence-io/playground?tab=readme-ov-file#available-labs
