@@ -45,3 +45,5 @@ jobs:
         with:
           folder: ./public
           force: false
+          clean-exclude: |
+            .pr/*
