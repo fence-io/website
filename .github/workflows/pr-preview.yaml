@@ -18,6 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write 
     env:
       HUGO_VERSION: 0.125.4
     steps:
@@ -46,3 +47,11 @@ jobs:
           folder: ./public
           target-folder: .pr/${{ github.event.pull_request.number }}
           force: false
+      - name: Comment PR
+        uses: thollander/actions-comment-pull-request@fabd468d3a1a0b97feee5f6b9e499eab0dd903f6 # v2.5.0
+        with:
+          message: |
+            You're PR preview is available at https://fence-io.github.io/website/.pr/${{ github.event.pull_request.number }}/
+
+            Note that previews are cleaned up regularly :shrug:
+          comment_tag: preview
