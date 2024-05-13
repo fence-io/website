@@ -50,8 +50,8 @@ jobs:
       - name: Comment PR
         uses: thollander/actions-comment-pull-request@fabd468d3a1a0b97feee5f6b9e499eab0dd903f6 # v2.5.0
         with:
+          comment_tag: preview
           message: |
             You're PR preview is available at https://fence-io.github.io/website/.pr/${{ github.event.pull_request.number }}/
 
             Note that previews are cleaned up regularly :shrug:
-          comment_tag: preview
