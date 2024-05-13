@@ -11,7 +11,7 @@ featureImage: https://opengraph.githubassets.com/0fb34fac5b9bbfc8c22fe2e8d5025cf
 series: ["Offline Kubernetes Validation"]
 series_order: 1
 series_opened: true
-series_title: Kubeval review
+series_title: kubeval review
 ---
 
 In this article, we will discuss validating Kubernetes resource definitions using the tool [kubeval](https://www.kubeval.com/).
