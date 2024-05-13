@@ -27,6 +27,12 @@
           {{ partial "toc.html" . }}
         </div>
         {{- end }}
+        <!-- codespace -->
+        {{- if .Params.codespace }}
+        <a href='{{ .Params.codespace }}' target="_blank" class="mt-5">
+          <img src='https://github.com/codespaces/badge.svg' alt='Open in GitHub Codespaces' style='max-width: 100%;'>
+        </a>
+        {{- end }}
       </div>
       <!-- scroll to top -->
       <div class="absolute top-[110vh] bottom-[4rem] w-12 mx-auto overflow-y-clip">

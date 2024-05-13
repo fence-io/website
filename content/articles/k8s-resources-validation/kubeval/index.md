@@ -8,6 +8,7 @@ tags:
 - Kubernetes
 - CI
 featureImage: https://opengraph.githubassets.com/0fb34fac5b9bbfc8c22fe2e8d5025cf835fff5451d942903464a45131e8b85df/instrumenta/kubeval
+codespace: https://codespaces.new/fence-io/playground
 series: ["Offline Kubernetes Validation"]
 series_order: 1
 series_opened: true
