@@ -54,4 +54,4 @@ jobs:
           message: |
             You're PR preview is available at https://fence-io.github.io/website/.pr/${{ github.event.pull_request.number }}/
 
-            Note that previews are cleaned up regularly :shrug:
+            Note that previews are cleaned up every sunday.
