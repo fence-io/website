@@ -53,6 +53,40 @@ params:
     showZenMode: true
     showTaxonomies: true
     showAuthorsBadges: true
+  headless_cms:
+    engine: "sveltia"
+    site_url: https://fence-io.github.io/website
+    media_folder: static
+    backend:
+      name: "github"
+      repo: "org/repo"
+    collections:
+    - name: articles
+      label: Articles
+      create: true
+      folder: content/articles
+      media_folder: ''
+      public_folder: ''
+      fields:
+      - label: "Title"
+        name: "title"
+        widget: "string"
+      - { label: 'Draft', name: 'draft', widget: 'boolean', default: false }
+      - {
+          label: 'Publish Date',
+          name: 'date',
+          widget: 'datetime',
+          date_format: 'YYYY-MM-DD',
+          time_format: 'HH:mm',
+          format: 'YYYY-MM-DD HH:mm',
+        }
+      - label: 'Cover Image'
+        name: 'image'
+        widget: 'image'
+        required: false
+        tagname: ''
+
+      - { label: 'Body', name: 'body', widget: 'markdown', hint: 'Main content goes here.' }
 
 # Navigation
 menus:
@@ -104,3 +138,16 @@ menus:
   #   pre: mastodon
   #   url: https://todo
   #   weight: 100
+
+outputs:
+  home:
+  - HTML
+  - RSS
+  - HeadlessCMSConfig
+
+outputFormats:
+  HeadlessCMSConfig:
+    baseName: "headless-cms-config"
+    isHTML: false
+    notAlternative: true
+    mediaType: "application/yaml"
