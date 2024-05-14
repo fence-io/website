@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+
+name: Clean pr previews
+
+permissions: {}
+
+on:
+  schedule:
+    - cron: "18 2 * * 0"
+
+jobs:
+  prune:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
+        with:
+          ref: gh-pages
+      - name: Remove previews folder
+        run: |
+          rm -rf .pr
+      - name: Commit and push changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .
+          git commit -m 'chore: cleanup pr previews'
+          git push

@@ -1,20 +1,13 @@
-#########
-# TOOLS #
-#########
-
-PIP         ?= "pip"
-
 ###########
 # CODEGEN #
 ###########
 
-# TODO: codegen-hugo
-
 .PHONY: codegen
-codegen: ## Rebuild all generated code and docs
+codegen: ## Generate code
+codegen: build
 
 .PHONY: verify-codegen
-verify-codegen: ## Verify all generated code and docs are up to date
+verify-codegen: ## Verify everything is up to date
 verify-codegen: codegen
 	@echo Checking codegen is up to date... >&2
 	@git --no-pager diff -- .
@@ -22,15 +15,25 @@ verify-codegen: codegen
 	@echo 'To correct this, locally run "make codegen", commit the changes, and re-run tests.' >&2
 	@git diff --quiet --exit-code -- .
 
-########
-# HUGO #
-########
+#########
+# BUILD #
+#########
 
-.PHONY: hugo-serve
-hugo-serve: ## Build and serve website
+.PHONY: build
+build:  ## Build website
+	@echo Generating website... >&2
+	@npm install
+	@hugo --gc --minify
+
+#########
+# SERVE #
+#########
+
+.PHONY: serve
+serve: ## Build and serve website
 	@echo Build and serve website... >&2
 	@npm install
-	@npm start
+	@hugo server -D
 
 ########
 # HELP #
