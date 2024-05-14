@@ -12,7 +12,7 @@ codespace: https://codespaces.new/fence-io/playground
 series: ["Offline Kubernetes Validation"]
 series_order: 2
 series_opened: true
-series_title: Kubeconform review
+series_title: kubeconform review
 ---
 
 In this article, we will explore [kubeconform](https://github.com/yannh/kubeconform), the successor to [kubeval](https://www.kubeval.com/).
