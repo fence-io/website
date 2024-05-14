@@ -13,6 +13,8 @@ codespace: https://codespaces.new/fence-io/playground
 slug: "Diving-deep-into-Container-Networking"
 series: 
 - Networking
+series_order: 1
+series_opened: true
 ---
 
 # Introduction
