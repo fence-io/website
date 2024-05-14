@@ -53,6 +53,15 @@ params:
     showZenMode: true
     showTaxonomies: true
     showAuthorsBadges: true
+    sharingLinks:
+    - linkedin
+    - twitter
+    - reddit
+    - whatsapp
+    - telegram
+    - pinterest
+    - facebook
+    - email
 
 # Navigation
 menus:
