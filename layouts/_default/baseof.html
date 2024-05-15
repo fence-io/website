@@ -30,7 +30,7 @@
   <div class="bg-neutral/70 text-neutral-900 dark:bg-neutral-900/70 dark:text-neutral">
     <div class="mx-6 my-2">
       {{- partial "footer.html" . -}}
-      {{ if .Site.Params.enableSearch | default false }}
+      {{ if .Site.Params.enableSearch | default true }}
       {{- partial "search.html" . -}}
       {{ end }}
     </div>

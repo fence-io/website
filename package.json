@@ -6,17 +6,28 @@
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.12",
     "autoprefixer": "^10.4.19",
+    "fuse.js": "^7.0.0",
     "jquery": "^3.7.1",
     "postcss": "^8.4.38",
     "postcss-cli": "^11.0.0",
+    "rimraf": "^5.0.5",
     "tailwindcss": "^3.4.3",
+    "tw-elements": "2.0.0",
     "vendor-copy": "^3.0.1"
   },
   "vendorCopy": [],
   "devVendorCopy": [
     {
+      "from": "node_modules/fuse.js/dist/fuse.min.js",
+      "to": "assets/lib/fuse/fuse.min.js"
+    },
+    {
       "from": "node_modules/jquery/dist/jquery.slim.min.js",
       "to": "assets/lib/jquery/jquery.slim.min.js"
+    },
+    {
+      "from": "node_modules/tw-elements/js/tw-elements.umd.min.js",
+      "to": "assets/lib/tw-elements/index.min.js"
     }
   ]
 }
