@@ -113,3 +113,9 @@ menus:
   #   pre: mastodon
   #   url: https://todo
   #   weight: 100
+
+outputs:
+  home:
+  - html
+  - rss
+  - json
