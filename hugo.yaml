@@ -95,7 +95,7 @@ menus:
     weight: 50
   - identifier: slack
     pre: slack
-    url: https://todo
+    url: https://fence-io.slack.com
     weight: 60
   - identifier: linkedin
     pre: linkedin
