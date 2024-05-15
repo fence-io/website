@@ -92,7 +92,7 @@ menus:
     weight: 40
   - identifier: twitter
     pre: x-twitter
-    url: https://todo
+    url: https://twitter.com/FenceCommunity
     weight: 50
   - identifier: slack
     pre: slack
