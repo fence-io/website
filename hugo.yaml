@@ -50,7 +50,8 @@ params:
     # showViews: true
     # showLikes: true
     showEdit: true
-    showZenMode: true
+    editURL: "https://github.com/fence-io/website/tree/main/content"
+    showZenMode: false
     showTaxonomies: true
     showAuthorsBadges: true
     sharingLinks:
