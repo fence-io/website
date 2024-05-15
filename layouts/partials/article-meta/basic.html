@@ -3,7 +3,7 @@
 {{ $context := . }}
 {{ $scope := default nil }}
 
-{{ if (reflect.IsMap . ) }}
+{{ if (reflect.IsMap .) }}
 {{ $context = .context }}
 {{ $scope = cond (not .scope) nil .scope }}
 {{ end }}
