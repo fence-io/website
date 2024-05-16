@@ -31,6 +31,10 @@ taxonomies:
 
 # Visuals
 params:
+  social:
+    twitter: FenceCommunity
+  images:
+  - icons/finger-print.svg
   header: basic
   background: background
   defaultAppearance: dark
@@ -41,7 +45,6 @@ params:
   enableSearch: true
   highlightCurrentMenuArea: true
   defaultFeaturedImage: icons/finger-print.svg
-  images: true
   article:
     showDate: true
     showDateUpdated: true
