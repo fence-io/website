@@ -39,9 +39,9 @@ This capability of Linux kernel empowers containerization technologies like Dock
 
 To unravel this concept, let's delve into some fundamental aspects.
 
-## What is the Linux Networking Stack?
+## What constitutes a Networking Stack?
 
-The Linux networking stack is a set of software layers designed to facilitate communication across networks. Each layer within this stack is responsible for specific tasks such as data transmission, addressing, routing, and interaction with applications. Together, these layers collaborate to establish communication between devices connected to a network. This networking stack typically follows the OSI (Open Systems Interconnection) model.
+The networking stack is a set of software layers designed to facilitate communication across networks. Each layer within this stack is responsible for specific tasks such as data transmission, addressing, routing, and interaction with applications. Together, these layers collaborate to establish communication between devices connected to a network. This networking stack typically follows the OSI (Open Systems Interconnection) model.
 
 Here's a overview of the layers commonly present in a networking stack:
 
@@ -112,7 +112,7 @@ Note: If Docker is running on your host system, you will notice some custom chai
 
 # Create A Network Namespace 
 
-Linux offers various tools and utilities for network namespace management. The `ip netns` command facilitates the creation, deletion, and administration of network namespaces.
+Linux offers various tools and utilities for network namespace management. The `ip netns` command facilitates the creation, deletion, and the configuration of network namespaces.
 
 Create a new network namespace:
 
@@ -174,7 +174,7 @@ Open a new shell session to access the root network namespace:
 root@ubuntu:~# ip link add hlink1 type veth peer name clink1
 ```
 
-This command creates a pair of virtual Ethernet interfaces (veth), named hlink1 and clink1, within the root network namespace. You can observe the outcome by listing the network devices using the following command.
+This command creates a pair of virtual Ethernet interfaces `veth`, named `hlink1` and `clink1`, within the root network namespace. You can observe the outcome by listing the network devices using the following command.
 
 ```
 root@ubuntu:~# ip link list 
@@ -189,15 +189,15 @@ root@ubuntu:~# ip link list
     link/ether b2:2d:19:e8:a0:28 brd ff:ff:ff:ff:ff:ff
 ```
 
-The output shows that both `hlink1`  and `clink1` devices are located within the root network namespace. 
+The output shows that both `hlink1`  and `clink1` interfaces are located within the root network namespace and the state of each one is `DOWN`.
 
-To establish a connection between the root network namespace and the `app1` network namespace, we must retain one of the devices `hlink1` in the root namespace while relocating the other one (`clink1`) into the `app1` namespace (use the following command).
+To establish a connection between the root network namespace and the `app1` network namespace, we must retain one of the interfaces, `hlink1`, in the root namespace while relocating the other one, `clink1`, into the `app1` namespace (use the following command).
 
 ```
 root@ubuntu:~# ip link set clink1 netns app1
 ```
 
-Again, list the network devices in the root network namespace:
+Again, list the network interfaces in the root network namespace:
 
 ```
 root@ubuntu:~# ip link list 
@@ -210,7 +210,7 @@ root@ubuntu:~# ip link list
     link/ether b2:2d:19:e8:a0:28 brd ff:ff:ff:ff:ff:ff link-netns app1
 ```
 
-The output shows that the `clink1` device has been removed from the network device list.
+The output shows that the `clink1` interface has been removed from the network device list within the root network namespace.
 
 Now, check the network device list in `app1` namespace.
 
@@ -222,7 +222,7 @@ root@ubuntu:~# nsenter --net=/run/netns/app1 ip link list
     link/ether a2:08:37:6f:7a:b2 brd ff:ff:ff:ff:ff:ff link-netnsid 0
 ```
 
-The device `clink1` has been relocated from the root network namespace to `app1`. Notice the addition of `link-netns app1` binding to the `hlink1` device in the root network namespace device list output.
+The `clink1` interface has been moved from the root network namespace to `app1`. Notice the inclusion of `link-netns app1` in the `hlink1` interface within the root network namespace's device list output. This indicates that the `hlink1` interface is now linked with the `app1` network namespace.
 
 Note: keep in mind that both interfaces, `clink1` and `lo`, in `app1` network namespace are `DOWN`.
 
@@ -237,7 +237,7 @@ root@ubuntu:~# nsenter --net=/run/netns/app1 bash -c '
 '
 ```
 
-Let's review the configuration of `clink1` within the `app1` network namespace to inspect the assignment of IP addresses.
+Review the configuration of `clink1` within the `app1` network namespace to inspect the assignment of IP addresses.
 
 ```
 root@ubuntu:~# nsenter --net=/run/netns/app1 ip addr show dev clink1
@@ -247,13 +247,13 @@ root@ubuntu:~# nsenter --net=/run/netns/app1 ip addr show dev clink1
        valid_lft forever preferred_lft forever
 ```
 
-Additionally, we must configure the `loopback` interface within the `app1` network namespace.
+Additionally, we must setup the `loopback` interface within the `app1` network namespace. This ensures seamless communication among processes within the network namespace.
 
 ```
 root@ubuntu:~# nsenter --net=/run/netns/app1 ip link set lo up 
 ```
 
-Now, let's go back to the root network namespace and assigne to `172.16.0.10/16` IP address to the `hlink1` interface there.
+Now, returning to the root network namespace, let's assign the IP address `172.16.0.10/16` to the `hlink1` interface.
 
 ```
 root@ubuntu:~# ip link set hlink1 up
@@ -279,9 +279,9 @@ root@ubuntu:~# nsenter --net=/run/netns/app1 ip route
 172.16.0.0/16 dev clink1 proto kernel scope link src 172.16.0.11
 ```
 
-The displayed output shows that traffic distinated to `172.16.0.0/16` will be routed through the `clink1` interface. Given that `clink1` is one endpoint of the `veth` pair, it implies that any traffic traversing this interface will also be observable on the counterpart of the link `hlink1` within the root namespace.
+The output shows that traffic distinated for `172.16.0.0/16` will be routed through the `clink1` interface. Given that `clink1` is one end of the `veth` pair, it implies that any traffic traversing this interface will also be observable on the other end of the link `hlink1` within the root namespace.
 
-Then the routing table in the root network namespace.
+Then the routing table of the root network namespace.
 
 ```
 root@ubuntu:~# ip route
@@ -291,7 +291,7 @@ default via 192.168.64.1 dev enp0s1 proto dhcp src 192.168.64.3 metric 100
 192.168.64.1 dev enp0s1 proto dhcp scope link src 192.168.64.3 metric 100 
 ```
 
-The route `172.16.0.0/16 dev hlink1 proto kernel scope link src 172.16.0.10` indicates that traffic destined for `172.16.0.0/16` will be routed through the `hlink1` interface. Since `hlink1` is one endpoint of the `veth` pair, it also means that any traffic passing through this interface will also be visible on the other end of the link, `clink1`, within the `app1` network namespace.
+The route `172.16.0.0/16 dev hlink1 proto kernel scope link src 172.16.0.10` indicates that traffic destined for `172.16.0.0/16` will be routed through the `hlink1` interface. Since `hlink1` is one end of the `veth` pair, it also means that any traffic passing through this interface will also be visible on the other end of the link, `clink1`, within the `app1` network namespace.
 
 Let's start our first connectivity test by pinging `hlink1` from the `app1` network namespace.
 
@@ -315,7 +315,7 @@ The connectivity test has been successful between root network namespace and `ap
 
 # Network Namespace to Network Namespace connectivity
 
-In this section, we'll demonstrate that relying only on veth pairs isn't enough to interconnect two or more containers. This leads to conflicts in the Layer 3 (L3) routing table caused by introducing separate rules for different network namespaces. Let's create a second network namespace `app2` and configure the veth pair as in the `app1`:
+In this section, we'll demonstrate that relying only on veth pairs isn't enough to interconnect two or more containers. This leads to conflicts in the Layer 3 (L3) routing table caused by introducing separate rules for different network namespaces in root namespace routing table. Let's create a second network namespace `app2` and configure the veth pair as in the `app1`:
 
 ```
 ip netns add app2
@@ -344,81 +344,60 @@ root@ubuntu:~# ip route
 ...
 ```
 
-The root network namespace's routing table encountered a conflict. As you can see, after adding the second veth pair, a new route was added: `172.16.0.0/16 dev hlink2 proto kernel scope link src 172.16.0.20`. However, there was already an existing route for the `172.16.0.0/16` network. Consequently, when `app2` tries to ping the `hlink2` device, the first route is chosen, leading to connectivity issues. You can check it in the root namespace routing table:
+As you can see, the root network namespace's routing table encountered a conflict. After adding the second veth pair, a new route was added: `172.16.0.0/16 dev hlink2 proto kernel scope link src 172.16.0.20`. However, there was already an existing route for the `172.16.0.0/16` network. Consequently, when `app2` tries to ping the `hlink2` device, the first route is chosen, leading to connectivity issues.
 
 ![alt](multi-ns.png)
 
+Connectivity test again.
+
 ```
-root@ubuntu:~# nsenter --net=/run/netns/app2 ping 172.16.0.20
+root@ubuntu:~# nsenter --net=/run/netns/app2 ping 172.16.0.20 # ping root's interface hlink2
 PING 172.16.0.20 (172.16.0.20) 56(84) bytes of data.
 
 --- 172.16.0.20 ping statistics ---
 2 packets transmitted, 0 received, 100% packet loss, time 1023ms
 
 ```
+As expected, the connectivity test confirmes that accessing `hlink2` from `app2` is not feasible, even with the routes present in routing tables.
 
-The connectivity test confirms that we are unable to access `hlink2` from `app2`, despite having a rule in the routing table of the `app2` namespace: `172.16.0.0/16 dev clink2 proto kernel scope link src 172.16.0.21` (Another way to confirm this is by utilizing tcpdump on the `hlink2` interface within the root network namespace. Executing the command `tcpdump -i hlink2 icmp` will capture all ICMP paquets passing through the `hlink2` interface.)
-
+Alternatively, to confirm this, we can use tcpdump on the `hlink2` interface within the root network namespace. By running the command `tcpdump -i hlink2 icmp`, all ICMP packets passing through the `hlink2` interface are captured. However, in this scenario, no traffic will be captured.
 
 ## Linux Bridge
 
 The previous issue pushed us to explore alternatives for interconnecting containers, leading us to the Linux feature known as Linux Bridge. Operating similarly to a network switch, a Linux bridge facilitates packet forwarding between connected interfaces at the L2 level. (Please check [Setting up Load Balancer Service with Cilium in KinD Cluster](https://fence-io.github.io/website/articles/networking/load-balancer-cilium-kind) for more details on l2 connectivity)
 
-In the container ecosystem, the bridge acts as a virtual networking interface, linking containers through virtual Ethernet pairs. Each container is equipped with its own veth pair, with one end attached to the bridge network. This setup facilitates internal communication between containers and with the host system.
+In the container ecosystem, the bridge acts as a virtual networking interface, linking container's network namespace through virtual Ethernet pairs. Each network namespace is equipped with its own veth pair, with one end attached to the bridge network. This setup facilitates internal communication between containers and with the host system.
 
 ![alt](bridge-network.png)
 
-Let's create new namespaces. Go to the root network namespace.
+In this section, we will connect two new network namespaces to each other using a bridge. To begin, create two new network namespaces named `app3` and `app4`.
 
 ```
 ip netns add app3
 ip link add hlink3 type veth peer name clink3
 ip link set hlink3 up
 ip link set clink3 netns app3
-```
 
-```
-nsenter --net=/run/netns/app3 bash
-```
+nsenter --net=/run/netns/app3 bash -c '
+    ip link set lo up
+    ip link set clink3 up
+    ip addr add 172.16.0.30/16 dev clink3
+    ip link
+'
 
-```
-ip link set lo up
-ip link set clink3 up
-ip addr add 172.16.0.30/16 dev clink3
-ip link
-```
-
-Exit `app3` network namespace.
-
-```
-exit
-```
-
-Create `app4` network namespace.
-
-```
 ip netns add app4
 ip link add hlink4 type veth peer name clink4
 ip link set hlink4 up
 ip link set clink4 netns app4
 ip link
-```
 
-```
-nsenter --net=/run/netns/app4 bash
-```
+nsenter --net=/run/netns/app4 bash -c '
+    ip link set lo up
+    ip link set clink4 up
+    ip addr add 172.16.0.40/16 dev clink4
+    ip link
+'
 
-```
-ip link set lo up
-ip link set clink4 up
-ip addr add 172.16.0.40/16 dev clink4
-ip link
-```
-
-Exit `app4` namespace.
-
-```
-exit
 ```
 
 Make sure that there is no new routes added to the routing table of the root namespace:
@@ -430,7 +409,7 @@ default via 192.168.64.1 dev enp0s1 proto dhcp src 192.168.64.3 metric 100
 192.168.64.1 dev enp0s1 proto dhcp scope link src 192.168.64.3 metric 100 
 ```
 
-Now, let's create the bridge device and connect `hlink3` and `hlink4` to it to ensure connectivity between the containers. Go to the root network namespace.
+Now, let's create the bridge device and connect `hlink3` and `hlink4` to it to ensure connectivity between the containers.
 
 ```
 ip link add br0 type bridge 
@@ -452,10 +431,10 @@ Before the ping test, ensure to run tcpdump on the bridge interface to capture t
 tcpdump -i br0 icmp
 ```
 
-Now, switch to another session and execute the following commands:
+Now, switch to another shell session and execute the following commands:
 
 ```
-root@ubuntu:~# nsenter --net=/run/netns/app3 ping -c 2 172.16.0.40
+root@ubuntu:~# nsenter --net=/run/netns/app3 ping -c 2 172.16.0.40 # ping app4
 PING 172.16.0.40 (172.16.0.40) 56(84) bytes of data.
 64 bytes from 172.16.0.40: icmp_seq=1 ttl=64 time=0.142 ms
 64 bytes from 172.16.0.40: icmp_seq=2 ttl=64 time=0.071 ms
@@ -466,7 +445,7 @@ rtt min/avg/max/mdev = 0.071/0.106/0.142/0.035 ms
 ```
 
 ```
-root@ubuntu:~# nsenter --net=/run/netns/app4 ping -c 2 172.16.0.30
+root@ubuntu:~# nsenter --net=/run/netns/app4 ping -c 2 172.16.0.30 # ping app3
 PING 172.16.0.30 (172.16.0.30) 56(84) bytes of data.
 64 bytes from 172.16.0.30: icmp_seq=1 ttl=64 time=0.053 ms
 64 bytes from 172.16.0.30: icmp_seq=2 ttl=64 time=0.057 ms
@@ -476,7 +455,7 @@ PING 172.16.0.30 (172.16.0.30) 56(84) bytes of data.
 rtt min/avg/max/mdev = 0.053/0.055/0.057/0.002 ms
 ```
 
-We can see from the tcpdum command that the icmp traffic if going through brigde to reach each destination network namespace.
+We can see from the tcpdum command that the `ICMP` traffic if going through brigde interface to reach each destination network namespace. Here is the output:
 
 ```
 root@ubuntu:~# tcpdump -i br0 icmp
@@ -492,7 +471,7 @@ listening on br0, link-type EN10MB (Ethernet), snapshot length 262144 bytes
 16:19:43.245894 IP 172.16.0.30 > 172.16.0.40: ICMP echo reply, id 13480, seq 2, length 64
 ```
 
-The test is successful !! Without configuring hlink3 and hlink4, we assigned IP addresses only to clink3 and clink4. Since they're on the same Ethernet segment (connected to the bridge) L2 connectivity is established. We can verify this also by checking the ARP table in both namespaces for the MAC addresses of each other.
+The test is a success! Without configuring any IP addresses for `hlink3` and `hlink4`; instead, we assigned IPs only to `clink3` and `clink4`. As `hlink3` and `hlink4` belong to the same Ethernet segment (connected to the `bridge`), L2 connectivity is established based on MAC addresses. This is further confirmed by inspecting the ARP table in both namespaces.
 
 ```
 root@ubuntu:~# nsenter --net=/run/netns/app3 arp -n
@@ -500,11 +479,17 @@ Address                  HWtype  HWaddress           Flags Mask            Iface
 172.16.0.40              ether   52:45:d1:3a:b3:32   C                     clink3
 ```
 
+Here, we can see that to reach `app4` from `app3`, the L2 frame will use the destination MAC address `52:45:d1:3a:b3:32` for the IP destination address `172.16.0.40`.
+
+Same thing in `app4`
+
 ```
 root@ubuntu:~# nsenter --net=/run/netns/app4 arp -n
 Address                  HWtype  HWaddress           Flags Mask            Iface
 172.16.0.30              ether   82:6e:c9:b4:c0:79   C                     clink4
 ```
+
+Note: To get the MAC address of each network interface, execute `ip addr show INTF_NAME`.
 
 Also you can run.
 
@@ -513,14 +498,9 @@ root@ubuntu:~# nsenter --net=/run/netns/app3 ip neigh
 172.16.0.40 dev clink3 lladdr 52:45:d1:3a:b3:32 REACHABLE
 ```
 
-This command shows that the IP address 172.16.0.40 (app4) is reachable via the device `clink3` in the network namespace `app3`, with MAC address 52:45:d1:3a:b3:32.
+This command shows that the device with IP `172.16.0.40` (`clink4` within `app4`) has MAC address 52:45:d1:3a:b3:32.
 
-```
-root@ubuntu:~# nsenter --net=/run/netns/app4 ip neigh
-172.16.0.30 dev clink4 lladdr 82:6e:c9:b4:c0:79 REACHABLE
-```
-
-Let's try to ping `app3` from the root network namespace.
+After establishing the connection between `app3` and `app4`, it's now time to enssure the connectivity between the host (root network namespace) and both `app3` and `app4`. First, let's attempt to ping `app3` from the root network namespace.
 
 ```
 root@ubuntu:~# ping -c 2 172.16.0.30
@@ -532,15 +512,18 @@ From 172.16.0.10 icmp_seq=2 Destination Host Unreachable
 2 packets transmitted, 0 received, +2 errors, 100% packet loss, time 1017ms
 ```
 
-The root namespace cannot talk to containers. To establish the connectivity between the root and container namespaces, we need to assign the IP address to the bridge network interface.
+The root namespace is currently unable to communicate with the `app3` network namespace because there's no route in root's routing table allowing to reach `app3`. To this, we first need to assign an IP address to the bridge network interface.
 
 ```
 ip addr add 172.16.0.1/16 dev br0
 ```
 
-Once we assigned ip address to br0 we got a route in the host routing table: `172.16.0.0/16 dev br0 proto kernel scope link src 172.16.0.1`
+Assigning an IP address to `br0` updates the root namespace routing table with the route: `172.16.0.0/16 dev br0 proto kernel scope link src 172.16.0.1`. This indicates that traffic destined for the `172.16.0.0/16` subnet can be routed via the `br0` interface. Given that `hlink1` and `hlink2` are also connected to the bridge, this implies that traffic will be appropriately directed to the target namespaces.
 
-Now we should be able to ping containers from the root network namespace.
+Remember, the bridge operates at the data link layer (L2), so once traffic is routed to the bridge interface, an ARP request is broadcasted to all devices connected to the bridge, requesting the destination MAC address. The device that possesses the MAC address will respond, and the Ethernet frame will be filled with the destination MAC address before being sent to its destination within this L2 segment.
+
+After this configuration, we should be able to ping `app3` and `app4` from the root network namespace.
+
 ```
 root@ubuntu:~# ping -c 2 172.16.0.30
 PING 172.16.0.30 (172.16.0.30) 56(84) bytes of data.
@@ -552,14 +535,14 @@ PING 172.16.0.30 (172.16.0.30) 56(84) bytes of data.
 rtt min/avg/max/mdev = 0.069/0.077/0.085/0.008 ms
 ```
 
-In the container's side we should add a default route to the bridge interface.
+We should also add a default route to `app3` and `app4`. This means that if there is no destination subnet specified, the traffic will be sent to the default gateway, which in this case is the bridge interface.
 
 ```
-root@ubuntu:~# nsenter --net=/run/netns/app3  ip route add default via 172.16.0.1
-root@ubuntu:~# nsenter --net=/run/netns/app4  ip route add default via 172.16.0.1
+root@ubuntu:~# nsenter --net=/run/netns/app3 ip route add default via 172.16.0.1
+root@ubuntu:~# nsenter --net=/run/netns/app4 ip route add default via 172.16.0.1
 ```
 
-Now, `app3` and `app4` can reach any network interfaces in the root network namespace.
+Now, `app3` and `app4` can reach any subnet within the host.
 
 ```
 root@ubuntu:~# nsenter --net=/run/netns/app3  ping -c 2 192.168.64.3
