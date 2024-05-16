@@ -21,11 +21,11 @@ series_opened: true
 
 Container networking might seem complex and almost mystical initially, but it's actually built on basic Linux networking principles. By understanding these fundamentals, we can troubleshoot the container networking layers on a profound level. Furthermore, we might even create container networking solution from scratch for pure enjoyment.
 
-In this article we are going to covere the foundational elements of container networking, from the underlying principles of network namespaces to the practical tools and techniques for managing container networking environments.
+In this article we are going to cover the foundational elements of container networking, from the underlying principles of network namespaces to the practical tools and techniques for managing container networking environments.
 
 # Requirements 
 
-- Linux host
+For this article, you'll require a Linux host system equipped with the following utilities: nsenter, ping, and tcpdump. 
 
 # Dive Into The Foundations of Container Networking
 
@@ -108,9 +108,9 @@ root@ubuntu:~# iptables --list-rules
 ...
 ```
 
-PS: If Docker is running on your host system, you will notice some custom chains added to your iptables rules.
+Note: If Docker is running on your host system, you will notice some custom chains added to your iptables rules.
 
-# Create Network Namespace 
+# Create A Network Namespace 
 
 Linux offers various tools and utilities for network namespace management. The `ip netns` command facilitates the creation, deletion, and administration of network namespaces.
 
@@ -127,7 +127,7 @@ root@ubuntu:~# ip netns list
 app1
 ```
 
-To execute a process within a network namespace, you can utilize the `netenter` utility. Here's how you can initiate a new shell within the `app1` namespace:
+To execute a process within a network namespace, you can utilize the `nsenter` utility. Here's how you can initiate a new shell within the `app1` namespace:
 
 ```
 root@ubuntu:~# nsenter --net=/run/netns/app1 bash
@@ -154,6 +154,8 @@ root@ubuntu:~# iptables --list-rules
 
 This output indicates that the Bash process is operating within a fully isolated namespace (app1). There are no routing rules or custom iptables chains present, and only the loopback interface is available.
 
+Note: `loopback` interface is a virtual network interface that allows communication between applications running on the same network namespace.
+
 ![alt](network-stack.png)
 
 # Network Namespace to Host connectivity
@@ -170,6 +172,11 @@ Open a new shell session to access the root network namespace:
 
 ```
 root@ubuntu:~# ip link add hlink1 type veth peer name clink1
+```
+
+This command creates a pair of virtual Ethernet interfaces (veth), named hlink1 and clink1, within the root network namespace. You can observe the outcome by listing the network devices using the following command.
+
+```
 root@ubuntu:~# ip link list 
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
@@ -182,10 +189,17 @@ root@ubuntu:~# ip link list
     link/ether b2:2d:19:e8:a0:28 brd ff:ff:ff:ff:ff:ff
 ```
 
-Both `hlink1`  and `clink1` are located within the root network namespace. To establish a connection between the root network namespace and the `app1` network namespace, we must retain one of the devices `hlink1` in the root namespace while relocating the other into the `app1` namespace.
+The output shows that both `hlink1`  and `clink1` devices are located within the root network namespace. 
+
+To establish a connection between the root network namespace and the `app1` network namespace, we must retain one of the devices `hlink1` in the root namespace while relocating the other one (`clink1`) into the `app1` namespace (use the following command).
 
 ```
 root@ubuntu:~# ip link set clink1 netns app1
+```
+
+Again, list the network devices in the root network namespace:
+
+```
 root@ubuntu:~# ip link list 
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
@@ -196,7 +210,9 @@ root@ubuntu:~# ip link list
     link/ether b2:2d:19:e8:a0:28 brd ff:ff:ff:ff:ff:ff link-netns app1
 ```
 
-The network device `clink1` has been relocated from the root network namespace to `app1` (notice the addition of `link-netns app1` binding to the `hlink1` device in the root network namespace). Check network devices is `app1` namespace.
+The output shows that the `clink1` device has been removed from the network device list.
+
+Now, check the network device list in `app1` namespace.
 
 ```
 root@ubuntu:~# nsenter --net=/run/netns/app1 ip link list
@@ -206,42 +222,45 @@ root@ubuntu:~# nsenter --net=/run/netns/app1 ip link list
     link/ether a2:08:37:6f:7a:b2 brd ff:ff:ff:ff:ff:ff link-netnsid 0
 ```
 
-PS: keep in mind that both interfaces, `clink1` and `lo`, in `app1` network namespace are `DOWN`.
+The device `clink1` has been relocated from the root network namespace to `app1`. Notice the addition of `link-netns app1` binding to the `hlink1` device in the root network namespace device list output.
 
-Now, we'll establish the link between both network devices, `hlink1` and `clink1` and assign appropriate IP addresses.
+Note: keep in mind that both interfaces, `clink1` and `lo`, in `app1` network namespace are `DOWN`.
 
-Stay in `app1` network namespace and run:
+Currently, each end of the veth pair resides in its respective namespace to establish the connection between both network namespaces. However, the link cannot yet be utilized for communication between the namespaces until we assign suitable IP addresses to the different interfaces and activate them.
 
-```
-nsenter --net=/run/netns/app1 bash
-ip link set clink1 up
-ip addr add 172.16.0.11/16 dev clink1
-```
-
-Check the config:
+Let's assigne `172.16.0.11/16` to `clink1` within `app1` network namespace.
 
 ```
-root@ubuntu:~# ip addr show dev clink1
+root@ubuntu:~# nsenter --net=/run/netns/app1 bash -c '
+    ip link set clink1 up
+    ip addr add 172.16.0.11/16 dev clink1
+'
+```
+
+Let's review the configuration of `clink1` within the `app1` network namespace to inspect the assignment of IP addresses.
+
+```
+root@ubuntu:~# nsenter --net=/run/netns/app1 ip addr show dev clink1
 9: clink1@if10: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state LOWERLAYERDOWN group default qlen 1000
     link/ether a2:08:37:6f:7a:b2 brd ff:ff:ff:ff:ff:ff link-netnsid 0
     inet 172.16.0.11/16 scope global clink1
        valid_lft forever preferred_lft forever
 ```
 
-we need also to setup the loopback interface (It is a virtual network interface that allows communication between applications running on the same network namespace)
+Additionally, we must configure the `loopback` interface within the `app1` network namespace.
 
 ```
-ip link set lo up 
+root@ubuntu:~# nsenter --net=/run/netns/app1 ip link set lo up 
 ```
 
-Now exit `app1` and let's go back to the root network namespace and setup the `hlink1` interface there:
+Now, let's go back to the root network namespace and assigne to `172.16.0.10/16` IP address to the `hlink1` interface there.
 
 ```
-ip link set hlink1 up
-ip addr add 172.16.0.10/16 dev hlink1
+root@ubuntu:~# ip link set hlink1 up
+root@ubuntu:~# ip addr add 172.16.0.10/16 dev hlink1
 ```
 
-Check the config:
+Inspect the `hlink1` configuration within the root network namespace to see the IP assignment.
 
 ```
 root@ubuntu:~# ip addr show dev hlink1
@@ -249,17 +268,18 @@ root@ubuntu:~# ip addr show dev hlink1
     link/ether b2:2d:19:e8:a0:28 brd ff:ff:ff:ff:ff:ff link-netns app1
     inet 172.16.0.10/16 scope global hlink1
        valid_lft forever preferred_lft forever
-
 ```
 
 ![alt](veth.png)
 
-Check now routing tables in `app1` network namespaces.
+We've successfully established the link between the `app1` network namespace and the root, as illustrated in the diagram above. Now, let's inspect the routing table within the `app1` and root network namespace to understand how traffic originating from `app1` namespace will be routed to reach the root.
 
 ```
 root@ubuntu:~# nsenter --net=/run/netns/app1 ip route
 172.16.0.0/16 dev clink1 proto kernel scope link src 172.16.0.11
 ```
+
+The displayed output shows that traffic distinated to `172.16.0.0/16` will be routed through the `clink1` interface. Given that `clink1` is one endpoint of the `veth` pair, it implies that any traffic traversing this interface will also be observable on the counterpart of the link `hlink1` within the root namespace.
 
 Then the routing table in the root network namespace.
 
@@ -271,7 +291,7 @@ default via 192.168.64.1 dev enp0s1 proto dhcp src 192.168.64.3 metric 100
 192.168.64.1 dev enp0s1 proto dhcp scope link src 192.168.64.3 metric 100 
 ```
 
-In both namespaces, we observe a route connecting both interfaces, `hlink1` and `clink1`.
+The route `172.16.0.0/16 dev hlink1 proto kernel scope link src 172.16.0.10` indicates that traffic destined for `172.16.0.0/16` will be routed through the `hlink1` interface. Since `hlink1` is one endpoint of the `veth` pair, it also means that any traffic passing through this interface will also be visible on the other end of the link, `clink1`, within the `app1` network namespace.
 
 Let's start our first connectivity test by pinging `hlink1` from the `app1` network namespace.
 
@@ -424,7 +444,7 @@ ip link
 
 ## Connectivity Test
 
-PS: If you are running docker in your host, make sure to remove br_netfilter kernel module `rmmod br_netfilter` (for more details https://unix.stackexchange.com/questions/671644/cant-establish-communication-between-two-network-namespaces-using-bridge-networ)
+Note: If you are running docker in your host, make sure to remove br_netfilter kernel module `rmmod br_netfilter` (for more details https://unix.stackexchange.com/questions/671644/cant-establish-communication-between-two-network-namespaces-using-bridge-networ)
 
 Before the ping test, ensure to run tcpdump on the bridge interface to capture the ICMP traffic between both containers.
 
