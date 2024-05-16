@@ -473,6 +473,8 @@ listening on br0, link-type EN10MB (Ethernet), snapshot length 262144 bytes
 
 The test is a success! Without configuring any IP addresses for `hlink3` and `hlink4`; instead, we assigned IPs only to `clink3` and `clink4`. As `hlink3` and `hlink4` belong to the same Ethernet segment (connected to the `bridge`), L2 connectivity is established based on MAC addresses. This is further confirmed by inspecting the ARP table in both namespaces.
 
+ARP (Address Resolution Protocol) table in Linux offers a mapping between IP addresses and MAC addresses of devices on the local network segment (L2 segment).
+
 ```
 root@ubuntu:~# nsenter --net=/run/netns/app3 arp -n
 Address                  HWtype  HWaddress           Flags Mask            Iface
@@ -491,14 +493,16 @@ Address                  HWtype  HWaddress           Flags Mask            Iface
 
 Note: To get the MAC address of each network interface, execute `ip addr show INTF_NAME`.
 
-Also you can run.
+Alternatively, the `ip neigh` command offers information about the neighbor cache.
 
 ```
 root@ubuntu:~# nsenter --net=/run/netns/app3 ip neigh
 172.16.0.40 dev clink3 lladdr 52:45:d1:3a:b3:32 REACHABLE
 ```
 
-This command shows that the device with IP `172.16.0.40` (`clink4` within `app4`) has MAC address 52:45:d1:3a:b3:32.
+In this specific output, we observe that `app3` has a neighbor device with the IP address `172.16.0.40` (app4), accessible through the `clink3` interface. The MAC address (Link Layer address) of this neighbor device is identified as `52:45:d1:3a:b3:32`. Furthermore, the state of this entry in the neighbor cache is marked as `REACHABLE`, indicating that the MAC address is presently known and accessible.
+
+When two devices within the same L2 segment, such as `app3` and `app4` connected via the bridge, need to communicate, they rely on MAC addresses. The `ARP table` entries play a crucial role in this process by actively providing the necessary MAC destination address for constructing the L2 frame.
 
 After establishing the connection between `app3` and `app4`, it's now time to enssure the connectivity between the host (root network namespace) and both `app3` and `app4`. First, let's attempt to ping `app3` from the root network namespace.
 
@@ -520,7 +524,7 @@ ip addr add 172.16.0.1/16 dev br0
 
 Assigning an IP address to `br0` updates the root namespace routing table with the route: `172.16.0.0/16 dev br0 proto kernel scope link src 172.16.0.1`. This indicates that traffic destined for the `172.16.0.0/16` subnet can be routed via the `br0` interface. Given that `hlink1` and `hlink2` are also connected to the bridge, this implies that traffic will be appropriately directed to the target namespaces.
 
-Remember, the bridge operates at the data link layer (L2), so once traffic is routed to the bridge interface, an ARP request is broadcasted to all devices connected to the bridge, requesting the destination MAC address. The device that possesses the MAC address will respond, and the Ethernet frame will be filled with the destination MAC address before being sent to its destination within this L2 segment.
+Remember, the bridge operates at the data link layer (L2), so once traffic is routed to the bridge interface, an `ARP` request is broadcasted to all devices connected to the bridge, requesting the destination MAC address. The device that possesses the MAC address will respond, and the Ethernet frame will be filled with the destination MAC address before being sent to its destination within this L2 segment.
 
 After this configuration, we should be able to ping `app3` and `app4` from the root network namespace.
 
