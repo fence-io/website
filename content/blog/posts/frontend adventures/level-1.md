@@ -6,7 +6,8 @@ categories:
 - dev
 authors:
 - eddycharly
-featureImage: https://raw.githubusercontent.com/squidfunk/mkdocs-material/master/.github/assets/logo.svg
+images:
+- https://raw.githubusercontent.com/squidfunk/mkdocs-material/master/.github/assets/logo.svg
 hideToc: true
 ---
 
