@@ -9,7 +9,8 @@ tags:
 - Cilium
 - Load Balancer
 - MacOS
-featureImage: networking.png
+images:
+- networking.png
 codespace: https://codespaces.new/fence-io/playground
 slug: "Setting-up-Load-Balancer-Service-with-Cilium-in-KinD-Cluster"
 series:

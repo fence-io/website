@@ -7,7 +7,8 @@ tags:
 - Validation
 - Kubernetes
 - CI
-featureImage: https://user-images.githubusercontent.com/19731161/142411871-f695e40c-bfa8-43ca-97c0-94c256749732.png
+images:
+- https://user-images.githubusercontent.com/19731161/142411871-f695e40c-bfa8-43ca-97c0-94c256749732.png
 codespace: https://codespaces.new/fence-io/playground
 series: ["Offline Kubernetes Validation"]
 series_order: 2

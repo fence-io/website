@@ -8,7 +8,8 @@ tags:
 - Container
 - Linux
 - Bridge
-featureImage: bridge.png
+images:
+- bridge.png
 codespace: https://codespaces.new/fence-io/playground
 slug: "Diving-deep-into-Container-Networking"
 series: 
