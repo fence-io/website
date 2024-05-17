@@ -26,7 +26,7 @@ In this article we are going to cover the foundational elements of container net
 
 # Requirements 
 
-For this article, you'll require a Linux host system equipped with the following utilities: nsenter, ping, and tcpdump. 
+For this article, you'll require a Linux host system equipped with the following tools: `nsenter`, `ping`, and `tcpdump`. 
 
 # Dive Into The Foundations of Container Networking
 
@@ -424,15 +424,15 @@ ip link
 
 ## Connectivity Test
 
-Note: If you are running docker in your host, make sure to remove br_netfilter kernel module `rmmod br_netfilter` (for more details https://unix.stackexchange.com/questions/671644/cant-establish-communication-between-two-network-namespaces-using-bridge-networ)
+Note: If you are running docker in your host, make sure to remove `br_netfilter` kernel module `rmmod br_netfilter` (for more details https://unix.stackexchange.com/questions/671644/cant-establish-communication-between-two-network-namespaces-using-bridge-networ)
 
-Before the ping test, ensure to run tcpdump on the bridge interface to capture the ICMP traffic between both containers.
+Before conducting the ping test, make sure to run tcpdump on the bridge interface to capture the `ICMP` traffic passing through the bridge while both containers, `app3` and `app4` communicate.
 
 ```
 tcpdump -i br0 icmp
 ```
 
-Now, switch to another shell session and execute the following commands:
+Now, switch to another shell session and run the following connectivity tests:
 
 ```
 root@ubuntu:~# nsenter --net=/run/netns/app3 ping -c 2 172.16.0.40 # ping app4
@@ -456,7 +456,7 @@ PING 172.16.0.30 (172.16.0.30) 56(84) bytes of data.
 rtt min/avg/max/mdev = 0.053/0.055/0.057/0.002 ms
 ```
 
-We can see from the tcpdum command that the `ICMP` traffic if going through brigde interface to reach each destination network namespace. Here is the output:
+We can see from the `tcpdump` output bellow, that the `ICMP` traffic if going through brigde interface to reach each destination network namespace.
 
 ```
 root@ubuntu:~# tcpdump -i br0 icmp
@@ -472,9 +472,13 @@ listening on br0, link-type EN10MB (Ethernet), snapshot length 262144 bytes
 16:19:43.245894 IP 172.16.0.30 > 172.16.0.40: ICMP echo reply, id 13480, seq 2, length 64
 ```
 
-The test is a success! Without configuring any IP addresses for `hlink3` and `hlink4`; instead, we assigned IPs only to `clink3` and `clink4`. As `hlink3` and `hlink4` belong to the same Ethernet segment (connected to the `bridge`), L2 connectivity is established based on MAC addresses. This is further confirmed by inspecting the ARP table in both namespaces.
+The test is a success! 
+
+Remember, we did not assigne any IP addresses for `hlink3` and `hlink4`; instead, we assigned IPs only to `clink3` and `clink4`. As `hlink3` and `hlink4` belong to the same Ethernet segment (connected to the `bridge`), L2 connectivity is established based on MAC addresses. This is further confirmed by inspecting the ARP table in both namespaces.
 
 ARP (Address Resolution Protocol) table in Linux offers a mapping between IP addresses and MAC addresses of devices on the local network segment (L2 segment).
+
+When two devices within the same L2 segment, such as `app3` and `app4` connected via the bridge, need to communicate, they rely on MAC addresses. The `ARP table` entries play a crucial role in this process by actively providing the necessary MAC destination address for constructing the L2 frame.
 
 ```
 root@ubuntu:~# nsenter --net=/run/netns/app3 arp -n
@@ -482,9 +486,9 @@ Address                  HWtype  HWaddress           Flags Mask            Iface
 172.16.0.40              ether   52:45:d1:3a:b3:32   C                     clink3
 ```
 
-Here, we can see that to reach `app4` from `app3`, the L2 frame will use the destination MAC address `52:45:d1:3a:b3:32` for the IP destination address `172.16.0.40`.
+In the `ARP` table of `app3`, we observe that the destination MAC address for `app4` is `52:45:d1:3a:b3:32`, corresponding to the destination IP address of `172.16.0.40`.
 
-Same thing in `app4`
+Same in `app4`.
 
 ```
 root@ubuntu:~# nsenter --net=/run/netns/app4 arp -n
@@ -501,9 +505,7 @@ root@ubuntu:~# nsenter --net=/run/netns/app3 ip neigh
 172.16.0.40 dev clink3 lladdr 52:45:d1:3a:b3:32 REACHABLE
 ```
 
-In this specific output, we observe that `app3` has a neighbor device with the IP address `172.16.0.40` (app4), accessible through the `clink3` interface. The MAC address (Link Layer address) of this neighbor device is identified as `52:45:d1:3a:b3:32`. Furthermore, the state of this entry in the neighbor cache is marked as `REACHABLE`, indicating that the MAC address is presently known and accessible.
-
-When two devices within the same L2 segment, such as `app3` and `app4` connected via the bridge, need to communicate, they rely on MAC addresses. The `ARP table` entries play a crucial role in this process by actively providing the necessary MAC destination address for constructing the L2 frame.
+In this specific output, we see that `app3` has a neighbor device with the IP address `172.16.0.40` (app4), accessible through the `clink3` interface. The MAC address (L2 address) of this neighbor device is identified as `52:45:d1:3a:b3:32`. Furthermore, the state of this entry in the neighbor cache is marked as `REACHABLE`, indicating that the MAC address is presently known and accessible.
 
 After establishing the connection between `app3` and `app4`, it's now time to enssure the connectivity between the host (root network namespace) and both `app3` and `app4`. First, let's attempt to ping `app3` from the root network namespace.
 
@@ -517,13 +519,13 @@ From 172.16.0.10 icmp_seq=2 Destination Host Unreachable
 2 packets transmitted, 0 received, +2 errors, 100% packet loss, time 1017ms
 ```
 
-The root namespace is currently unable to communicate with the `app3` network namespace because there's no route in root's routing table allowing to reach `app3`. To this, we first need to assign an IP address to the bridge network interface.
+The root namespace is currently unable to communicate with the `app3` network namespace because there's no route in root's routing table allowing to reach `app3`. To fix this, we first need to assign an IP address to the bridge network interface itself.
 
 ```
 ip addr add 172.16.0.1/16 dev br0
 ```
 
-Assigning an IP address to `br0` updates the root namespace routing table with the route: `172.16.0.0/16 dev br0 proto kernel scope link src 172.16.0.1`. This indicates that traffic destined for the `172.16.0.0/16` subnet can be routed via the `br0` interface. Given that `hlink1` and `hlink2` are also connected to the bridge, this implies that traffic will be appropriately directed to the target namespaces.
+Assigning an IP address to `br0` updates the root namespace routing table with the route: `172.16.0.0/16 dev br0 proto kernel scope link src 172.16.0.1` (you can see it by running `ip route` in root network namespace). This indicates that traffic destined for the `172.16.0.0/16` subnet can be routed via the `br0` interface. Given that `hlink1` and `hlink2` are also connected to the bridge, this implies that traffic will be appropriately directed to the target namespaces.
 
 Remember, the bridge operates at the data link layer (L2), so once traffic is routed to the bridge interface, an `ARP` request is broadcasted to all devices connected to the bridge, requesting the destination MAC address. The device that possesses the MAC address will respond, and the Ethernet frame will be filled with the destination MAC address before being sent to its destination within this L2 segment.
 
@@ -540,14 +542,14 @@ PING 172.16.0.30 (172.16.0.30) 56(84) bytes of data.
 rtt min/avg/max/mdev = 0.069/0.077/0.085/0.008 ms
 ```
 
-We should also add a default route to `app3` and `app4`. This means that if there is no destination subnet specified, the traffic will be sent to the default gateway, which in this case is the bridge interface.
+Aditionnaly, we also need to add a default route to `app3` and `app4`. This means that when a destination IP address of a paquet does not match any specific routes in the routing table, it will go througt the default route, the bridge interface in this case.
 
 ```
 root@ubuntu:~# nsenter --net=/run/netns/app3 ip route add default via 172.16.0.1
 root@ubuntu:~# nsenter --net=/run/netns/app4 ip route add default via 172.16.0.1
 ```
 
-Now, `app3` and `app4` can reach any subnet within the host.
+Now, `app3` and `app4` can reach any subnet within the host. Try to ping `eth0` for example.
 
 ```
 root@ubuntu:~# nsenter --net=/run/netns/app3  ping -c 2 192.168.64.3
@@ -560,7 +562,7 @@ PING 192.168.64.3 (192.168.64.3) 56(84) bytes of data.
 rtt min/avg/max/mdev = 0.066/0.125/0.184/0.059 ms
 ```
 
-Great! We can go from the containers to the host and back.
+Great! We are able to go from the containers to the host and back.
 
 # Conclusion
 
