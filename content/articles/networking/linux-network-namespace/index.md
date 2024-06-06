@@ -14,7 +14,7 @@ codespace: https://codespaces.new/fence-io/playground
 slug: "Diving-deep-into-Container-Networking"
 series: 
 - Networking
-series_order: 1
+series_order: 2
 series_opened: true
 ---
 
@@ -596,6 +596,42 @@ Docker has also other network types:
 [None](https://docs.docker.com/network/drivers/none/): In this mode, Docker completely isolates the network namespace from the host. It configures only the loopback interface within the network namespace, ensuring that the container operates in a fully isolated networking environment.
 
 [Overlay Networks](https://docs.docker.com/network/drivers/overlay/): Docker supports overlay networks, which enable communication between containers running on different hosts. Overlay networks use VXLAN encapsulation (wait for our next article for more details on this topic) to extend layer 2 networking across hosts.
+
+Custom Networks: Docker allows users to create custom networks with specific configurations. These custom networks provide additional flexibility and control over container networking.
+
+# Internet Connectivity
+
+The standard method for connecting a network namespace to the internet involves Network Address Translation (NAT). NAT is a networking technique that modifies the source or destination IP addresses of packets as they travel through a router. It allows multiple devices within a local network to share a single public IP address when accessing online resources.
+
+To achieve this, we must first enable packet forwarding, which is typically disabled by default in Linux. Enabling it, usually from the root namespace, transforms the host machine into a router, with the bridge interface acting as the default gateway for the containers.
+
+```
+echo 1 > /proc/sys/net/ipv4/ip_forward
+```
+
+Packets originating from the network namespace will have their source IP addresses replaced with the host's external interface address. Additionally, the host will track all existing mappings and restore the IP addresses before forwarding packets back to the containers. The following command will enable this.
+
+```
+iptables -t nat -A POSTROUTING -s 172.16.0.0/16 ! -o br0 -j MASQUERADE
+```
+
+This iptables rule performs NAT for outgoing packets from the 172.16.0.0/16 subnet, excluding those destined for the "br0" interface. It dynamically translates the source IP addresses of these packets to the IP address of the host's external interface, allowing internal IPs to appear as originating from the host's public IP address.
+
+![alt](ns-via-bridge.png)
+
+# Docker Networks
+
+In the context of Docker, a Linux bridge is a common networking solution used to connect containers. Docker creates a bridge network by default for each Docker daemon (docker0). 
+
+Each container is attached to this bridge network, which allows them to communicate with each other. Docker creates virtual Ethernet pairs to connect containers to the bridge network. Each container gets its own network namespace, ensuring network isolation.
+
+Docker has also other [network types](https://docs.docker.com/network/):
+
+Host network: Docker also offers the option to use the host's networking namespace instead of creating a separate network namespace for each container. In this mode, containers share the network namespace with the host, bypassing network isolation but potentially offering better performance.
+
+None: In this mode, Docker completely isolates the network namespace from the host. It configures only the loopback interface within the network namespace, ensuring that the container operates in a fully isolated networking environment.
+
+Overlay Networks: Docker supports overlay networks, which enable communication between containers running on different hosts. Overlay networks use VXLAN encapsulation (wait for our next article for more details on this topic) to extend layer 2 networking across hosts.
 
 Custom Networks: Docker allows users to create custom networks with specific configurations. These custom networks provide additional flexibility and control over container networking.
 

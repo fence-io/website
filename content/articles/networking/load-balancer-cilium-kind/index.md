@@ -15,7 +15,7 @@ codespace: https://codespaces.new/fence-io/playground
 slug: "Setting-up-Load-Balancer-Service-with-Cilium-in-KinD-Cluster"
 series:
 - Networking
-series_order: 2
+series_order: 1
 series_opened: true
 images:
 - networking.png
