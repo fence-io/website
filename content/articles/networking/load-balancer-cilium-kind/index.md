@@ -119,8 +119,6 @@ default via 172.18.0.1 dev eth0
 
 Cilium represents a modern solution for networking and security in Kubernetes, surpassing the capabilities of traditional components like kube-proxy (disabled in cilium installation  `kubeProxyReplacement="strict"`). While kube-proxy focuses on basic networking tasks such as service discovery and load balancing, Cilium extends its functionality with advanced networking, security, and observability features. 
 
-In terms of load balancing, kube-proxy operates at the network layer (L3/L4) and provides basic load balancing using iptables or IPVS. In contrast, Cilium can handle L3/L4 load balancing and offers more sophisticated techniques. We'll delve into these techniques later in this article.
-
 Cilium offers two network configurations: encapsulation and direct routing (native `routingMode="native"`), each suited to different environments and requirements. Encapsulation works well in cloud environments or situations with overlapping networks while native routing is the best option in on-premises setups or dedicated cloud environments where performance optimization is crucial. 
 
 For further details on this topic, refer to the Cilium documentation: [Cilium Routing Concepts](https://docs.cilium.io/en/stable/network/concepts/routing).

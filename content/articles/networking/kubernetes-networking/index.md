@@ -171,7 +171,7 @@ Disadvantages:
 - Scalability: Limited by the size of the subnet, making it less suitable for large clusters.
 - IP Management: Requires diligent management of IP addresses to prevent conflicts and ensure sufficient addresses for all pods.
 
-Some common CNI plugins that can support flat network configurations include Flannel in  host-gw mode or Calico with IP-in-IP encapsulation disabled.
+Some common CNI plugins that can support flat network configurations include [Cilium in native mode](https://docs.cilium.io/en/stable/network/concepts/routing/#native-routing).
 
 **Overlay Network CNI**: 
 
@@ -190,7 +190,7 @@ Disadvantages:
 - Performance Overhead: Encapsulation can introduce additional latency and CPU overhead due to the processing required.
 - Complexity: More complex to configure, troubleshoot, and manage compared to flat networks.
 
-Some popular CNI plugins that support overlay networks include Cilium, Flannel and Calico.
+Some popular CNI plugins that support overlay networks include [Cilium in encapsulation mode](https://docs.cilium.io/en/stable/network/concepts/routing/#encapsulation).
 
 # Pod-to-Pod Communication
 
