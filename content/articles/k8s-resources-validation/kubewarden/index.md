@@ -19,33 +19,66 @@ slug: "kubewarden-review"
 
 # Introduction
 
-[kubewarden](https://www.kubewarden.io/) is a Kubernetes-native policy engine designed to enforce custom security policies across Kubernetes clusters. Here’s a review highlighting its features, capabilities, and benefits.
+[kubewarden](https://www.kubewarden.io/) is a Kubernetes-native policy engine designed to enforce custom security policies across Kubernetes clusters. This article will delve into the types of policies supported by Kubewarden, the syntax and language used to write these policies, its audit mode and reporting capabilities, observability features, offline evaluation in CI pipelines, and the extensive policies catalog.
 
 # Overview and Purpose
 
 Kubewarden integrates seamlessly into Kubernetes environments, offering a robust solution for implementing and enforcing security policies. It operates based on the principle of warden policies, which are written in [WebAssembly (Wasm)](https://webassembly.org/) format, allowing for lightweight, efficient execution directly within Kubernetes clusters.
 
-## Policy Enforcement
+## Types of Policies
 
-Kubewarden enables the creation and enforcement of custom policies. Policies can be defined to validate Kubernetes resource configurations, container images, runtime behaviors, and more.
-  
-Leveraging Wasm, Kubewarden ensures that policies are executed securely and efficiently with minimal performance overhead. Wasm modules are sandboxed and isolated.
+Kubewarden supports a wide range of policies that can be categorized into three main types:
 
-## Extensibility and Customization
+Admission Policies: These policies are executed during the admission phase of the Kubernetes API server. They can accept, reject, or mutate incoming requests based on predefined rules. Admission policies help ensure that only compliant resources are created or modified within the cluster.
 
-Users can develop and deploy their own policies using familiar programming languages compiled to Wasm. This flexibility allows organizations to address unique security requirements and compliance standards effectively.
+Mutation Policies: Mutation policies modify resource definitions as they pass through the Kubernetes API server. These policies can be used to enforce defaults, add annotations or labels, and ensure that resources adhere to organizational standards before they are persisted.
 
-## Integration with Kubernetes Ecosystem
+Validation Policies: These policies validate resource definitions against specific criteria. Validation policies can reject non-compliant resources, helping maintain the desired state of the cluster by ensuring that only valid configurations are allowed.
 
-Kubewarden seamlessly integrates with Kubernetes through admission controllers, validating requests to the Kubernetes API server in real-time. It supports integration with tools like Kubernetes Policy Controller [KubeScor](https://kube-score.com/) and other Kubernetes-native security solutions.
+## Syntax and Language for Writing Policies
 
-Kubewarden is designed to scale across large Kubernetes deployments, ensuring efficient policy enforcement without impacting cluster performance. Its architecture and use of Wasm technology contribute to minimal resource consumption.
+Kubewarden policies are written using the WebAssembly (Wasm) technology, which allows policies to be authored in multiple programming languages that can compile to Wasm. The most commonly used languages for writing Kubewarden policies are:
 
-## Community and Support
+Rust: Known for its performance and safety, Rust is a popular choice for writing Kubewarden policies.
+Go: Go offers simplicity and readability, making it another viable option for policy authors.
+AssemblyScript: A TypeScript-like language that provides a more approachable syntax for JavaScript and TypeScript developers.
+The flexibility of using WebAssembly means that policies can leverage existing libraries and tools within these languages, making it easier to implement complex logic and integrations.
 
-The Kubewarden community and ecosystem offer a growing library of pre-defined policies addressing common security concerns such as container image vulnerabilities, resource limits, pod security contexts, network policies, and more.
+Leveraging Wasm, Kubewarden ensures that policies are executed securely and efficiently with minimal performance overhead. This flexibility allows organizations to address unique security requirements and compliance standards effectively.
 
-Backed by an active open-source community, Kubewarden benefits from ongoing development, updates, and contributions from security professionals and Kubernetes enthusiasts worldwide.
+Wasm modules are sandboxed and isolated.
+
+## Audit Mode and Reporting
+
+Kubewarden provides an audit mode that allows policies to be evaluated without enforcing them. 
+This mode is crucial for organizations looking to understand the impact of potential policies before applying them in a production environment. 
+In audit mode, policy evaluations generate detailed reports that highlight which resources would have been accepted, rejected, or mutated if the policies were enforced.
+
+## Observability of the Solution
+
+Observability is a key feature of Kubewarden, providing insights into the performance and effectiveness of policies. Kubewarden integrates with standard observability tools, offering:
+
+**Metrics**: Exported to Prometheus, these metrics provide visibility into policy evaluations, including the number of evaluations, decisions (accept/reject/mutate), and evaluation durations.
+**Logs**: Detailed logs are available for each policy evaluation, including the input data, evaluation results, and any errors encountered. These logs can be integrated with centralized logging solutions like Elasticsearch and Grafana.
+**Tracing**: By integrating with distributed tracing systems, Kubewarden can provide end-to-end visibility into policy evaluations, helping diagnose performance issues and understand policy impacts.
+
+## Offline Evaluation (Integration in CI Pipelines)
+
+Kubewarden supports offline policy evaluation, making it an excellent fit for CI/CD pipelines. By integrating Kubewarden into CI pipelines, organizations can ensure that resource definitions are compliant with policies before they are deployed to a Kubernetes cluster. This is achieved by:
+
+**Policy Testing**: Policies can be tested against resource definitions during the build phase, catching non-compliant configurations early in the development lifecycle.
+**Pre-Deployment Checks**: Resource definitions can be evaluated against policies as part of the deployment pipeline, preventing non-compliant resources from reaching the cluster.
+**Feedback Loop**: Developers receive immediate feedback on policy compliance, allowing them to address issues before merging code or deploying applications.
+
+## Policies Catalog
+
+Kubewarden offers a rich catalog of pre-defined policies that address common use cases and best practices. The policies catalog includes:
+
+**Security Policies**: Enforce security best practices, such as requiring certain labels or annotations, enforcing resource limits, and validating container images.
+**Compliance Policies**: Ensure resources comply with regulatory requirements and organizational standards.
+**Operational Policies**: Improve cluster operations by enforcing naming conventions, validating configuration settings, and ensuring resource consistency.
+The policies catalog serves as a starting point for organizations, providing ready-to-use policies that can be customized to meet specific needs.
+
 
 # Installation
 
@@ -67,6 +100,8 @@ helm repo update kubewarden
 # Usage 
 
 **Create policy**
+
+example en rust or typescript 
 
 Here is an example of a policy written in Go that checks if the label `app.kubernetes.io/component: web` exists in the pod labels.
 
