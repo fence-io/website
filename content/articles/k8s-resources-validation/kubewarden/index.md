@@ -39,9 +39,12 @@ Validation Policies: These policies validate resource definitions against specif
 
 Kubewarden policies are written using the WebAssembly (Wasm) technology, which allows policies to be authored in multiple programming languages that can compile to Wasm. The most commonly used languages for writing Kubewarden policies are:
 
-Rust: Known for its performance and safety, Rust is a popular choice for writing Kubewarden policies.
-Go: Go offers simplicity and readability, making it another viable option for policy authors.
-AssemblyScript: A TypeScript-like language that provides a more approachable syntax for JavaScript and TypeScript developers.
+**Rust**: Known for its performance and safety, Rust is a popular choice for writing Kubewarden policies.
+
+**Go**: Go offers simplicity and readability, making it another viable option for policy authors.
+
+**AssemblyScript**: A TypeScript-like language that provides a more approachable syntax for JavaScript and TypeScript developers.
+
 The flexibility of using WebAssembly means that policies can leverage existing libraries and tools within these languages, making it easier to implement complex logic and integrations.
 
 Leveraging Wasm, Kubewarden ensures that policies are executed securely and efficiently with minimal performance overhead. This flexibility allows organizations to address unique security requirements and compliance standards effectively.
@@ -52,6 +55,7 @@ Wasm modules are sandboxed and isolated.
 
 Kubewarden provides an audit mode that allows policies to be evaluated without enforcing them. 
 This mode is crucial for organizations looking to understand the impact of potential policies before applying them in a production environment. 
+
 In audit mode, policy evaluations generate detailed reports that highlight which resources would have been accepted, rejected, or mutated if the policies were enforced.
 
 ## Observability of the Solution
@@ -59,7 +63,9 @@ In audit mode, policy evaluations generate detailed reports that highlight which
 Observability is a key feature of Kubewarden, providing insights into the performance and effectiveness of policies. Kubewarden integrates with standard observability tools, offering:
 
 **Metrics**: Exported to Prometheus, these metrics provide visibility into policy evaluations, including the number of evaluations, decisions (accept/reject/mutate), and evaluation durations.
+
 **Logs**: Detailed logs are available for each policy evaluation, including the input data, evaluation results, and any errors encountered. These logs can be integrated with centralized logging solutions like Elasticsearch and Grafana.
+
 **Tracing**: By integrating with distributed tracing systems, Kubewarden can provide end-to-end visibility into policy evaluations, helping diagnose performance issues and understand policy impacts.
 
 ## Offline Evaluation (Integration in CI Pipelines)
@@ -67,7 +73,9 @@ Observability is a key feature of Kubewarden, providing insights into the perfor
 Kubewarden supports offline policy evaluation, making it an excellent fit for CI/CD pipelines. By integrating Kubewarden into CI pipelines, organizations can ensure that resource definitions are compliant with policies before they are deployed to a Kubernetes cluster. This is achieved by:
 
 **Policy Testing**: Policies can be tested against resource definitions during the build phase, catching non-compliant configurations early in the development lifecycle.
+
 **Pre-Deployment Checks**: Resource definitions can be evaluated against policies as part of the deployment pipeline, preventing non-compliant resources from reaching the cluster.
+
 **Feedback Loop**: Developers receive immediate feedback on policy compliance, allowing them to address issues before merging code or deploying applications.
 
 ## Policies Catalog
@@ -75,8 +83,11 @@ Kubewarden supports offline policy evaluation, making it an excellent fit for CI
 Kubewarden offers a rich catalog of pre-defined policies that address common use cases and best practices. The policies catalog includes:
 
 **Security Policies**: Enforce security best practices, such as requiring certain labels or annotations, enforcing resource limits, and validating container images.
+
 **Compliance Policies**: Ensure resources comply with regulatory requirements and organizational standards.
+
 **Operational Policies**: Improve cluster operations by enforcing naming conventions, validating configuration settings, and ensuring resource consistency.
+
 The policies catalog serves as a starting point for organizations, providing ready-to-use policies that can be customized to meet specific needs.
 
 
