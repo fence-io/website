@@ -27,17 +27,19 @@ Kubewarden integrates seamlessly into Kubernetes environments, offering a robust
 
 ## Types of Policies
 
-Kubewarden supports a wide range of policies that can be categorized into three main types:
+The policies are executed during the admission phase of the Kubernetes API server. They can accept, reject, or mutate incoming requests based on predefined rules to help ensuring that only compliant resources are created or modified within the cluster.
 
-Admission Policies: These policies are executed during the admission phase of the Kubernetes API server. They can accept, reject, or mutate incoming requests based on predefined rules. Admission policies help ensure that only compliant resources are created or modified within the cluster.
+Kubewarden policies can be categorized into two main types:
 
-Mutation Policies: Mutation policies modify resource definitions as they pass through the Kubernetes API server. These policies can be used to enforce defaults, add annotations or labels, and ensure that resources adhere to organizational standards before they are persisted.
+**Mutation Policies**: Mutation policies modify resource definitions as they pass through the Kubernetes API server. These policies can be used to add annotations or labels, and ensure that resources adhere to organizational standards before they are persisted.
 
-Validation Policies: These policies validate resource definitions against specific criteria. Validation policies can reject non-compliant resources, helping maintain the desired state of the cluster by ensuring that only valid configurations are allowed.
+**Validation Policies**: These policies validate resource definitions against specific criteria. Validation policies can reject non-compliant resources, helping maintain the desired state of the cluster by ensuring that only valid configurations are allowed.
+
+For more information about the different types of policies, please refer to this [link](https://docs.kubewarden.io/tutorials/writing-policies/wasi/raw-policies).
 
 ## Syntax and Language for Writing Policies
 
-Kubewarden policies are written using the WebAssembly (Wasm) technology, which allows policies to be authored in multiple programming languages that can compile to Wasm. The most commonly used languages for writing Kubewarden policies are:
+Kubewarden policies are written using the [WebAssembly (Wasm)](https://webassembly.org/) technology, which allows policies to be written in multiple programming languages that can compile to Wasm ([list of supported languages](https://github.com/appcypher/awesome-wasm-langs)). The most commonly used languages for writing Kubewarden policies are:
 
 **Rust**: Known for its performance and safety, Rust is a popular choice for writing Kubewarden policies.
 
@@ -45,18 +47,21 @@ Kubewarden policies are written using the WebAssembly (Wasm) technology, which a
 
 **AssemblyScript**: A TypeScript-like language that provides a more approachable syntax for JavaScript and TypeScript developers.
 
-The flexibility of using WebAssembly means that policies can leverage existing libraries and tools within these languages, making it easier to implement complex logic and integrations.
+The flexibility of using **WebAssembly** means that policies can leverage existing libraries and tools within these languages, making it easier to implement complex logic and integrations.
 
-Leveraging Wasm, Kubewarden ensures that policies are executed securely and efficiently with minimal performance overhead. This flexibility allows organizations to address unique security requirements and compliance standards effectively.
+Leveraging **Wasm**, Kubewarden ensures that policies are executed securely and efficiently with minimal performance overhead. This flexibility allows organizations to address unique security requirements and compliance standards effectively.
 
-Wasm modules are sandboxed and isolated.
+**Wasm** modules are sandboxed and isolated.
 
 ## Audit Mode and Reporting
 
-Kubewarden provides an audit mode that allows policies to be evaluated without enforcing them. 
+Kubewarden provides an [audit mode](https://docs.kubewarden.io/explanations/audit-scanner) that allows policies to be evaluated without enforcing them. 
+
 This mode is crucial for organizations looking to understand the impact of potential policies before applying them in a production environment. 
 
-In audit mode, policy evaluations generate detailed reports that highlight which resources would have been accepted, rejected, or mutated if the policies were enforced.
+In **audit mode**, policy evaluations generate detailed reports that highlight which resources would have been accepted, rejected, or mutated if the policies were enforced.
+
+The results of the audit scanner are stored in a [PolicyReport](https://docs.kubewarden.io/explanations/audit-scanner/policy-reports) format, allowing integration with the [Policy Reporter UI](https://kyverno.github.io/policy-reporter/).
 
 ## Observability of the Solution
 
@@ -72,24 +77,23 @@ Observability is a key feature of Kubewarden, providing insights into the perfor
 
 Kubewarden supports offline policy evaluation, making it an excellent fit for CI/CD pipelines. By integrating Kubewarden into CI pipelines, organizations can ensure that resource definitions are compliant with policies before they are deployed to a Kubernetes cluster. This is achieved by:
 
-**Policy Testing**: Policies can be tested against resource definitions during the build phase, catching non-compliant configurations early in the development lifecycle.
+**Policy Testing**: Policies can be tested against resource definitions during the build phase, catching non-compliant configurations early in the development lifecycle. More details about policy testing are [here](https://docs.kubewarden.io/tutorials/testing-policies).
 
-**Pre-Deployment Checks**: Resource definitions can be evaluated against policies as part of the deployment pipeline, preventing non-compliant resources from reaching the cluster.
+The testing approach involves developers who create the policies, ensuring they receive immediate feedback on policy compliance in the CI pipeline. This allows them to address issues before merging code.
 
-**Feedback Loop**: Developers receive immediate feedback on policy compliance, allowing them to address issues before merging code or deploying applications.
+Additionally, cluster operators benefit from a feedback loop where resource definitions are evaluated against policies as part of the deployment pipeline, preventing non-compliant resources from reaching the cluster.
 
 ## Policies Catalog
 
-Kubewarden offers a rich catalog of pre-defined policies that address common use cases and best practices. The policies catalog includes:
+Kubewarden offers [pre-defined policies](https://artifacthub.io/packages/search?kind=13&sort=relevance&page=1) that address common use cases and best practices. The policies catalog includes:
 
-**Security Policies**: Enforce security best practices, such as requiring certain labels or annotations, enforcing resource limits, and validating container images.
+**Security Policies**: Enforce security best practices, such as Pod Security Policy standard, and validating container images.
 
-**Compliance Policies**: Ensure resources comply with regulatory requirements and organizational standards.
+**Compliance Policies**: Ensure resources adhere to regulatory requirements and organizational standards, such as enforcing or validating the presence of specific labels or annotations.
 
 **Operational Policies**: Improve cluster operations by enforcing naming conventions, validating configuration settings, and ensuring resource consistency.
 
-The policies catalog serves as a starting point for organizations, providing ready-to-use policies that can be customized to meet specific needs.
-
+This list serves as a starting point for organizations, providing ready-to-use policies that can be customized to meet specific needs.
 
 # Installation
 
@@ -108,95 +112,154 @@ helm repo add kubewarden https://charts.kubewarden.io
 helm repo update kubewarden
 ```
 
-# Usage 
+# Example
 
-**Create policy**
+Let's create a very basic Kubewarden policy in Go. This policy will ensure that any Kubernetes resource has a specific label. (The policy created using [go-policy-template](https://github.com/kubewarden/go-policy-template)).
 
-example en rust or typescript 
-
-Here is an example of a policy written in Go that checks if the label `app.kubernetes.io/component: web` exists in the pod labels.
 
 ```go
 package main
 
 import (
-	"encoding/json"
-	"fmt"
-	"os"
+    "encoding/json"
+    "fmt"
+    "os"
+
+    "github.com/kubewarden/policy-sdk-go/policy"
+    "github.com/kubewarden/policy-sdk-go/protocol"
 )
 
-type PolicyData struct {
-	Resource Resource `json:"resource"`
+type Settings struct {
+    RequiredLabelKey   string `json:"required_label_key"`
+    RequiredLabelValue string `json:"required_label_value"`
 }
 
-type Resource struct {
-	Manifest Manifest `json:"manifest"`
-}
+func validate(payload []byte) ([]byte, error) {
+    var req protocol.ValidationRequest
+    if err := json.Unmarshal(payload, &req); err != nil {
+        return nil, fmt.Errorf("cannot unmarshal validation request: %w", err)
+    }
 
-type Manifest struct {
-	Metadata Metadata `json:"metadata"`
-}
+    var settings Settings
+    if err := json.Unmarshal(req.Settings, &settings); err != nil {
+        return nil, fmt.Errorf("cannot unmarshal settings: %w", err)
+    }
 
-type Metadata struct {
-	Labels map[string]string `json:"labels"`
+    labels := req.Request.Object.Object["metadata"].(map[string]interface{})["labels"].(map[string]interface{})
+    if value, found := labels[settings.RequiredLabelKey]; !found || value != settings.RequiredLabelValue {
+        return policy.Deny(fmt.Sprintf("missing required label: %s=%s", settings.RequiredLabelKey, settings.RequiredLabelValue)), nil
+    }
+
+    return policy.Allow(), nil
 }
 
 func main() {
-	var inputData PolicyData
-	err := json.NewDecoder(os.Stdin).Decode(&inputData)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "error decoding input: %v", err)
-		os.Exit(1)
-	}
-
-	labels := inputData.Resource.Manifest.Metadata.Labels
-
-	if val, ok := labels["app.kubernetes.io/component"]; !ok || val != "web" {
-		fmt.Println(`{"allowed": false, "message": "Pod must have label 'app.kubernetes.io/component: web'."}`)
-		return
-	}
-
-	fmt.Println(`{"allowed": true}`)
+    policy.Entrypoint(validate)
 }
 ```
 
-**Build the policy into wasm**
+## Build and Package the Policy
 
-Build the Go code into a WebAssembly (Wasm) module using the Kubewarden CLI [kwctl](https://github.com/kubewarden/kwctl?tab=readme-ov-file#install):
+1. **Install TinyGo**:
 
-```bash
-kwctl build -t wasm main.go
+The official Go compiler can't produce WebAssembly binaries that run outside the browser. Therefore, you must use TinyGo to build the policy.
+
+   ```sh
+   wget https://github.com/tinygo-org/tinygo/releases/download/v0.25.0/tinygo_0.25.0_amd64.deb
+   sudo dpkg -i tinygo_0.25.0_amd64.deb
+   ```
+
+2. **Compile the Policy**:
+
+   Use TinyGo to compile the policy into a WebAssembly module.
+
+   ```sh
+   tinygo build -o policy.wasm -target=wasi main.go
+   ```
+   
+## Test the Policy
+
+You can use wasmtime to test your Wasm module locally.
+
+```sh
+curl https://wasmtime.dev/install.sh -sSf | bash
 ```
 
-This command generates a `main.wasm` file in the current directory, which is the compiled WebAssembly module of your policy.
+Create a settings.json file with the required label settings:
 
-**Create a Policy Bundle**
-
-Create a policy bundle directory structure with your Wasm module and a metadata file (`policy.yaml`) describing your policy:
-
-```yaml
-apiVersion: policies.kubewarden.io/v1alpha2
-kind: Policy
-metadata:
-  name: kubewarden-example
-spec:
-  module: main.wasm
-  rules:
-    - operations: ["CREATE", "UPDATE"]
-      description: "Ensure Pod has label 'app.kubernetes.io/component: web'"
-      message: "Pod must have label 'app.kubernetes.io/component: web'."
-      query: ""
+```json
+	{
+		"required_label_key": "environment",
+		"required_label_value": "production"
+	}
 ```
 
-**Deploy the Policy Bundle**
+Create a test-input.json file with a test Kubernetes resource:
 
-Deploy the policy bundle to your Kubernetes cluster using [kwctl](https://github.com/kubewarden/kwctl?tab=readme-ov-file#install):
-
-```bash
-kwctl apply -f .
+```json
+{
+    "request": {
+        "object": {
+            "metadata": {
+                "labels": {
+                    "environment": "production"
+                }
+            }
+        }
+    },
+    "settings": {
+        "required_label_key": "environment",
+        "required_label_value": "production"
+    }
+}
 ```
 
-This command deploys the policy bundle (including `main.wasm` and `policy.yaml`) to your Kubernetes cluster, making it available for enforcement.
+Run the policy with Wasmtime and test input:
+
+```sh
+cat test-input.json | wasmtime policy.wasm
+```
+
+## Deploy the Policy
+
+1. **Push the Policy to a Registry**:
+
+   You need to push the compiled WebAssembly module to a registry that Kubewarden can access. Here, we will use `cosign` to sign and push the module to an OCI-compliant registry.
+
+   Install `cosign`:
+
+   ```sh
+   go install github.com/sigstore/cosign/cmd/cosign@latest
+   ```
+
+   Push the WebAssembly module:
+
+   ```sh
+   cosign sign-blob --key cosign.key policy.wasm
+   ```
+
+2. **Deploy the Policy using Kubewarden**:
+
+   Create a ClusterAdmissionPolicy resource to deploy your policy:
+
+   ```yaml
+   apiVersion: policies.kubewarden.io/v1
+   kind: ClusterAdmissionPolicy
+   metadata:
+     name: my-policy
+   spec:
+     module: registry://<your-registry>/policy:latest
+     rules:
+       - apiGroups: [""]
+         apiVersions: ["v1"]
+         resources: ["pods"]
+     mutating: false
+     settings:
+       label_key: "example-key"
+       label_value: "example-value"
+   ```
+
+Replace `<your-registry>` with the actual registry where you pushed your WebAssembly module.
 
 # Conclusion:
 
