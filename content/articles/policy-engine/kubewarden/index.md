@@ -1,16 +1,18 @@
 ---
 authors:
 - sara
-title: Validating Kubernetes resources offline - kubewarden
+title: Kubernetes Policy Engine - kubewarden
 date: 2024-06-14
 tags:
-- Validation
+- Policy
 - Kubernetes
+- Wasm
+- Runtime
 - CI
 images: 
 - kubewarden.png
-series: ["Offline Kubernetes Validation"]
-series_order: 3
+series: ["Kubernetes Policy Engine"]
+series_order: 1
 series_opened: true
 series_title: Kubewarden review
 slug: "kubewarden-review"
@@ -110,6 +112,12 @@ helm install --wait --namespace cert-manager --create-namespace \
 helm repo add kubewarden https://charts.kubewarden.io
 
 helm repo update kubewarden
+
+helm install --wait -n kubewarden --create-namespace kubewarden-crds kubewarden/kubewarden-crds
+
+helm install --wait -n kubewarden kubewarden-controller kubewarden/kubewarden-controller
+
+helm install --wait -n kubewarden kubewarden-defaults kubewarden/kubewarden-defaults
 ```
 
 # Example
@@ -255,8 +263,8 @@ cat test-input.json | wasmtime policy.wasm
          resources: ["pods"]
      mutating: false
      settings:
-       label_key: "example-key"
-       label_value: "example-value"
+       required_label_key: "example-key"
+       required_label_value: "example-value"
    ```
 
 Replace `<your-registry>` with the actual registry where you pushed your WebAssembly module.
