@@ -125,7 +125,7 @@ For further details on this topic, refer to the Cilium documentation: [Cilium Ro
 
 # Network Configuration of KinD Cluster
 
-The architecture of the KinD cluster leverages Docker's networking features alongside standard Kubernetes components. Within a Kind cluster, every Kubernetes node is a Docker container. These containers operate within the same linux network namespace, facilitating communication via the Docker bridge network. KinD establishes a unique bridge network for each cluster for communication between Kubernetes nodes. Let's explore docker networks.
+The architecture of the KinD cluster leverages Docker's networking features alongside standard Kubernetes components. Within a Kind cluster, every Kubernetes node is a Docker container. These containers operate within the same network namespace, facilitating communication via the Docker bridge network. KinD establishes a unique bridge network for each cluster for communication between Kubernetes nodes. Let's explore docker networks.
 
 ```
 macbook-pro % docker network list
@@ -246,9 +246,9 @@ default            link#17            UCSIg       bridge100      !
 255.255.255.255/32 link#6             UCS               en0      !
 ```
 
-There's no network configuration to access the Docker network within the Docker Desktop VM. By contrast, comparing this with the Linux host's `ip route` output reveals significant configuration differences.
+As evident, there's no network configuration to access the Docker network within the Docker Desktop VM. By contrast, comparing this with the Linux host's `ip route` output reveals significant configuration differences.
 
-```:
+```
 root@ubuntu # ip route
 default via 192.168.64.1 dev enp0s1 proto dhcp src 192.168.64.3 metric 100
 172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1 linkdown
@@ -257,9 +257,9 @@ default via 192.168.64.1 dev enp0s1 proto dhcp src 192.168.64.3 metric 100
 192.168.64.1 dev enp0s1 proto dhcp scope link src 192.168.64.3 metric 100
 ```
 
-Here `172.18.0.0/16 dev br-38055463db3c proto kernel scope link src 172.18.0.1`, we can see a route to the kind network via interface `br-38055463db3c`, which is the bridge interface.
+Here, we can see a route to the container's subnet via the network interface `br-38055463db3c`. The `172.18.0.0/16 dev br-38055463db3c proto kernel scope link src 172.18.0.1` line in the routing table indicates that the IP address range `172.18.0.0/16` is associated with the network device `br-38055463db3c`, which is the bridge interface.
 
-By checking the network interfaces in the Linux host we see:
+Now let’s list the network interfaces in the Linux host:
 
 ```
 root@ubuntu # ip link 
@@ -268,14 +268,20 @@ root@ubuntu # ip link
     link/ether 02:42:c4:e4:5f:7e brd ff:ff:ff:ff:ff:ff
 6: vethf413b4a@if5: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master br-38055463db3c state UP mode DEFAULT group default 
     link/ether 0a:86:ac:2a:fe:a5 brd ff:ff:ff:ff:ff:ff link-netnsid 1
+8: vethb9242a9@if7: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master br-38055463db3c state UP mode DEFAULT group default 
+    link/ether a2:11:09:57:4f:26 brd ff:ff:ff:ff:ff:ff link-netnsid 0
 …
 ```
 
-**br-38055463db3c**: The bridge interface in the host level.
+Let’s break down the configuration:
 
-**vethf413b4a@if5**: This is a virtual Ethernet interface (veth), it is paired with another veth interface in a linux network namespace of the container. `ethf413b4a` is connected to the bridge interface `br-38055463db3c`.
+**br-38055463db3c**: The bridge interface.
 
-You can observe the traffic going in/out of the container by running `tcpdump -i vethf413b4a` on the host and run curl inside the container to access internet.
+**vethf413b4a@if5**: This is a virtual Ethernet interface (veth) named "vethf413b4a" It is paired with another veth interface in a network namespace (container). It is connected to the bridge interface "br-38055463db3c", this represents the link between the container and bridge  discussed previously.
+
+**vethb9242a9@if7**: Similar to the second interface, this is another veth interface named "vethb9242a9". It is paired with another veth interface in a network namespace (container). Also connected to the same bridge interface "br-38055463db3c".
+
+This means the docker containers are linked to the host via the bridge network. You can observe the traffic going in/out of the containers by running `tcpdump -i vethf413b4a` and `tcpdump -i vethb9242a9` from your local host.
 
 To achieve similar connectivity on macOS host, we are going to use [docker mac net connect](https://github.com/chipmk/docker-mac-net-connect?tab=readme-ov-file#installation). This tool establishes a basic network tunnel between macOS and the Docker Desktop Linux VM. `docker-mac-net-connect` creates a virtual network interface (`utun`), acting as the bridge between your Mac and the Docker Desktop Linux VM.
 

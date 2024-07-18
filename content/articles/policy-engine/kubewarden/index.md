@@ -269,7 +269,7 @@ cat test-input.json | wasmtime policy.wasm
 
 Replace `<your-registry>` with the actual registry where you pushed your WebAssembly module.
 
-# Conclusion:
+# Conclusion
 
 Kubewarden emerges as a valuable tool for Kubernetes administrators and security teams seeking to implement and enforce robust security policies effectively. Its use of WebAssembly for policy execution, comprehensive policy library, seamless Kubernetes integration, and active community support make it a compelling choice for enhancing Kubernetes security with policy-driven controls.
 
