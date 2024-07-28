@@ -240,6 +240,8 @@ kwctl push annotated-policy.wasm <your-registry>/nod-name-deny-list-policy:v0.0.
 
 2. **E2E testing**:
 
+You can automate end-to-end testing of your policy against Kubernetes requests to ensure expected behavior, even for context-aware policies that require access to a running cluster.
+
 You have to pull your policy to kwctl local store first:
 
 ```sh
