@@ -198,7 +198,7 @@ Use `TinyGo` to compile the policy into a WebAssembly module.
    tinygo build -o policy.wasm -target=wasi main.go
    ```
 
-## Deploy the Policy
+## Test & publish the Policy
 
 1. **Push the Policy to a Registry**:
 
@@ -238,26 +238,28 @@ Push the policy:
     kwctl push annotated-policy.wasm <your-registry>/nod-name-deny-list-policy:v0.0.1
     ```
 
-2. **Deploy the Policy using Kubewarden**:
+2. **E2E testing**:
 
-You have to pull your policy to your kwctl local store first:
+You have to pull your policy to kwctl local store first:
 
     ```sh
      kwctl pull registry://<your-registry>/nod-name-deny-list-policy:v0.0.1
     ```
 
-You can also test your policy before deploying it:
+Run the test:
 
     ```sh
     kwctl run \
-    --settings-json '{"denied_names": ["test"]}' \
-    -r test_data/pod.json \
-    registry://<your-registry>/nod-name-deny-list-policy:v0.0.1
+        --settings-json '{"denied_names": ["test"]}' \
+        -r test_data/pod.json \
+        registry://<your-registry>/nod-name-deny-list-policy:v0.0.1
     ```
+
+## Deploy the Policy using Kubewarden
 
 Create a ClusterAdmissionPolicy resource to deploy your policy:
 
-   ```yaml
+    ```yaml
     apiVersion: policies.kubewarden.io/v1alpha2
     kind: ClusterAdmissionPolicy
     metadata:
@@ -271,7 +273,7 @@ Create a ClusterAdmissionPolicy resource to deploy your policy:
     mutating: false
     settings:
     denied_names: [ "test" ]
-   ```
+    ```
 
 # Conclusion
 
