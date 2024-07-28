@@ -103,7 +103,7 @@ Installing Kubewarden involves several steps to set up the necessary components 
 
 Requirement: Install [cert-manager](https://cert-manager.io/) before the kubewarden-controller chart.
 
-```bash
+```sh
 helm repo add jetstack https://charts.jetstack.io
 
 helm install --wait --namespace cert-manager --create-namespace \
@@ -206,7 +206,7 @@ You need to push the compiled WebAssembly module to a registry that Kubewarden c
 
 Policies have to be annotated before to be pushed and executed by the Kubewarden policy-server in a Kubernetes cluster. Create `metadata.yaml` file.
 
-    ```
+    ```yaml
     rules:
         - apiGroups: [""]
         apiVersions: ["*"]
