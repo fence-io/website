@@ -185,18 +185,18 @@ func validate(payload []byte) ([]byte, error) {
 
 The official Go compiler can't produce WebAssembly binaries that run outside the browser. Therefore, you must use TinyGo to build the policy.
 
-   ```sh
-   wget https://github.com/tinygo-org/tinygo/releases/download/v0.25.0/tinygo_0.25.0_amd64.deb
-   sudo dpkg -i tinygo_0.25.0_amd64.deb
-   ```
+```sh
+wget https://github.com/tinygo-org/tinygo/releases/download/v0.25.0/tinygo_0.25.0_amd64.deb
+sudo dpkg -i tinygo_0.25.0_amd64.deb
+```
 
 2. **Compile the Policy**:
 
 Use `TinyGo` to compile the policy into a WebAssembly module.
 
-   ```sh
-   tinygo build -o policy.wasm -target=wasi main.go
-   ```
+```sh
+tinygo build -o policy.wasm -target=wasi main.go
+```
 
 ## Test & publish the Policy
 
@@ -206,74 +206,74 @@ You need to push the compiled WebAssembly module to a registry that Kubewarden c
 
 Policies have to be annotated before to be pushed and executed by the Kubewarden policy-server in a Kubernetes cluster. Create `metadata.yaml` file.
 
-    ```yaml
-    rules:
-        - apiGroups: [""]
-        apiVersions: ["*"]
-        resources: ["*"]
-        operations: ["CREATE"]
-    mutating: false
-    contextAware: false
-    executionMode: gatekeeper
-    annotations:
-        io.kubewarden.policy.title: Pod Name Deny List Policy
-        io.kubewarden.policy.description: Pods with names in a predefined deny list are rejected
-        io.kubewarden.policy.author: fence.io
-        io.kubewarden.policy.url: https://github.com/...
-        io.kubewarden.policy.source: https://github.com/...
-        io.kubewarden.policy.license: Apache-2.0
-        io.kubewarden.policy.usage: |
-            This policy allow you to reject pods if pod name is in a predefined deny list.
-    ```
+```yaml
+rules:
+    - apiGroups: [""]
+    apiVersions: ["*"]
+    resources: ["*"]
+    operations: ["CREATE"]
+mutating: false
+contextAware: false
+executionMode: gatekeeper
+annotations:
+    io.kubewarden.policy.title: Pod Name Deny List Policy
+    io.kubewarden.policy.description: Pods with names in a predefined deny list are rejected
+    io.kubewarden.policy.author: fence.io
+    io.kubewarden.policy.url: https://github.com/...
+    io.kubewarden.policy.source: https://github.com/...
+    io.kubewarden.policy.license: Apache-2.0
+    io.kubewarden.policy.usage: |
+        This policy allow you to reject pods if pod name is in a predefined deny list.
+```
 
 Annotate the policy:
 
-    ```sh
-    kwctl annotate policy.wasm --metadata-path metadata.yaml --output-path annotated-policy.wasm
-    ```
+```sh
+kwctl annotate policy.wasm --metadata-path metadata.yaml --output-path annotated-policy.wasm
+```
 
 Push the policy:
 
-    ```sh
-    kwctl push annotated-policy.wasm <your-registry>/nod-name-deny-list-policy:v0.0.1
-    ```
+```sh
+kwctl push annotated-policy.wasm <your-registry>/nod-name-deny-list-policy:v0.0.1
+```
 
 2. **E2E testing**:
 
 You have to pull your policy to kwctl local store first:
 
-    ```sh
-     kwctl pull registry://<your-registry>/nod-name-deny-list-policy:v0.0.1
-    ```
+```sh
+    kwctl pull registry://<your-registry>/nod-name-deny-list-policy:v0.0.1
+```
 
 Run the test:
 
-    ```sh
-    kwctl run \
-        --settings-json '{"denied_names": ["test"]}' \
-        -r test_data/pod.json \
-        registry://<your-registry>/nod-name-deny-list-policy:v0.0.1
-    ```
+```sh
+kwctl run \
+    --settings-json '{"denied_names": ["test"]}' \
+    -r test_data/pod.json \
+    registry://<your-registry>/nod-name-deny-list-policy:v0.0.1
+```
 
 ## Deploy the Policy using Kubewarden
 
 Create a ClusterAdmissionPolicy resource to deploy your policy:
 
-    ```yaml
-    apiVersion: policies.kubewarden.io/v1alpha2
-    kind: ClusterAdmissionPolicy
-    metadata:
-    name: generated-policy
-    spec:
-    module: registry://<your-registry>/nod-name-deny-list-policy:v0.0.1
-    rules:
-        - apiGroups: [""]
-            apiVersions: ["v1"]
-            resources: ["pods"]
-    mutating: false
-    settings:
-    denied_names: [ "test" ]
-    ```
+```yaml
+apiVersion: policies.kubewarden.io/v1alpha2
+kind: ClusterAdmissionPolicy
+metadata:
+name: generated-policy
+spec:
+module: registry://<your-registry>/nod-name-deny-list-policy:v0.0.1
+rules:
+    - apiGroups: [""]
+        apiVersions: ["v1"]
+        resources: ["pods"]
+mutating: false
+settings:
+denied_names: [ "test" ]
+```
 
 # Conclusion
 
