@@ -45,9 +45,9 @@ Kubewarden policies are written using the [WebAssembly (Wasm)](https://webassemb
 
 **Rust**: Known for its performance and safety, Rust is a popular choice for writing Kubewarden policies.
 
-**Go**: Go offers simplicity and readability, making it another viable option for policy authors.
+**Go**: offers simplicity and readability, making it another viable option for policy authors.
 
-**AssemblyScript**: A TypeScript-like language that provides a more approachable syntax for JavaScript and TypeScript developers.
+**Rego**: high-level declarative language used in Open Policy Agent and Gatekeeper for defining and enforcing policies.
 
 The flexibility of using **WebAssembly** means that policies can leverage existing libraries and tools within these languages, making it easier to implement complex logic and integrations.
 
@@ -122,48 +122,61 @@ helm install --wait -n kubewarden kubewarden-defaults kubewarden/kubewarden-defa
 
 # Example
 
-Let's create a very basic Kubewarden policy in Go. This policy will ensure that any Kubernetes resource has a specific label. (The policy created using [go-policy-template](https://github.com/kubewarden/go-policy-template)).
-
+Let's create a very basic Kubewarden policy in Go. This policy will reject pods with names in a predefined deny list. For the complete code, please look at [the example](https://gist.github.com/flavio/4995b1288d27c726c3524a4067ab8715).
 
 ```go
-package main
-
-import (
-    "encoding/json"
-    "fmt"
-    "os"
-
-    "github.com/kubewarden/policy-sdk-go/policy"
-    "github.com/kubewarden/policy-sdk-go/protocol"
-)
-
-type Settings struct {
-    RequiredLabelKey   string `json:"required_label_key"`
-    RequiredLabelValue string `json:"required_label_value"`
-}
-
+...
 func validate(payload []byte) ([]byte, error) {
-    var req protocol.ValidationRequest
-    if err := json.Unmarshal(payload, &req); err != nil {
-        return nil, fmt.Errorf("cannot unmarshal validation request: %w", err)
-    }
+	// Create a ValidationRequest instance from the incoming payload
+	validationRequest := kubewarden_protocol.ValidationRequest{}
+	err := json.Unmarshal(payload, &validationRequest)
+	if err != nil {
+		return kubewarden.RejectRequest(
+			kubewarden.Message(err.Error()),
+			kubewarden.Code(httpBadRequestStatusCode))
+	}
 
-    var settings Settings
-    if err := json.Unmarshal(req.Settings, &settings); err != nil {
-        return nil, fmt.Errorf("cannot unmarshal settings: %w", err)
-    }
+	// Create a Settings instance from the ValidationRequest object
+	settings, err := NewSettingsFromValidationReq(&validationRequest)
+	if err != nil {
+		return kubewarden.RejectRequest(
+			kubewarden.Message(err.Error()),
+			kubewarden.Code(httpBadRequestStatusCode))
+	}
 
-    labels := req.Request.Object.Object["metadata"].(map[string]interface{})["labels"].(map[string]interface{})
-    if value, found := labels[settings.RequiredLabelKey]; !found || value != settings.RequiredLabelValue {
-        return policy.Deny(fmt.Sprintf("missing required label: %s=%s", settings.RequiredLabelKey, settings.RequiredLabelValue)), nil
-    }
+	// Access the **raw** JSON that describes the object
+	podJSON := validationRequest.Request.Object
 
-    return policy.Allow(), nil
+	// Try to create a Pod instance using the RAW JSON we got from the
+	// ValidationRequest.
+	pod := &corev1.Pod{}
+	if err = json.Unmarshal([]byte(podJSON), pod); err != nil {
+		return kubewarden.RejectRequest(
+			kubewarden.Message(
+				fmt.Sprintf("Cannot decode Pod object: %s", err.Error())),
+			kubewarden.Code(httpBadRequestStatusCode))
+	}
+
+	logger.DebugWithFields("validating pod object", func(e onelog.Entry) {
+		e.String("name", pod.Metadata.Name)
+		e.String("namespace", pod.Metadata.Namespace)
+	})
+
+	if settings.IsNameDenied(pod.Metadata.Name) {
+		logger.InfoWithFields("rejecting pod object", func(e onelog.Entry) {
+			e.String("name", pod.Metadata.Name)
+			e.String("denied_names", strings.Join(settings.DeniedNames, ","))
+		})
+
+		return kubewarden.RejectRequest(
+			kubewarden.Message(
+				fmt.Sprintf("The '%s' name is on the deny list", pod.Metadata.Name)),
+			kubewarden.NoCode)
+	}
+
+	return kubewarden.AcceptRequest()
 }
-
-func main() {
-    policy.Entrypoint(validate)
-}
+...
 ```
 
 ## Build and Package the Policy
@@ -179,98 +192,89 @@ The official Go compiler can't produce WebAssembly binaries that run outside the
 
 2. **Compile the Policy**:
 
-   Use TinyGo to compile the policy into a WebAssembly module.
+Use `TinyGo` to compile the policy into a WebAssembly module.
 
    ```sh
    tinygo build -o policy.wasm -target=wasi main.go
    ```
-   
-## Test the Policy
-
-You can use wasmtime to test your Wasm module locally.
-
-```sh
-curl https://wasmtime.dev/install.sh -sSf | bash
-```
-
-Create a settings.json file with the required label settings:
-
-```json
-	{
-		"required_label_key": "environment",
-		"required_label_value": "production"
-	}
-```
-
-Create a test-input.json file with a test Kubernetes resource:
-
-```json
-{
-    "request": {
-        "object": {
-            "metadata": {
-                "labels": {
-                    "environment": "production"
-                }
-            }
-        }
-    },
-    "settings": {
-        "required_label_key": "environment",
-        "required_label_value": "production"
-    }
-}
-```
-
-Run the policy with Wasmtime and test input:
-
-```sh
-cat test-input.json | wasmtime policy.wasm
-```
 
 ## Deploy the Policy
 
 1. **Push the Policy to a Registry**:
 
-   You need to push the compiled WebAssembly module to a registry that Kubewarden can access. Here, we will use `cosign` to sign and push the module to an OCI-compliant registry.
+You need to push the compiled WebAssembly module to a registry that Kubewarden can access. Here, we will use [`kwctl`](https://github.com/kubewarden/kwctl/?tab=readme-ov-file#install) to push the module to an OCI-compliant registry.
 
-   Install `cosign`:
+Policies have to be annotated before to be pushed and executed by the Kubewarden policy-server in a Kubernetes cluster. Create `metadata.yaml` file.
 
-   ```sh
-   go install github.com/sigstore/cosign/cmd/cosign@latest
-   ```
+    ```
+    rules:
+        - apiGroups: [""]
+        apiVersions: ["*"]
+        resources: ["*"]
+        operations: ["CREATE"]
+    mutating: false
+    contextAware: false
+    executionMode: gatekeeper
+    annotations:
+        io.kubewarden.policy.title: Pod Name Deny List Policy
+        io.kubewarden.policy.description: Pods with names in a predefined deny list are rejected
+        io.kubewarden.policy.author: fence.io
+        io.kubewarden.policy.url: https://github.com/...
+        io.kubewarden.policy.source: https://github.com/...
+        io.kubewarden.policy.license: Apache-2.0
+        io.kubewarden.policy.usage: |
+            This policy allow you to reject pods if pod name is in a predefined deny list.
+    ```
 
-   Push the WebAssembly module:
+Annotate the policy:
 
-   ```sh
-   cosign sign-blob --key cosign.key policy.wasm
-   ```
+    ```sh
+    kwctl annotate policy.wasm --metadata-path metadata.yaml --output-path annotated-policy.wasm
+    ```
+
+Push the policy:
+
+    ```sh
+    kwctl push annotated-policy.wasm <your-registry>/nod-name-deny-list-policy:v0.0.1
+    ```
 
 2. **Deploy the Policy using Kubewarden**:
 
-   Create a ClusterAdmissionPolicy resource to deploy your policy:
+You have to pull your policy to your kwctl local store first:
+
+    ```sh
+     kwctl pull registry://<your-registry>/nod-name-deny-list-policy:v0.0.1
+    ```
+
+You can also test your policy before deploying it:
+
+    ```sh
+    kwctl run \
+    --settings-json '{"denied_names": ["test"]}' \
+    -r test_data/pod.json \
+    registry://<your-registry>/nod-name-deny-list-policy:v0.0.1
+    ```
+
+Create a ClusterAdmissionPolicy resource to deploy your policy:
 
    ```yaml
-   apiVersion: policies.kubewarden.io/v1
-   kind: ClusterAdmissionPolicy
-   metadata:
-     name: my-policy
-   spec:
-     module: registry://<your-registry>/policy:latest
-     rules:
-       - apiGroups: [""]
-         apiVersions: ["v1"]
-         resources: ["pods"]
-     mutating: false
-     settings:
-       required_label_key: "example-key"
-       required_label_value: "example-value"
+    apiVersion: policies.kubewarden.io/v1alpha2
+    kind: ClusterAdmissionPolicy
+    metadata:
+    name: generated-policy
+    spec:
+    module: registry://<your-registry>/nod-name-deny-list-policy:v0.0.1
+    rules:
+        - apiGroups: [""]
+            apiVersions: ["v1"]
+            resources: ["pods"]
+    mutating: false
+    settings:
+    denied_names: [ "test" ]
    ```
-
-Replace `<your-registry>` with the actual registry where you pushed your WebAssembly module.
 
 # Conclusion
 
 Kubewarden emerges as a valuable tool for Kubernetes administrators and security teams seeking to implement and enforce robust security policies effectively. Its use of WebAssembly for policy execution, comprehensive policy library, seamless Kubernetes integration, and active community support make it a compelling choice for enhancing Kubernetes security with policy-driven controls.
 
- However, adopting Kubewarden requires a learning curve for Wasm and Kubernetes concepts, and effective policy development may demand initial investment in understanding and implementation.
+However, adopting Kubewarden requires a learning curve for Wasm and Kubernetes concepts, and effective policy development may demand initial investment in understanding and implementation.
