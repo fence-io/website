@@ -45,9 +45,9 @@ Kubewarden policies are written using the [WebAssembly (Wasm)](https://webassemb
 
 **Rust**: Known for its performance and safety, Rust is a popular choice for writing Kubewarden policies.
 
-**Go**: offers simplicity and readability, making it another viable option for policy authors.
+**Go**: Offers simplicity and readability, making it another viable option for policy authors.
 
-**Rego**: high-level declarative language used in Open Policy Agent and Gatekeeper for defining and enforcing policies.
+**Rego**: High-level declarative language used in Open Policy Agent and Gatekeeper for defining and enforcing policies.
 
 The flexibility of using **WebAssembly** means that policies can leverage existing libraries and tools within these languages, making it easier to implement complex logic and integrations.
 
